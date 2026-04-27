@@ -1,0 +1,329 @@
+{
+  "_description":"Gamemaster reference tables from PHB compiled tables section.",
+  "psionic_energy":{
+    "diplomat_secondary":"WIL \/ 2 (Fraal: WIL)",
+    "recovery":"Full rest: recover all. Partial rest: recover half.",
+    "_description":"PHB Chapter 14: Psionic Energy Points",
+    "mindwalker":"WIL score x 1 (Fraal: WIL x 1.5)",
+    "talent":"WIL \/ 2 (Fraal talent: WIL)"
+  },
+  "resistance_modifiers":{
+    "_description":"PHB Table P2: Ability Score to Resistance Modifier",
+    "table":[
+      {
+        "score":"4 or less",
+        "modifier":"-2 steps"
+      },
+      {
+        "score":"5-6",
+        "modifier":"-1 step"
+      },
+      {
+        "score":"7-10",
+        "modifier":"0"
+      },
+      {
+        "score":"11-12",
+        "modifier":"+1 step"
+      },
+      {
+        "score":"13-14",
+        "modifier":"+2 steps"
+      },
+      {
+        "score":"15-16",
+        "modifier":"+3 steps"
+      },
+      {
+        "score":"17-18",
+        "modifier":"+4 steps"
+      },
+      {
+        "score":"19+",
+        "modifier":"+5 steps"
+      }
+    ]
+  },
+  "cykosis":{
+    "_description":"PHB Sidebar: Cykosis (Cyber Psychosis)",
+    "trigger":"Critical Failure while using reflex wiring or fast chip.",
+    "check":"WIL feat check. Failure: character suffers temporary psychosis.",
+    "severity":"GM determines effects: paranoia, aggression, hallucinations, shutdown.",
+    "note":"Cumulative risk increases with more cyber gear installed."
+  },
+  "npc_attitudes":{
+    "scale":[
+      "Combative",
+      "Hostile",
+      "Neutral",
+      "Friendly",
+      "Charmed",
+      "Fanatic"
+    ],
+    "encounter_skills":[
+      "Business (INT)",
+      "Law (INT)",
+      "Culture (PER)",
+      "Deception (PER)",
+      "Entertainment (PER)",
+      "Interaction (PER)",
+      "Leadership (PER)"
+    ],
+    "_description":"PHB: NPC Attitude Scale for Encounter Skills",
+    "note":"Each degree of success shifts attitude one step. Interaction skills are encounter skills that can change NPC disposition."
+  },
+  "survival_modifiers":{
+    "terrains":[
+      {
+        "modifier":"none",
+        "terrain":"Temperate forest"
+      },
+      {
+        "modifier":"+1 step",
+        "terrain":"Tropical jungle"
+      },
+      {
+        "modifier":"+2 steps",
+        "terrain":"Desert"
+      },
+      {
+        "modifier":"+2 steps",
+        "terrain":"Arctic\/Tundra"
+      },
+      {
+        "modifier":"+3 steps",
+        "terrain":"Ocean"
+      },
+      {
+        "modifier":"+1 to +3 steps (GM's discretion)",
+        "terrain":"Alien world"
+      },
+      {
+        "modifier":"impossible without equipment",
+        "terrain":"Vacuum\/Space"
+      }
+    ],
+    "_description":"PHB Sidebar: Survival Situation Modifiers"
+  },
+  "starting_skill_points":{
+    "_description":"PHB Table P5: Skill Points by INT Score",
+    "table":[
+      {
+        "int_score":4.0,
+        "points":15.0,
+        "max_broads":2.0
+      },
+      {
+        "int_score":5.0,
+        "points":20.0,
+        "max_broads":3.0
+      },
+      {
+        "int_score":6.0,
+        "points":25.0,
+        "max_broads":3.0
+      },
+      {
+        "int_score":7.0,
+        "points":30.0,
+        "max_broads":4.0
+      },
+      {
+        "int_score":8.0,
+        "points":35.0,
+        "max_broads":4.0
+      },
+      {
+        "int_score":9.0,
+        "points":40.0,
+        "max_broads":5.0
+      },
+      {
+        "int_score":10.0,
+        "points":45.0,
+        "max_broads":5.0
+      },
+      {
+        "int_score":11.0,
+        "points":50.0,
+        "max_broads":6.0
+      },
+      {
+        "int_score":12.0,
+        "points":55.0,
+        "max_broads":6.0
+      },
+      {
+        "int_score":13.0,
+        "points":60.0,
+        "max_broads":7.0
+      },
+      {
+        "int_score":14.0,
+        "points":65.0,
+        "max_broads":7.0
+      },
+      {
+        "int_score":15.0,
+        "points":70.0,
+        "max_broads":8.0
+      },
+      {
+        "int_score":16.0,
+        "points":75.0,
+        "max_broads":8.0
+      }
+    ],
+    "note":"Humans get +5 points and +1 max broad skill."
+  },
+  "complex_skill_checks":{
+    "_description":"PHB Table P17: Complex Skill Checks",
+    "situation_modifiers":[
+      {
+        "condition":"Critical",
+        "modifier":"+4 steps"
+      },
+      {
+        "condition":"Extreme",
+        "modifier":"+3 steps"
+      },
+      {
+        "condition":"Moderate",
+        "modifier":"+2 steps"
+      },
+      {
+        "condition":"Slight",
+        "modifier":"+1 step"
+      },
+      {
+        "condition":"Marginal",
+        "modifier":"none"
+      },
+      {
+        "condition":"Ordinary",
+        "modifier":"-1 step"
+      },
+      {
+        "condition":"Good",
+        "modifier":"-2 steps"
+      },
+      {
+        "condition":"Amazing",
+        "modifier":"-3 steps"
+      }
+    ],
+    "complexity":[
+      {
+        "level":"Marginal",
+        "successes":1.0
+      },
+      {
+        "level":"Ordinary",
+        "successes":2.0
+      },
+      {
+        "level":"Good",
+        "successes":3.0
+      },
+      {
+        "level":"Amazing",
+        "successes":"4+"
+      }
+    ],
+    "success_values":"Ordinary=1, Good=2, Amazing=3 successes per check.",
+    "failure_rules":"3 failures = task fails. Critical Failure = immediate failure."
+  },
+  "thrown_accuracy":{
+    "_description":"PHB: Thrown Object Accuracy by Distance",
+    "table":[
+      {
+        "medium":"8m",
+        "long":"12m",
+        "result":"Critical Failure",
+        "short":"4m"
+      },
+      {
+        "medium":"4m",
+        "long":"6m",
+        "result":"Failure",
+        "short":"2m"
+      },
+      {
+        "medium":"2m",
+        "long":"4m",
+        "result":"Ordinary",
+        "short":"on target"
+      },
+      {
+        "medium":"on target",
+        "long":"2m",
+        "result":"Good",
+        "short":"on target"
+      },
+      {
+        "medium":"always on target",
+        "long":"always on target",
+        "result":"Amazing",
+        "short":"always on target"
+      }
+    ]
+  },
+  "travel_rates":{
+    "_description":"PHB: Overland Travel Rates",
+    "rates":[
+      {
+        "pace":"Stroll",
+        "rate":"3 km\/hr",
+        "fatigue_check":"every 8 hours"
+      },
+      {
+        "pace":"March",
+        "rate":"5 km\/hr",
+        "fatigue_check":"every 6 hours"
+      },
+      {
+        "pace":"Forced march",
+        "rate":"7 km\/hr",
+        "fatigue_check":"every 4 hours"
+      }
+    ],
+    "note":"Stamina-endurance skill extends check intervals."
+  },
+  "strength_damage_bonus":{
+    "_description":"PHB Table P9: Strength and Damage Bonus for Melee\/Unarmed",
+    "table":[
+      {
+        "str":"1-6",
+        "bonus":"none"
+      },
+      {
+        "str":"7-8",
+        "bonus":"+1s to stun damage"
+      },
+      {
+        "str":"9-10",
+        "bonus":"+1s to stun, +1w to wound"
+      },
+      {
+        "str":"11-12",
+        "bonus":"+2s to stun, +1w to wound"
+      },
+      {
+        "str":"13-14",
+        "bonus":"+d4s to stun, +2w to wound"
+      },
+      {
+        "str":"15+",
+        "bonus":"+d4s to stun, +d4w to wound"
+      }
+    ]
+  },
+  "cyber_tolerance":{
+    "base":"CON score",
+    "_description":"PHB Chapter 15: Cyber Tolerance Rules",
+    "mechalus_bonus":"+4",
+    "over_half":"CON feat check required for each new install after half tolerance used.",
+    "full":"No more installations possible.",
+    "damage":"Over half tolerance: mortal damage = cyber damage (needs cyber surgeon). Over 3\/4: wound damage also = cyber damage."
+  }
+}

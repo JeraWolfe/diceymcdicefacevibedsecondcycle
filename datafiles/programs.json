@@ -1,0 +1,416 @@
+{
+  "_description": "Computer programs from Alternity PHB Chapter 14. Quality tiers: M/O/G/A. Slots = active memory slots required.",
+  "programs": [
+    {
+      "name": "Application",
+      "type": "operator",
+      "pl": 5,
+      "slots": 1,
+      "description": "General-purpose application (word processor, spreadsheet, database)."
+    },
+    {
+      "name": "Datadoc",
+      "type": "operator",
+      "pl": 5,
+      "slots": 1,
+      "description": "Creates, edits, and formats documents. Includes spellcheck and grammar tools."
+    },
+    {
+      "name": "Datascan",
+      "type": "operator",
+      "pl": 5,
+      "slots": 1,
+      "description": "Searches databases and Grid sites for specific information. -1 bonus to Knowledge-computer operation checks."
+    },
+    {
+      "name": "Decode",
+      "type": "operator",
+      "pl": 5,
+      "slots": 1,
+      "description": "Decrypts encoded files and transmissions. Complex skill check vs encoding strength."
+    },
+    {
+      "name": "Encode",
+      "type": "operator",
+      "pl": 5,
+      "slots": 1,
+      "description": "Encrypts files and transmissions. Quality determines encoding strength."
+    },
+    {
+      "name": "Enhance",
+      "type": "operator",
+      "pl": 7,
+      "slots": 1,
+      "description": "Activates reflex wiring for enhanced speed. Causes stun damage per round of use. Requires Reflex cyberware."
+    },
+    {
+      "name": "Entertainment",
+      "type": "operator",
+      "pl": 5,
+      "slots": 1,
+      "description": "Games, simulations, holovids. Can be used to distract or entertain NPCs."
+    },
+    {
+      "name": "Gridwipe",
+      "type": "operator",
+      "pl": 6,
+      "slots": 2,
+      "description": "Erases all traces of the user's Grid presence. Complex skill check."
+    },
+    {
+      "name": "Reference",
+      "type": "operator",
+      "pl": 5,
+      "slots": 1,
+      "description": "Searchable reference database. -1 bonus to Knowledge checks in the reference's subject area."
+    },
+    {
+      "name": "Surge",
+      "type": "operator",
+      "pl": 6,
+      "slots": 1,
+      "description": "Electrical attack program. Damages hardware or shadows. Damage scales with quality.",
+      "quality_damage": {
+        "M": "d4s/d4+2s/d6+2s",
+        "O": "d6+2s/d4w/d4+2w",
+        "G": "d8+2s/d4+2w/d4+4w",
+        "A": "d12+2s/d6+4w/d4m"
+      }
+    },
+    {
+      "name": "Trace",
+      "type": "operator",
+      "pl": 5,
+      "slots": 1,
+      "description": "Traces the origin of a Grid connection. Complex skill check vs target's Gridwipe or Encode."
+    },
+    {
+      "name": "Break-in",
+      "type": "hacking",
+      "pl": 5,
+      "slots": 1,
+      "description": "Bypasses security on closed/restricted systems. Each success penetrates one defense layer."
+    },
+    {
+      "name": "Corrupt",
+      "type": "hacking",
+      "pl": 5,
+      "slots": 1,
+      "description": "Corrupts data on target system. Can destroy files or alter records."
+    },
+    {
+      "name": "Crash",
+      "type": "hacking",
+      "pl": 5,
+      "slots": 1,
+      "description": "Crashes target system or program. System must reboot, losing all active processes."
+    },
+    {
+      "name": "Shadow Armor",
+      "type": "hacking",
+      "pl": 6,
+      "slots": 1,
+      "description": "Virtual armor for grid combat. Protection and attack penalty scale with quality.",
+      "quality_stats": {
+        "M": "d6-2 armor, no penalty",
+        "O": "d4 armor, +1 penalty",
+        "G": "d4+1 armor, +2 penalty",
+        "A": "d6+1 armor, +3 penalty"
+      }
+    },
+    {
+      "name": "Shadow Armor 2",
+      "type": "hacking",
+      "pl": 7,
+      "slots": 1,
+      "description": "Enhanced virtual armor. Better protection and penalties than Shadow Armor.",
+      "quality_stats": {
+        "M": "d4 armor, +1 penalty",
+        "O": "d6+1 armor, +2 penalty",
+        "G": "d6+2 armor, +3 penalty",
+        "A": "d6+3 armor, +4 penalty"
+      }
+    },
+    {
+      "name": "Shadow Weapon",
+      "type": "hacking",
+      "pl": 6,
+      "slots": 1,
+      "description": "Virtual weapon for grid combat. Damage and attack bonus scale with quality.",
+      "quality_damage": {
+        "M": "d4s/d4+2s/d6+2s",
+        "O": "d4+2s/d4w/d4+2w (-1)",
+        "G": "d4w/d4+2w/d6+2w (-2)",
+        "A": "d4+2w/d4m/d4+2m (-3)"
+      }
+    },
+    {
+      "name": "Shadow Weapon 2",
+      "type": "hacking",
+      "pl": 7,
+      "slots": 1,
+      "description": "Enhanced virtual weapon. Better damage than Shadow Weapon.",
+      "quality_damage": {
+        "M": "d6s/d6+2s/d8+2s",
+        "O": "d6w/d6+2w/d8+2w (-1)",
+        "G": "d6+2w/d4m/d4+2m (-2)",
+        "A": "d8+2w/d4+2m/d6+2m (-3)"
+      }
+    },
+    {
+      "name": "Alarm",
+      "type": "utility",
+      "pl": 5,
+      "slots": 1,
+      "description": "Alerts system administrator to intrusion attempts. Adds penalty to hacker's Break-in checks."
+    },
+    {
+      "name": "Antivirus",
+      "type": "utility",
+      "pl": 5,
+      "slots": 1,
+      "description": "Detects and destroys virus programs. Quality determines detection skill score."
+    },
+    {
+      "name": "Assist",
+      "type": "utility",
+      "pl": 7,
+      "slots": 1,
+      "description": "AI assistant that helps with skill checks. Provides -1 bonus to one specified skill."
+    },
+    {
+      "name": "Control",
+      "type": "utility",
+      "pl": 5,
+      "slots": "1-4",
+      "description": "Controls connected devices (doors, cameras, weapons, vehicles). Slots depend on complexity."
+    },
+    {
+      "name": "Fortress",
+      "type": "utility",
+      "pl": 5,
+      "slots": 1,
+      "description": "Adds additional defense layers to a system. Each quality tier adds more layers."
+    },
+    {
+      "name": "Grid Log",
+      "type": "utility",
+      "pl": 6,
+      "slots": 1,
+      "description": "Records all Grid activity for later review. Invisible to other users."
+    },
+    {
+      "name": "Gridlock",
+      "type": "utility",
+      "pl": 6,
+      "slots": 2,
+      "description": "Prevents target from leaving the current Grid location. Complex skill check to maintain."
+    },
+    {
+      "name": "Guardian",
+      "type": "utility",
+      "pl": 7,
+      "slots": 2,
+      "description": "Defensive AI entity that patrols and protects a system. Has own stats and can fight shadows.",
+      "quality_stats": {
+        "M": "All 6, S/W/M 6/6/3, 1 act",
+        "O": "All 8, S/W/M 8/8/4, 2 act",
+        "G": "All 10, S/W/M 10/10/5, 2 act",
+        "A": "All 12, S/W/M 12/12/6, 3 act"
+      }
+    },
+    {
+      "name": "Menace",
+      "type": "utility",
+      "pl": 7,
+      "slots": 2,
+      "description": "Offensive AI entity deployed to hunt and destroy intruding shadows.",
+      "quality_stats": {
+        "M": "All 8, S/W/M 8/8/4, 1 act",
+        "O": "All 10, S/W/M 10/10/5, 2 act",
+        "G": "All 12, S/W/M 12/12/6, 3 act",
+        "A": "All 14, S/W/M 14/14/7, 4 act"
+      }
+    },
+    {
+      "name": "Mirror Image",
+      "type": "utility",
+      "pl": 6,
+      "slots": 1,
+      "description": "Creates decoy shadows to confuse opponents. Attackers must determine which is real."
+    },
+    {
+      "name": "Shadow Form",
+      "type": "utility",
+      "pl": 6,
+      "slots": 1,
+      "description": "Creates the gridpilot's virtual body for Grid operations. STR/DEX/CON based on quality.",
+      "quality_stats": {
+        "M": "STR 6, DEX 6, CON 6",
+        "O": "STR 8, DEX 8, CON 8",
+        "G": "STR 9, DEX 9, CON 10",
+        "A": "STR 10, DEX 10, CON 12"
+      }
+    },
+    {
+      "name": "Shadow Form 2",
+      "type": "utility",
+      "pl": 7,
+      "slots": 2,
+      "description": "Enhanced virtual body with all 6 ability scores. Built-in 2 ranks hacking.",
+      "quality_stats": {
+        "M": "8/8/8/9/9/8, 1 act",
+        "O": "10/10/10/10/10/10, 2 act",
+        "G": "11/11/12/11/11/11, 3 act",
+        "A": "12/12/14/12/12/12, 4 act"
+      }
+    },
+    {
+      "name": "Static",
+      "type": "utility",
+      "pl": 6,
+      "slots": 1,
+      "description": "Creates interference that penalizes all Grid operations in the area."
+    },
+    {
+      "name": "Transfer",
+      "type": "utility",
+      "pl": 5,
+      "slots": 1,
+      "description": "Transfers files between systems. Can be used to upload/download data."
+    },
+    {
+      "name": "Virus",
+      "type": "utility",
+      "pl": 5,
+      "slots": 1,
+      "description": "Self-replicating program that carries a payload. Quality determines skill score.",
+      "quality_stats": {
+        "M": "Skill 8, +0 slots",
+        "O": "Skill 12, +0 slots",
+        "G": "Skill 16, +1 slot",
+        "A": "Skill 20, +2 slots"
+      }
+    }
+  ],
+  "computers": [
+    {
+      "name": "Data Slate",
+      "pl": 6,
+      "processors": [
+        "M"
+      ],
+      "description": "Handheld tablet. Limited memory. Read-only access."
+    },
+    {
+      "name": "Microcomputer",
+      "pl": 6,
+      "processors": [
+        "M",
+        "O",
+        "G"
+      ],
+      "description": "Personal desktop or portable computer."
+    },
+    {
+      "name": "Gridcaster",
+      "pl": 6,
+      "processors": [
+        "M",
+        "O",
+        "G"
+      ],
+      "description": "Grid-optimized computer for remote operations."
+    },
+    {
+      "name": "Nanocomputer",
+      "pl": 6,
+      "processors": [
+        "M",
+        "O"
+      ],
+      "description": "Implanted processor. Requires cytronic circuitry."
+    },
+    {
+      "name": "Computer Gauntlet",
+      "pl": 7,
+      "processors": [
+        "M",
+        "O",
+        "G"
+      ],
+      "description": "Wrist-mounted computer."
+    },
+    {
+      "name": "Gridcaster Gauntlet",
+      "pl": 7,
+      "processors": [
+        "M",
+        "O",
+        "G",
+        "A"
+      ],
+      "description": "Wrist-mounted gridcaster for mobile Grid access."
+    },
+    {
+      "name": "Gridcaster Helmet",
+      "pl": 7,
+      "processors": [
+        "M",
+        "O",
+        "G",
+        "A"
+      ],
+      "description": "Full immersion Grid interface helmet."
+    },
+    {
+      "name": "Gridsuit",
+      "pl": 7,
+      "processors": [],
+      "description": "Full-body sensory suit for Grid immersion. No processor \u2014 uses external computer."
+    },
+    {
+      "name": "Mainframe",
+      "pl": 6,
+      "processors": [
+        "M",
+        "O",
+        "G",
+        "A"
+      ],
+      "description": "Large stationary system. High memory capacity."
+    },
+    {
+      "name": "Supercomputer",
+      "pl": 6,
+      "processors": [
+        "O",
+        "G",
+        "A"
+      ],
+      "description": "Massive processing power. Unlimited active memory."
+    }
+  ],
+  "processor_quality": {
+    "M": {
+      "name": "Marginal",
+      "bonus": 0,
+      "memory_base": 2
+    },
+    "O": {
+      "name": "Ordinary",
+      "bonus": -1,
+      "memory_base": 4
+    },
+    "G": {
+      "name": "Good",
+      "bonus": -2,
+      "memory_base": 7
+    },
+    "A": {
+      "name": "Amazing",
+      "bonus": -3,
+      "memory_base": 10
+    }
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "templates": [
+    {
+      "name": "Administrator",
+      "profession": "Diplomat",
+      "abilities": { "STR": 8, "DEX": 8, "CON": 8, "INT": 12, "WIL": 11, "PER": 10 },
+      "skills": [
+        ["Knowledge", "Bureaucracy", 2],
+        ["Knowledge", "Law", 1],
+        ["Interaction", "Bargain", 1],
+        ["Business", "Corporate", 2],
+        ["Awareness", "", 0]
+      ],
+      "weapon": [],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Dataslate", "Comm unit", "Business attire", "ID badge"]
+    },
+    {
+      "name": "Bartender",
+      "profession": "Free Agent",
+      "abilities": { "STR": 9, "DEX": 9, "CON": 10, "INT": 9, "WIL": 9, "PER": 12 },
+      "skills": [
+        ["Interaction", "Charm", 1],
+        ["Law", "Streetwise", 2],
+        ["Awareness", "Intuition", 1],
+        ["Athletics", "", 0],
+        ["Modern Ranged Weapons", "Pistol", 1]
+      ],
+      "weapon": ["9mm stutter pistol", "pistol", "d4+1s", "d4+2s", "d4w", "4/8/20", "LI"],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Bar kit", "Comm unit", "Towel"]
+    },
+    {
+      "name": "Brawler",
+      "profession": "Combat Spec",
+      "abilities": { "STR": 13, "DEX": 10, "CON": 12, "INT": 7, "WIL": 9, "PER": 8 },
+      "skills": [
+        ["Unarmed Attack", "Brawl", 2],
+        ["Athletics", "Power lifting", 1],
+        ["Stamina", "Endurance", 1],
+        ["Awareness", "", 0],
+        ["Melee Weapons", "", 0]
+      ],
+      "weapon": [],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Street clothes", "Brass knuckles"]
+    },
+    {
+      "name": "Corporate Executive",
+      "profession": "Diplomat",
+      "abilities": { "STR": 7, "DEX": 8, "CON": 8, "INT": 12, "WIL": 10, "PER": 13 },
+      "skills": [
+        ["Business", "Corporate", 2],
+        ["Knowledge", "Bureaucracy", 1],
+        ["Interaction", "Charm", 2],
+        ["Knowledge", "Law", 1],
+        ["Awareness", "Intuition", 1]
+      ],
+      "weapon": [],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Dataslate", "Comm unit", "Luxury clothing", "Corporate ID", "Credit chip"]
+    },
+    {
+      "name": "Doctor",
+      "profession": "Tech Op",
+      "abilities": { "STR": 7, "DEX": 11, "CON": 8, "INT": 13, "WIL": 10, "PER": 9 },
+      "skills": [
+        ["Medical Science", "Medical knowledge", 2],
+        ["Medical Science", "Treatment", 2],
+        ["Medical Science", "Surgery", 1],
+        ["Life Science", "Biology", 1],
+        ["Awareness", "Intuition", 1]
+      ],
+      "weapon": [],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Medical kit", "Comm unit", "Dataslate", "Lab coat"]
+    },
+    {
+      "name": "Laborer",
+      "profession": "Combat Spec",
+      "abilities": { "STR": 13, "DEX": 9, "CON": 12, "INT": 7, "WIL": 8, "PER": 8 },
+      "skills": [
+        ["Athletics", "Power lifting", 1],
+        ["Stamina", "Endurance", 1],
+        ["Vehicle Operation", "", 0],
+        ["Awareness", "", 0],
+        ["Melee Weapons", "Bludgeon", 1]
+      ],
+      "weapon": ["Heavy wrench", "bludgeon", "d6s", "d6+2s", "d4w", "Personal", "LI"],
+      "armor": ["Work coveralls", "d4-1", "0", "0"],
+      "gear": ["Tool kit", "Work boots", "Comm unit"]
+    },
+    {
+      "name": "Military Officer",
+      "profession": "Combat Spec",
+      "abilities": { "STR": 9, "DEX": 10, "CON": 9, "INT": 12, "WIL": 12, "PER": 10 },
+      "skills": [
+        ["Tactics", "Infantry tactics", 2],
+        ["Leadership", "Command", 2],
+        ["Modern Ranged Weapons", "Rifle", 1],
+        ["Modern Ranged Weapons", "Pistol", 1],
+        ["Awareness", "Perception", 1],
+        ["Knowledge", "", 0]
+      ],
+      "weapon": ["11mm charge rifle", "rifle", "d6+1w", "d6+3w", "d6+1m", "80/160/400", "HI"],
+      "armor": ["CF body armor", "d4", "d4", "0"],
+      "gear": ["Comm unit", "Binoculars", "Uniform", "Rank insignia"]
+    },
+    {
+      "name": "Law Enforcer",
+      "profession": "Combat Spec",
+      "abilities": { "STR": 10, "DEX": 12, "CON": 10, "INT": 9, "WIL": 11, "PER": 10 },
+      "skills": [
+        ["Modern Ranged Weapons", "Pistol", 2],
+        ["Investigate", "Search", 1],
+        ["Interaction", "Intimidate", 1],
+        ["Unarmed Attack", "Brawl", 1],
+        ["Awareness", "Perception", 1],
+        ["Law", "", 0]
+      ],
+      "weapon": ["9mm charge pistol", "pistol", "d4+1w", "d6+1w", "d4m", "8/16/60", "HI"],
+      "armor": ["CF vest", "d4", "d4", "0"],
+      "gear": ["Badge", "Handcuffs", "Comm unit", "Flashlight"]
+    },
+    {
+      "name": "Reporter",
+      "profession": "Free Agent",
+      "abilities": { "STR": 8, "DEX": 9, "CON": 8, "INT": 11, "WIL": 9, "PER": 13 },
+      "skills": [
+        ["Investigate", "Research", 2],
+        ["Interaction", "Charm", 1],
+        ["Interaction", "Interview", 1],
+        ["Knowledge", "Media", 1],
+        ["Awareness", "Perception", 1],
+        ["Deception", "", 0]
+      ],
+      "weapon": [],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Holocam", "Dataslate", "Comm unit", "Press ID"]
+    },
+    {
+      "name": "Scientist",
+      "profession": "Tech Op",
+      "abilities": { "STR": 7, "DEX": 9, "CON": 8, "INT": 14, "WIL": 10, "PER": 8 },
+      "skills": [
+        ["Physical Science", "Physics", 2],
+        ["Life Science", "Biology", 1],
+        ["Knowledge", "Computer science", 1],
+        ["Technical Science", "Technical knowledge", 1],
+        ["Awareness", "", 0]
+      ],
+      "weapon": [],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Lab equipment", "Dataslate", "Comm unit", "Lab coat"]
+    },
+    {
+      "name": "Soldier",
+      "profession": "Combat Spec",
+      "abilities": { "STR": 12, "DEX": 11, "CON": 11, "INT": 8, "WIL": 9, "PER": 8 },
+      "skills": [
+        ["Modern Ranged Weapons", "Rifle", 2],
+        ["Modern Ranged Weapons", "Pistol", 1],
+        ["Unarmed Attack", "Brawl", 1],
+        ["Melee Weapons", "Blade", 1],
+        ["Stamina", "Endurance", 1],
+        ["Athletics", "", 0],
+        ["Awareness", "Perception", 1]
+      ],
+      "weapon": ["11mm charge rifle", "rifle", "d6+1w", "d6+3w", "d6+1m", "80/160/400", "HI"],
+      "armor": ["CF body armor", "d4", "d4", "0"],
+      "gear": ["Combat knife", "Comm unit", "Fatigues", "Canteen"]
+    },
+    {
+      "name": "Spacehand",
+      "profession": "Tech Op",
+      "abilities": { "STR": 9, "DEX": 12, "CON": 9, "INT": 11, "WIL": 9, "PER": 8 },
+      "skills": [
+        ["System Operation", "Starship ops", 2],
+        ["Vehicle Operation", "Space vehicle", 1],
+        ["Technical Science", "Repair", 1],
+        ["Modern Ranged Weapons", "Pistol", 1],
+        ["Awareness", "", 0],
+        ["Athletics", "", 0]
+      ],
+      "weapon": ["9mm charge pistol", "pistol", "d4+1w", "d6+1w", "d4m", "8/16/60", "HI"],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Tool kit", "Comm unit", "Vacc suit", "Dataslate"]
+    },
+    {
+      "name": "Spy",
+      "profession": "Free Agent",
+      "abilities": { "STR": 9, "DEX": 12, "CON": 9, "INT": 10, "WIL": 11, "PER": 10 },
+      "skills": [
+        ["Stealth", "Sneak", 2],
+        ["Deception", "Disguise", 1],
+        ["Investigate", "Search", 1],
+        ["Modern Ranged Weapons", "Pistol", 1],
+        ["Awareness", "Intuition", 1],
+        ["Law", "", 0]
+      ],
+      "weapon": ["9mm charge pistol", "pistol", "d4+1w", "d6+1w", "d4m", "8/16/60", "HI"],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Lockpick set", "Comm unit", "Disguise kit", "Encrypted dataslate"]
+    },
+    {
+      "name": "Trader",
+      "profession": "Diplomat",
+      "abilities": { "STR": 8, "DEX": 9, "CON": 8, "INT": 11, "WIL": 10, "PER": 12 },
+      "skills": [
+        ["Business", "Bargain", 2],
+        ["Interaction", "Charm", 1],
+        ["Law", "Streetwise", 1],
+        ["Awareness", "Intuition", 1],
+        ["Modern Ranged Weapons", "Pistol", 1],
+        ["Knowledge", "", 0]
+      ],
+      "weapon": ["9mm charge pistol", "pistol", "d4+1w", "d6+1w", "d4m", "8/16/60", "HI"],
+      "armor": ["None", "0", "0", "0"],
+      "gear": ["Dataslate", "Comm unit", "Trade goods manifest", "Credit chip"]
+    }
+  ]
+}

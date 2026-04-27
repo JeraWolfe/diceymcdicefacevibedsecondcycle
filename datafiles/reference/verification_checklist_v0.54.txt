@@ -1,0 +1,267 @@
+================================================================================
+  DiceyMcDiceFaces v0.54 — Councilman's Bug Report Verification Checklist
+  Tester: _______________  Date: _______________
+================================================================================
+
+INSTRUCTIONS: Run in GameMaker (F5). Test each item. Mark PASS/FAIL.
+Load any character (or generate fresh ones as needed).
+
+================================================================================
+BUG #1: OBSESSED/INFAMY FLAWS GIVING PERKS
+================================================================================
+
+[ ] 1a. Go to Perks/Flaws tab (Tab 4). Click "Flaws" sub-tab.
+       Click "Obsessed" in the available list.
+       EXPECTED: Obsessed flaw appears under "Your Perks & Flaws" as a flaw.
+       ACTUAL: _______________
+
+[ ] 1b. Remove Obsessed if added. Click "Infamy" in the available list.
+       EXPECTED: Infamy flaw appears under "Your Perks & Flaws" as a flaw.
+       ACTUAL: _______________
+
+[ ] 1c. Switch rapidly between Perks and Flaws sub-tabs 5+ times.
+       Click the FIRST item in the available list each time.
+       EXPECTED: Perks only added from perks view, flaws only from flaws view.
+       ACTUAL: _______________
+
+[ ] 1d. Switch to Perks view. Add "Ambidexterity" (or any perk).
+       Switch to Flaws view. Add "Clueless" (or any flaw).
+       EXPECTED: Both appear in "Your" section under correct category.
+       ACTUAL: _______________
+
+[ ] 1e. Verify perk cost and flaw refund numbers update correctly.
+       ACTUAL: _______________
+
+================================================================================
+BUG #2: BROWSER X DOESN'T REMOVE MOST SKILLS
+================================================================================
+
+[ ] 2a. Add 6+ broad skills via Add/Browse so the list is long.
+       Click X next to the FIRST owned broad skill.
+       EXPECTED: That broad (and its specialties) are removed.
+       ACTUAL: _______________
+
+[ ] 2b. Scroll down in the browser. Click X on a visible owned broad.
+       EXPECTED: Correct broad removed. List refreshes.
+       ACTUAL: _______________
+
+[ ] 2c. Add 3+ specialties under one broad. Scroll. Click X on a specialty.
+       EXPECTED: Only that specialty removed, broad stays.
+       ACTUAL: _______________
+
+[ ] 2d. Remove all added skills one by one via X buttons.
+       EXPECTED: Each removal targets the correct skill. No crashes.
+       ACTUAL: _______________
+
+================================================================================
+BUG #3: SKILL +/- BUTTON ISSUES
+================================================================================
+
+[ ] 3a. On Character tab (Tab 0), click "-" on a broad skill (no + first).
+       EXPECTED: Broad skill and all its specialties are removed immediately.
+       ACTUAL: _______________
+
+[ ] 3b. Click "+" on a specialty at rank 0. Verify rank goes to 1.
+       Click "+" again. Verify rank goes to 2. Again -> 3.
+       EXPECTED: Clean rank progression 0 -> 1 -> 2 -> 3.
+       ACTUAL: _______________
+
+[ ] 3c. At rank 3, click "+" three more times (spam it).
+       EXPECTED: Nothing happens. Rank stays at 3. No errors.
+       ACTUAL: _______________
+
+[ ] 3d. Immediately click "-" after spamming "+" past the cap.
+       EXPECTED: Rank decreases from 3 to 2 cleanly.
+       ACTUAL: _______________
+
+[ ] 3e. Click "-" down to rank 0, then "-" again.
+       EXPECTED: Specialty is removed from the list.
+       ACTUAL: _______________
+
+[ ] 3f. Scroll the skill list. Click +/- on various visible rows.
+       EXPECTED: Correct skill modified every time.
+       ACTUAL: _______________
+
+[ ] 3g. Skill points display updates after every +/- click.
+       EXPECTED: Pts counter reflects change immediately.
+       ACTUAL: _______________
+
+================================================================================
+BUG #4: WEAPON QUICK-ROLLS IGNORE SITUATION DIE
+================================================================================
+
+[ ] 4a. Set situation die to -1 step (bonus) using the "<" button.
+       Roll a weapon attack on Combat tab.
+       EXPECTED: Roll uses -d4 as base, auto-mods added on top.
+       Roll log shows "Player Set-1" modifier.
+       ACTUAL: _______________
+
+[ ] 4b. Set situation die to +2 steps (penalty) using ">" button.
+       Roll a weapon attack.
+       EXPECTED: Roll uses +d8 equivalent, auto-mods on top.
+       ACTUAL: _______________
+
+[ ] 4c. After rolling, check the situation die display.
+       EXPECTED: Die stays at the player's chosen setting (not reset).
+       ACTUAL: _______________
+
+[ ] 4d. Set situation die to neutral (0). Roll weapon attack.
+       EXPECTED: Only auto-mods (training, FX, wounds) affect the die.
+       ACTUAL: _______________
+
+[ ] 4e. Test Punch and Kick rolls with non-neutral situation die.
+       EXPECTED: Same behavior — player die respected.
+       ACTUAL: _______________
+
+[ ] 4f. Test Dodge and Power Martial Arts defensive rolls.
+       EXPECTED: Same behavior — player die respected.
+       ACTUAL: _______________
+
+[ ] 4g. Test all 6 Feat checks (STR/DEX/CON/INT/WIL/PER).
+       EXPECTED: Same behavior — player die respected.
+       ACTUAL: _______________
+
+[ ] 4h. Test Psionics tab rolls with non-neutral situation die.
+       EXPECTED: Same behavior — player die respected.
+       ACTUAL: _______________
+
+[ ] 4i. Test Initiative roll (sidebar).
+       EXPECTED: Initiative SHOULD reset the die (uses meta_roll). This is
+       intentional — initiative is a special case.
+       ACTUAL: _______________
+
+================================================================================
+BUG #5: SKILL POINTS ON ADD/BROWSE PAGE
+================================================================================
+
+[ ] 5a. Open Add/Browse from Character tab.
+       EXPECTED: "Pts: X/Y" displayed in the browser header area.
+       ACTUAL: _______________
+
+[ ] 5b. Add a skill from the browser.
+       EXPECTED: Points update immediately after adding.
+       ACTUAL: _______________
+
+[ ] 5c. Remove a skill (X button) from the browser.
+       EXPECTED: Points update immediately after removing.
+       ACTUAL: _______________
+
+[ ] 5d. Go over budget (add skills until spent > budget).
+       EXPECTED: Points text turns red/failure color.
+       ACTUAL: _______________
+
+[ ] 5e. Verify points match the character tab display after closing browser.
+       EXPECTED: Same numbers on both screens.
+       ACTUAL: _______________
+
+================================================================================
+BUG #6: PERKS/FLAWS SCROLLING
+================================================================================
+
+[ ] 6a. Go to Perks/Flaws tab, Perks view. Mouse wheel down.
+       EXPECTED: Available perks list scrolls. Items shift up.
+       ACTUAL: _______________
+
+[ ] 6b. Scroll to the bottom of the perks list.
+       EXPECTED: Last perk visible. No overflow. No crash.
+       ACTUAL: _______________
+
+[ ] 6c. While scrolled down, click an available perk to add it.
+       EXPECTED: Correct perk added (not an off-by-one error).
+       ACTUAL: _______________
+
+[ ] 6d. Switch to Flaws view.
+       EXPECTED: Scroll resets to top (position 0).
+       ACTUAL: _______________
+
+[ ] 6e. Scroll flaws list. Add a flaw while scrolled.
+       EXPECTED: Correct flaw added.
+       ACTUAL: _______________
+
+[ ] 6f. Switch back to Perks view.
+       EXPECTED: Scroll resets to top again.
+       ACTUAL: _______________
+
+================================================================================
+BUG #7: CHARGEN SECONDARY PROFESSION REQUIREMENTS
+================================================================================
+
+[ ] 7a. Open New Character. Select Diplomat profession.
+       Select Combat Spec as secondary. Generate.
+       EXPECTED: Character has STR >= 9 AND CON >= 9 (Combat Spec reqs).
+       Also INT >= 9 AND WIL >= 9 (Diplomat reqs).
+       ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 7b. Generate 10 Diplomat/Combat Spec characters.
+       EXPECTED: ALL have STR >= 9 and CON >= 9.
+       ACTUAL: _______________
+
+[ ] 7c. Generate Diplomat/Mindwalker.
+       EXPECTED: WIL >= 11 (Mindwalker primary) and PER >= 9.
+       ACTUAL: WIL=___ PER=___
+
+[ ] 7d. Generate Diplomat/Tech Op.
+       EXPECTED: INT >= 11 (Tech Op primary) and DEX >= 9.
+       ACTUAL: INT=___ DEX=___
+
+[ ] 7e. Generate non-Diplomat profession (Combat Spec, Free Agent, etc.).
+       EXPECTED: Unaffected — works same as before.
+       ACTUAL: _______________
+
+[ ] 7f. Generate Diplomat with RANDOM secondary (don't pick one).
+       EXPECTED: Whatever secondary is chosen, its requirements are met.
+       ACTUAL: _______________
+
+================================================================================
+BUG #8: BLACK SCREEN CUSTOM PROGRAM
+================================================================================
+
+[ ] 8a. Go to Grid tab (Tab 8). Switch to Builder sub-tab.
+       Click "Build Custom Program."
+       EXPECTED: get_string dialog appears. No black screen.
+       ACTUAL: _______________
+
+[ ] 8b. Enter a valid name, type, slots, description.
+       EXPECTED: Custom program appears in installed list.
+       ACTUAL: _______________
+
+[ ] 8c. Cancel the get_string dialog (press Cancel or Escape).
+       EXPECTED: Nothing happens. No crash. No black screen.
+       ACTUAL: _______________
+
+[ ] 8d. Try to add a duplicate name program.
+       EXPECTED: Rejected. Not added twice.
+       ACTUAL: _______________
+
+================================================================================
+REGRESSION CHECKS — Make sure nothing else broke
+================================================================================
+
+[ ] R1. Load an existing character. All tabs render correctly.
+[ ] R2. Save character. Reload. Data intact.
+[ ] R3. GM Mode: Party/NPCs/Encounter/Campaign/Resources all render.
+[ ] R4. GM Mode: Quick NPC generation works.
+[ ] R5. Sidebar: Awareness/Mental Resolve/Physical Resolve quick rolls work.
+[ ] R6. Sidebar: Dice roller works. Situation die < > buttons work.
+[ ] R7. Equipment tab: Add/remove weapons, armor, gear.
+[ ] R8. Roll Log tab: Entries appear. Scroll works. Copy to clipboard works.
+[ ] R9. Info tab: Character info displays and scrolls.
+[ ] R10. Aura/Lore tab: Temperament pills, motivation pills, edit buttons.
+[ ] R11. Cybertech tab: Add/remove/toggle implants.
+[ ] R12. Export/Import character: Round-trip preserves all data.
+[ ] R13. Welcome screen: Recent characters list, load character.
+[ ] R14. Portrait system: Correct portrait loads for species/profession.
+
+================================================================================
+SIGN-OFF
+================================================================================
+
+All tests passed: [ ] YES  [ ] NO (list failures below)
+
+Failures:
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+Tested by: _______________  Date: _______________
+================================================================================

@@ -1,0 +1,125 @@
+{
+  "_description":"Playable species - ability modifiers [STR,DEX,CON,INT,WIL,PER], starting broad skills, traits",
+  "species":[
+    {
+      "mods":[
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "starting_broads":[
+        "Athletics",
+        "Vehicle Operation",
+        "Stamina",
+        "Knowledge",
+        "Awareness",
+        "Interaction"
+      ],
+      "name":"Human",
+      "traits":"Versatile, +5 bonus skill points, +1 max broad skill"
+    },
+    {
+      "mods":[
+        -2.0,
+        0.0,
+        -2.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "starting_broads":[
+        "Athletics",
+        "Vehicle Operation",
+        "Stamina",
+        "Knowledge",
+        "Telepathy",
+        "Resolve"
+      ],
+      "name":"Fraal",
+      "traits":"Psionic affinity, Telepathy replaces Awareness, Resolve replaces Interaction"
+    },
+    {
+      "mods":[
+        2.0,
+        -1.0,
+        1.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "starting_broads":[
+        "Unarmed Attack",
+        "Vehicle Operation",
+        "Stamina",
+        "Knowledge",
+        "Awareness",
+        "Interaction"
+      ],
+      "name":"Weren",
+      "traits":"Large build, natural claws, Unarmed Attack replaces Athletics"
+    },
+    {
+      "mods":[
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "starting_broads":[
+        "Melee Weapons",
+        "Acrobatics",
+        "Stamina",
+        "Knowledge",
+        "Awareness",
+        "Interaction"
+      ],
+      "name":"Sesheyan",
+      "traits":"Flight, darkvision, Melee Weapons\/Acrobatics replace Athletics\/Vehicle Op"
+    },
+    {
+      "mods":[
+        -1.0,
+        1.0,
+        0.0,
+        1.0,
+        -1.0,
+        0.0
+      ],
+      "starting_broads":[
+        "Athletics",
+        "Manipulation",
+        "Stamina",
+        "Knowledge",
+        "Awareness",
+        "Interaction"
+      ],
+      "name":"T'sa",
+      "traits":"Quick reflexes, natural curiosity, Manipulation replaces Vehicle Op"
+    },
+    {
+      "mods":[
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -1.0
+      ],
+      "starting_broads":[
+        "Athletics",
+        "Vehicle Operation",
+        "Stamina",
+        "Knowledge",
+        "Awareness",
+        "Interaction"
+      ],
+      "name":"Mechalus",
+      "traits":"Cybernetic biology, gridcaster (computer link)"
+    }
+  ]
+}

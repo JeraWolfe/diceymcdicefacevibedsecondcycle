@@ -1,0 +1,722 @@
+{
+  "_description": "Equipment database from Alternity PHB. Weapons (Tables P38/P39/P40), Armor (P41), Gear (P33).",
+  "weapons": [
+    {
+      "name": "Club",
+      "skill_keyword": "bludgeon",
+      "dmg_ordinary": "d4+1s",
+      "dmg_good": "d4w",
+      "dmg_amazing": "d4+1w",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 0
+    },
+    {
+      "name": "Dagger",
+      "skill_keyword": "blade",
+      "dmg_ordinary": "d4w",
+      "dmg_good": "d4+1w",
+      "dmg_amazing": "d4+2w",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 0
+    },
+    {
+      "name": "Spear",
+      "skill_keyword": "blade",
+      "dmg_ordinary": "d4w",
+      "dmg_good": "d4+2w",
+      "dmg_amazing": "d4m",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 0
+    },
+    {
+      "name": "Mace",
+      "skill_keyword": "bludgeon",
+      "dmg_ordinary": "d6+1s",
+      "dmg_good": "d4+1w",
+      "dmg_amazing": "d6+3w",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 1
+    },
+    {
+      "name": "Short sword",
+      "skill_keyword": "blade",
+      "dmg_ordinary": "d4+2w",
+      "dmg_good": "d6+2w",
+      "dmg_amazing": "d4m",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 1
+    },
+    {
+      "name": "Broad sword",
+      "skill_keyword": "blade",
+      "dmg_ordinary": "d6+2s",
+      "dmg_good": "d4+2w",
+      "dmg_amazing": "d6+2w",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 2
+    },
+    {
+      "name": "Katana",
+      "skill_keyword": "blade",
+      "dmg_ordinary": "d4w",
+      "dmg_good": "d4+1w",
+      "dmg_amazing": "d4+2w",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 3
+    },
+    {
+      "name": "Rapier",
+      "skill_keyword": "blade",
+      "dmg_ordinary": "d4w",
+      "dmg_good": "d4+2w",
+      "dmg_amazing": "d4m",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 3
+    },
+    {
+      "name": "Combat knife",
+      "skill_keyword": "blade",
+      "dmg_ordinary": "d8+1w",
+      "dmg_good": "d8+2w",
+      "dmg_amazing": "d4+1m",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 4
+    },
+    {
+      "name": "Stun baton",
+      "skill_keyword": "powered weapon",
+      "dmg_ordinary": "d8s",
+      "dmg_good": "d4+2w",
+      "dmg_amazing": "d6+2w",
+      "range": "Personal",
+      "damage_type": "EN",
+      "category": "melee",
+      "pl": 4
+    },
+    {
+      "name": "Chainsword",
+      "skill_keyword": "powered weapon",
+      "dmg_ordinary": "d8+2s",
+      "dmg_good": "d6+2w",
+      "dmg_amazing": "d8+2w",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 6
+    },
+    {
+      "name": "Gravmace",
+      "skill_keyword": "powered weapon",
+      "dmg_ordinary": "d8+1w",
+      "dmg_good": "3d8w",
+      "dmg_amazing": "d4+3m",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 7
+    },
+    {
+      "name": "Power cestus",
+      "skill_keyword": "powered weapon",
+      "dmg_ordinary": "d8+2w",
+      "dmg_good": "3d4+1w",
+      "dmg_amazing": "d8m",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 7
+    },
+    {
+      "name": "Star sword",
+      "skill_keyword": "powered weapon",
+      "dmg_ordinary": "d8+2w",
+      "dmg_good": "3d4+1w",
+      "dmg_amazing": "d8+1m",
+      "range": "Personal",
+      "damage_type": "EN",
+      "category": "melee",
+      "pl": 8
+    },
+    {
+      "name": "Bow, short",
+      "skill_keyword": "bow",
+      "dmg_ordinary": "d4w",
+      "dmg_good": "d4+2w",
+      "dmg_amazing": "d4+3w",
+      "range": "20/40/100",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 0
+    },
+    {
+      "name": "Bow, long",
+      "skill_keyword": "bow",
+      "dmg_ordinary": "d4+1w",
+      "dmg_good": "d6+1w",
+      "dmg_amazing": "d4m",
+      "range": "40/80/200",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 2
+    },
+    {
+      "name": "Crossbow",
+      "skill_keyword": "crossbow",
+      "dmg_ordinary": "d4+2w",
+      "dmg_good": "d6+2w",
+      "dmg_amazing": "d4+1m",
+      "range": "50/100/250",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 2
+    },
+    {
+      "name": "Pistol, .45 rev.",
+      "skill_keyword": "pistol",
+      "dmg_ordinary": "d4+1w",
+      "dmg_good": "d4+2w",
+      "dmg_amazing": "d4m",
+      "range": "4/10/40",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 4
+    },
+    {
+      "name": "Rifle, .30 bolt",
+      "skill_keyword": "rifle",
+      "dmg_ordinary": "d4+2w",
+      "dmg_good": "d6+2w",
+      "dmg_amazing": "d6m",
+      "range": "50/100/300",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 4
+    },
+    {
+      "name": "Shotgun, 12 gauge",
+      "skill_keyword": "rifle",
+      "dmg_ordinary": "d8w",
+      "dmg_good": "d8+1w",
+      "dmg_amazing": "d6m",
+      "range": "5/12/30",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 4
+    },
+    {
+      "name": "SMG, .45 cal.",
+      "skill_keyword": "smg",
+      "dmg_ordinary": "d4w",
+      "dmg_good": "d8w",
+      "dmg_amazing": "d4m",
+      "range": "8/16/40",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 4
+    },
+    {
+      "name": "Pistol, 9mm",
+      "skill_keyword": "pistol",
+      "dmg_ordinary": "d4+1w",
+      "dmg_good": "d6+1w",
+      "dmg_amazing": "d4m",
+      "range": "6/12/50",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 5
+    },
+    {
+      "name": "Rifle, assault",
+      "skill_keyword": "rifle",
+      "dmg_ordinary": "d4+1w",
+      "dmg_good": "d4+2w",
+      "dmg_amazing": "d4m",
+      "range": "60/120/300",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 5
+    },
+    {
+      "name": "SMG, 9mm",
+      "skill_keyword": "smg",
+      "dmg_ordinary": "d4+1w",
+      "dmg_good": "d6+1w",
+      "dmg_amazing": "d4m",
+      "range": "10/20/80",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 5
+    },
+    {
+      "name": "9mm charge pistol",
+      "skill_keyword": "pistol",
+      "dmg_ordinary": "d4+1w",
+      "dmg_good": "d6+1w",
+      "dmg_amazing": "d4m",
+      "range": "8/16/60",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 6
+    },
+    {
+      "name": "11mm charge pistol",
+      "skill_keyword": "pistol",
+      "dmg_ordinary": "d4+2w",
+      "dmg_good": "d6+2w",
+      "dmg_amazing": "d4+1m",
+      "range": "10/20/80",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 6
+    },
+    {
+      "name": "11mm charge rifle",
+      "skill_keyword": "rifle",
+      "dmg_ordinary": "d6+1w",
+      "dmg_good": "d6+3w",
+      "dmg_amazing": "d6+1m",
+      "range": "80/160/400",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 6
+    },
+    {
+      "name": "9mm charge SMG",
+      "skill_keyword": "smg",
+      "dmg_ordinary": "d4+1w",
+      "dmg_good": "d8+1w",
+      "dmg_amazing": "d4m",
+      "range": "20/40/100",
+      "damage_type": "HI",
+      "category": "ranged",
+      "pl": 6
+    },
+    {
+      "name": "Laser pistol",
+      "skill_keyword": "pistol",
+      "dmg_ordinary": "d4+1w",
+      "dmg_good": "d6+1w",
+      "dmg_amazing": "d4m",
+      "range": "20/40/200",
+      "damage_type": "EN",
+      "category": "ranged",
+      "pl": 7
+    },
+    {
+      "name": "Mass pistol",
+      "skill_keyword": "pistol",
+      "dmg_ordinary": "d8w",
+      "dmg_good": "d6+2w",
+      "dmg_amazing": "d8m",
+      "range": "2/6/12",
+      "damage_type": "EN",
+      "category": "ranged",
+      "pl": 7
+    },
+    {
+      "name": "Stutter pistol",
+      "skill_keyword": "pistol",
+      "dmg_ordinary": "d6+2s",
+      "dmg_good": "d8+2s",
+      "dmg_amazing": "d8+4s",
+      "range": "6/12/30",
+      "damage_type": "LI",
+      "category": "ranged",
+      "pl": 7
+    },
+    {
+      "name": "Laser rifle",
+      "skill_keyword": "rifle",
+      "dmg_ordinary": "d6+1w",
+      "dmg_good": "d6+3w",
+      "dmg_amazing": "d4+1m",
+      "range": "100/400/1000",
+      "damage_type": "EN",
+      "category": "ranged",
+      "pl": 7
+    },
+    {
+      "name": "Render rifle",
+      "skill_keyword": "rifle",
+      "dmg_ordinary": "d4+3w",
+      "dmg_good": "d6+4w",
+      "dmg_amazing": "d6+1m",
+      "range": "50/100/250",
+      "damage_type": "EN",
+      "category": "ranged",
+      "pl": 7
+    },
+    {
+      "name": "Quantum rifle",
+      "skill_keyword": "rifle",
+      "dmg_ordinary": "d6+2w",
+      "dmg_good": "2d4+2w",
+      "dmg_amazing": "d4+2m",
+      "range": "80/200/500",
+      "damage_type": "EN",
+      "category": "ranged",
+      "pl": 7
+    },
+    {
+      "name": "Pistol, maser",
+      "skill_keyword": "pistol",
+      "dmg_ordinary": "d6+1w",
+      "dmg_good": "d6+3w",
+      "dmg_amazing": "d4+1m",
+      "range": "10/20/60",
+      "damage_type": "EN",
+      "category": "ranged",
+      "pl": 8
+    },
+    {
+      "name": "Rifle, maser",
+      "skill_keyword": "rifle",
+      "dmg_ordinary": "d6+2w",
+      "dmg_good": "2d4+2w",
+      "dmg_amazing": "d4+2m",
+      "range": "60/120/400",
+      "damage_type": "EN",
+      "category": "ranged",
+      "pl": 8
+    },
+    {
+      "name": "Grenade, frag.",
+      "skill_keyword": "throw",
+      "dmg_ordinary": "d4w",
+      "dmg_good": "d4+2w",
+      "dmg_amazing": "d6+2w",
+      "range": "Per STR",
+      "damage_type": "HI",
+      "category": "heavy",
+      "pl": 4
+    },
+    {
+      "name": "Machine gun, .30",
+      "skill_keyword": "direct fire",
+      "dmg_ordinary": "d8w",
+      "dmg_good": "d6+3w",
+      "dmg_amazing": "d8m",
+      "range": "60/200/600",
+      "damage_type": "HI",
+      "category": "heavy",
+      "pl": 4
+    },
+    {
+      "name": "Rocket launcher",
+      "skill_keyword": "indirect fire",
+      "dmg_ordinary": "d6w",
+      "dmg_good": "d4+3w",
+      "dmg_amazing": "d4m",
+      "range": "30/60/150",
+      "damage_type": "EN",
+      "category": "heavy",
+      "pl": 4
+    },
+    {
+      "name": "Grenade, plasma",
+      "skill_keyword": "throw",
+      "dmg_ordinary": "d4+2w",
+      "dmg_good": "d6+2w",
+      "dmg_amazing": "d4m",
+      "range": "Per STR",
+      "damage_type": "EN",
+      "category": "heavy",
+      "pl": 6
+    },
+    {
+      "name": "Rail gun",
+      "skill_keyword": "direct fire",
+      "dmg_ordinary": "d4+2w",
+      "dmg_good": "d6+3w",
+      "dmg_amazing": "d4+1m",
+      "range": "150/500/1500",
+      "damage_type": "HI",
+      "category": "heavy",
+      "pl": 6
+    },
+    {
+      "name": "Plasma gun",
+      "skill_keyword": "direct fire",
+      "dmg_ordinary": "d4+2w",
+      "dmg_good": "d6+2w",
+      "dmg_amazing": "d4+2m",
+      "range": "40/80/200",
+      "damage_type": "EN",
+      "category": "heavy",
+      "pl": 7
+    },
+    {
+      "name": "Unarmed",
+      "skill_keyword": "brawl",
+      "dmg_ordinary": "d4s",
+      "dmg_good": "d4+1s",
+      "dmg_amazing": "d4+2s",
+      "range": "Personal",
+      "damage_type": "LI",
+      "category": "melee",
+      "pl": 0
+    }
+  ],
+  "armor": [
+    {
+      "name": "None",
+      "li": "0",
+      "hi": "0",
+      "en": "0",
+      "type": "none",
+      "pl": 0
+    },
+    {
+      "name": "Leather armor",
+      "li": "d6-2",
+      "hi": "d6-4",
+      "en": "d6-4",
+      "type": "combat",
+      "pl": 1
+    },
+    {
+      "name": "Chain mail",
+      "li": "d6-1",
+      "hi": "d6-4",
+      "en": "d6-4",
+      "type": "combat",
+      "pl": 2
+    },
+    {
+      "name": "Flak jacket",
+      "li": "d6-2",
+      "hi": "d4-1",
+      "en": "d6-3",
+      "type": "combat",
+      "pl": 4
+    },
+    {
+      "name": "Battle vest",
+      "li": "d6-3",
+      "hi": "d6-2",
+      "en": "d4-2",
+      "type": "combat",
+      "pl": 5
+    },
+    {
+      "name": "Assault gear",
+      "li": "d6-1",
+      "hi": "d6-1",
+      "en": "d6-1",
+      "type": "combat",
+      "pl": 5
+    },
+    {
+      "name": "CF short coat",
+      "li": "d4-1",
+      "hi": "d4-1",
+      "en": "d6-3",
+      "type": "combat",
+      "pl": 6
+    },
+    {
+      "name": "CF long coat",
+      "li": "d4",
+      "hi": "d4",
+      "en": "d6-2",
+      "type": "combat",
+      "pl": 6
+    },
+    {
+      "name": "Battle jacket",
+      "li": "d6-1",
+      "hi": "d4+1",
+      "en": "d4-1",
+      "type": "combat",
+      "pl": 6
+    },
+    {
+      "name": "Attack armor",
+      "li": "d4+1",
+      "hi": "d6+1",
+      "en": "d8-1",
+      "type": "combat",
+      "pl": 6
+    },
+    {
+      "name": "Attack armor, powered",
+      "li": "d6+1",
+      "hi": "d6+2",
+      "en": "d6",
+      "type": "powered",
+      "pl": 6
+    },
+    {
+      "name": "Cerametal armor",
+      "li": "d8+1",
+      "hi": "d8+1",
+      "en": "d6",
+      "type": "combat",
+      "pl": 7
+    },
+    {
+      "name": "CF softsuit",
+      "li": "d6",
+      "hi": "d6",
+      "en": "d6-1",
+      "type": "combat",
+      "pl": 7
+    },
+    {
+      "name": "Body tank",
+      "li": "2d4+1",
+      "hi": "2d4+1",
+      "en": "2d4",
+      "type": "powered",
+      "pl": 7
+    },
+    {
+      "name": "Energy web",
+      "li": "d8-1",
+      "hi": "d8-1",
+      "en": "d6+2",
+      "type": "combat",
+      "pl": 8
+    }
+  ],
+  "gear": [
+    {
+      "name": "Comm gear",
+      "category": "electronics",
+      "pl": 7
+    },
+    {
+      "name": "Flashlight",
+      "category": "survival",
+      "pl": 4
+    },
+    {
+      "name": "Field rations (1 week)",
+      "category": "survival",
+      "pl": 4
+    },
+    {
+      "name": "Trauma pack I",
+      "category": "medical",
+      "pl": 6
+    },
+    {
+      "name": "Trauma pack II",
+      "category": "medical",
+      "pl": 7
+    },
+    {
+      "name": "First aid kit",
+      "category": "medical",
+      "pl": 4
+    },
+    {
+      "name": "Surgical kit",
+      "category": "medical",
+      "pl": 6
+    },
+    {
+      "name": "Survival gear",
+      "category": "survival",
+      "pl": 4
+    },
+    {
+      "name": "Toolkit",
+      "category": "professional",
+      "pl": 4
+    },
+    {
+      "name": "Binoculars",
+      "category": "sensors",
+      "pl": 4
+    },
+    {
+      "name": "Sensor gauntlet",
+      "category": "sensors",
+      "pl": 7
+    },
+    {
+      "name": "Holorecorder",
+      "category": "sensors",
+      "pl": 7
+    },
+    {
+      "name": "Climbing gear",
+      "category": "survival",
+      "pl": 4
+    },
+    {
+      "name": "Rope, 50m",
+      "category": "survival",
+      "pl": 1
+    },
+    {
+      "name": "E-suit, soft",
+      "category": "survival",
+      "pl": 5
+    },
+    {
+      "name": "E-suit, hard",
+      "category": "survival",
+      "pl": 6
+    },
+    {
+      "name": "Data slate",
+      "category": "electronics",
+      "pl": 6
+    },
+    {
+      "name": "Lockpick set",
+      "category": "professional",
+      "pl": 4
+    },
+    {
+      "name": "Demolitions pack",
+      "category": "professional",
+      "pl": 5
+    },
+    {
+      "name": "Emergency beacon",
+      "category": "survival",
+      "pl": 5
+    },
+    {
+      "name": "Magnetic boots",
+      "category": "survival",
+      "pl": 6
+    },
+    {
+      "name": "Respirator mask",
+      "category": "survival",
+      "pl": 4
+    },
+    {
+      "name": "Handcuffs",
+      "category": "professional",
+      "pl": 4
+    },
+    {
+      "name": "Duct tape",
+      "category": "survival",
+      "pl": 5
+    }
+  ]
+}

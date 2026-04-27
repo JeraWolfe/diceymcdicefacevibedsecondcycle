@@ -1,0 +1,144 @@
+================================================================================
+  DiceyMcDiceFaces — Charma for Alternity
+  Character Manager for the Alternity Science Fiction RPG (TSR, 1998)
+================================================================================
+
+VERSION: 0.21.0 (The Great Refactor)
+ENGINE:  GameMaker 2024.14.4.222
+
+================================================================================
+FILE STRUCTURE
+================================================================================
+
+  Project Root/
+  ├── objects/obj_game/
+  │   ├── Create_0.gml        Init: load data, set up UI state
+  │   ├── Step_0.gml          Input: all mouse-driven, uses scr_ui_helpers
+  │   └── Draw_64.gml         Render: 7 tabs, popups, gradient background
+  │
+  ├── scripts/
+  │   ├── scr_ui_helpers/      UI HELPER FUNCTIONS (new in v0.21)
+  │   ├── scr_data_loader/     JSON loading, defaults, changelog, recent chars
+  │   ├── scr_alternity_statblock/  Core stat block, export/import, portraits
+  │   ├── scr_skill_costs/     Skill cost system, rank manipulation
+  │   ├── scr_chargen/         Character generation, species, career access
+  │   ├── scr_career_defaults/ Default career data (27 careers)
+  │   └── scr_dice/            Alternity dice system
+  │
+  └── rooms/Room1/             1920x1080 room with obj_game
+
+================================================================================
+FUNCTION HIERARCHY
+================================================================================
+
+── INITIALIZATION ──
+  init_all_data()                    Master init, loads all JSON files
+    ├── load_or_create(path, fn)     Load JSON or generate from default
+    ├── get_default_config()         UI colors, dice, layout
+    ├── get_default_professions()    5 professions with mechanics
+    ├── get_default_skills_json()    Skill tree (33 broads)
+    ├── get_default_species_json()   6 species with mods
+    ├── get_default_names_json()     32 first + 30 last names
+    ├── get_default_careers_json()   27 careers across 5 professions
+    ├── get_default_perks_flaws()    18 perks + 22 flaws
+    └── sync_changelog()             Merge new version entries into changelog.json
+
+── CHARACTER MANAGEMENT ──
+  create_statblock(name, prof, career)   Create empty character struct
+  create_sample_soldier()                Hardcoded Sgt Voss template
+  generate_random_character(...)         Full random generation (60-point system)
+    ├── apply_career_to_statblock()      Apply career skills + equipment
+    └── get_species_starting_broads()    Free broad skills per species
+  update_hero(stat)                      MASTER SETTER: recalculates everything
+    ├── calculate_action_check()         (DEX+INT)/2 + profession bonus
+    ├── calculate_durability()           CON + profession modifier
+    ├── recalc_skill_scores()            All skill O/G/A from ability + rank
+    └── load_portrait_for_hero()         Auto-load portrait by naming convention
+  save_hero_and_track(stat)              Save to characters/ + add to recents
+  statblock_export(stat)                 Export to JSON via file dialog
+  statblock_import()                     Import from JSON via file dialog
+    └── statblock_import_data(data)      Parse JSON data into stat block
+
+── UI HELPERS (scr_ui_helpers) ──
+  btn_clicked(key)                       Check if named button was clicked
+  log_roll(name, result)                 Unified roll logging (display + file + array)
+  log_info(text)                         Log info message (no dice)
+  make_damage_result(parsed)             Convert damage parse to roll result struct
+  apply_cant_fail(roll)                  Failure → Marginal if enabled
+  track_hit(weapon, degree)              Track last hit for damage follow-up
+  do_attack_roll(stat, wep, penalty)     Full weapon attack roll
+  do_damage_roll(wep, tier)              Roll weapon damage (0=ord, 1=good, 2=amz)
+  do_hit_damage_roll()                   Roll damage for last successful hit
+  do_feat_roll(stat, key, name, pen)     Untrained ability check
+  do_skill_roll(stat, broad, spec, pen)  Roll a specific skill
+  do_awareness_roll(stat, pen)           Quick Awareness roll
+  do_resolve_roll(stat, type, pen)       Quick Resolve roll (Mental/Physical)
+  do_initiative_roll(stat)               Action check for initiative
+  get_wound_pen_if_enabled()             Wound penalty if toggle is on
+
+── SKILL COSTS (PHB two-tier) ──
+  is_profession_skill(prof, broad)       Check if skill has profession code
+  is_profession_skill_hero(stat, broad)  Check both primary + secondary profession
+  get_broad_cost_for_hero(stat, broad)   3 (profession) or 4 (other)
+  get_spec_base_for_hero(stat, broad)    1 (profession) or 2 (other)
+  get_spec_total_cost(base, rank)        Escalating: rank*base + rank*(rank-1)/2
+  get_single_skill_cost_hero(stat, sk)   Total cost for one skill entry
+  get_total_skill_cost_hero(stat)        Sum of all skill costs
+  get_adjusted_skill_points(stat)        Base - perks + flaws
+  increase_skill_rank(stat, idx)         +1 rank (specialties only)
+  decrease_skill_rank(stat, idx)         -1 rank or remove
+  add_broad_skill_to_hero(stat, name)    Add broad at rank 1
+
+── PERKS & FLAWS ──
+  hero_has_perk(stat, name) → level
+  hero_has_flaw(stat, name) → bool
+  add_perk_to_hero(stat, name)           Add or upgrade perk
+  remove_perk_from_hero(stat, name)
+  toggle_flaw_on_hero(stat, name)
+  get_perks_cost(stat) → total pts
+  get_flaws_benefit(stat) → total pts
+
+── COMBAT ──
+  alternity_check(ord, good, amz, sit)   Core d20 + situation die roll
+  alternity_action_check(...)            Initiative (failures → marginal)
+  parse_and_roll_damage(dmg_string)      Parse "d6+1w" and roll it
+  get_weapon_skill_match(weapon_name)    Name-based weapon → skill matching
+  find_best_skill_for_weapon(stat, wep)  Best skill: specialty > broad > untrained
+  get_wound_penalty(stat)                +steps from wound/mortal damage
+  get_skill_use_penalty(stat, idx)       0=trained, 1=broad, 2=untrained
+
+── DATA I/O ──
+  read_json(path) / write_json(path, data)
+  parse_hex_color(hex) / color_to_hex(color)
+  append_roll_log_file(stat, roll)       Append to persistent .log file
+  load_roll_log_tail(stat, count)        Load last N lines from log
+  add_recent_character(name, path)       Track in recent_characters.json
+  save_voss_template()                   Always regenerate voss.json on launch
+
+================================================================================
+RESOURCE FILES (auto-generated in game save directory)
+================================================================================
+
+  config.json              UI colors (gradient), dice steps, layout
+  professions.json         5 professions: requirements, bonuses, skill lists
+  skills.json              33 broad skills + specialties by ability
+  species.json             6 species: ability mods, starting broads, traits
+  careers.json             27 careers: skills, weapons, armor, gear
+  names.json               Random name lists (32 first, 30 last)
+  perks_flaws.json         18 perks + 22 flaws with costs and descriptions
+  changelog.json           Rolling dev log, synced from code each launch
+  recent_characters.json   Last 10 loaded characters + last_character path
+
+  characters/              Character save directory
+    voss.json              Sgt Voss default template (regenerated each launch)
+    {name}.json            Player character saves
+    {name}_rolllog.log     Persistent roll history per character
+
+  portraits/               Portrait images
+    {species}_{profession}.png     Default portraits by combo
+    {species}_diplomat_{secondary}.png  Diplomat dual-class portraits
+
+================================================================================
+ONLY HARDCODED DATA: Sergeant Voss (create_sample_soldier)
+Everything else loads from JSON files at startup.
+================================================================================

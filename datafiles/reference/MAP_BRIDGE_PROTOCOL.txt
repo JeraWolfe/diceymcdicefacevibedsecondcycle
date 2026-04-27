@@ -1,0 +1,194 @@
+================================================================================
+MAP_BRIDGE_PROTOCOL.txt
+DiceyMcDiceFaces — Charma for Alternity
+Map bridge wire protocol (v0.57.0)
+================================================================================
+
+PURPOSE
+--------------------------------------------------------------------------------
+The "map bridge" is a parallel application (not yet built) that handles token
+and map management for Alternity sessions. It runs alongside DiceyMcDiceFaces
+and connects to the same TCP relay server using the same room code. The dice
+manager broadcasts rolls and character data; the map bridge receives them and
+associates them with on-map tokens, and in return broadcasts token state
+updates back to the dice manager.
+
+The dice manager itself does not render tokens or maps. It only:
+  - Sends CHAR_TOKEN_LINK messages when a character gets linked to a token
+  - Sends ROLL_AT_TOKEN messages that pair a roll result with a token ID
+  - Ignores (no-op) incoming MAP_* messages — the relay forwards them anyway
+
+This document describes the protocol for anyone building a map app from scratch.
+
+CONNECTION
+--------------------------------------------------------------------------------
+Protocol:     TCP (plain, newline-delimited JSON)
+Host:         Same relay server as the dice manager
+              (see NET_DEFAULT_RELAY_HOST in scripts/scr_network/scr_network.gml)
+Port:         Same relay port (default 8080)
+Room code:    Same 6-character alphanumeric code as dice manager players
+
+The map app opens a standard TCP socket to the relay and sends a JOIN_REQ with
+the session code it wants to attach to. The relay treats the map app as just
+another participant in the room.
+
+WIRE ENVELOPE
+--------------------------------------------------------------------------------
+Every message is a single JSON object on one line (ends with "\n").
+Envelope shape:
+
+  {
+    "v":       1,              // protocol version
+    "type":    "MESSAGE_TYPE", // see message types below
+    "session": "ABC123",       // 6-char room code
+    "sender":  "Kettle",       // display name
+    "ts":      1234567890,     // sender's current_time in ms
+    "payload": { ... }         // type-specific data
+  }
+
+The relay does not inspect the payload. It routes messages by session code.
+
+MESSAGE TYPES
+--------------------------------------------------------------------------------
+Session control (handled by relay + dice manager):
+  CREATE          — request new room, relay returns CREATED
+  CREATED         — response containing the generated code
+  JOIN_REQ        — request to join an existing room
+  JOIN_OK         — join accepted, contains player list
+  JOIN_FAIL       — join rejected (bad code, full room, etc.)
+  PLAYER_LIST     — broadcast when a player joins/leaves
+  HEARTBEAT       — keep-alive (no payload)
+
+Gameplay (dice manager <-> map bridge):
+  ROLL_RESULT     — a roll was made (dice manager origin)
+  CHARACTER_SYNC  — a full statblock export (host origin)
+  CHAR_REQUEST    — peer requests a named character
+  CHAT            — party chat line
+  GM_STATUS       — host-only announcement
+
+Map bridge:
+  MAP_TOKEN_MOVE    — a token moved on the map
+  MAP_TOKEN_ADD     — a new token was placed
+  MAP_TOKEN_REMOVE  — a token was removed
+  MAP_STATE_REQUEST — request current map state snapshot
+  MAP_STATE_FULL    — response with the full map snapshot
+  CHAR_TOKEN_LINK   — associate a character name with a token id
+  ROLL_AT_TOKEN     — a roll that targets/originates from a token
+
+PAYLOAD SCHEMAS
+--------------------------------------------------------------------------------
+
+MAP_TOKEN_MOVE
+  {
+    "token_id": "T42",
+    "x":        120.0,
+    "y":        240.0,
+    "grid_x":   5,
+    "grid_y":   10
+  }
+
+MAP_TOKEN_ADD
+  {
+    "token_id": "T43",
+    "name":     "Goblin Scout",
+    "sprite":   "goblin_01.png",
+    "x":        60.0,
+    "y":        60.0,
+    "size":     1,
+    "team":     "enemy"
+  }
+
+MAP_TOKEN_REMOVE
+  {
+    "token_id": "T43"
+  }
+
+MAP_STATE_REQUEST
+  {}            // empty — map app responds with MAP_STATE_FULL
+
+MAP_STATE_FULL
+  {
+    "tokens": [
+      { "token_id": "T1", "name": "Voss", "x": 10, "y": 10, "team": "party" },
+      { "token_id": "T2", "name": "Goblin", "x": 40, "y": 10, "team": "enemy" }
+    ],
+    "map_name": "ruined_hangar",
+    "grid_size": 32
+  }
+
+CHAR_TOKEN_LINK
+  {
+    "char_name": "Sergeant Voss",
+    "token_id":  "T1"
+  }
+
+ROLL_AT_TOKEN
+  {
+    "char_name":  "Sergeant Voss",
+    "token_id":   "T1",
+    "skill_name": "Rifle",
+    "total":      12,
+    "degree":     2,
+    "degree_name":"AMAZING"
+  }
+
+SAMPLE MESSAGE JSON
+--------------------------------------------------------------------------------
+A full ROLL_AT_TOKEN message on the wire looks like:
+
+{"v":1,"type":"ROLL_AT_TOKEN","session":"KALIMA","sender":"Calvin","ts":1234567890,"payload":{"char_name":"Sergeant Voss","token_id":"T1","skill_name":"Rifle","total":12,"degree":2,"degree_name":"AMAZING"}}
+
+(followed by a single newline)
+
+CONNECTION FLOW
+--------------------------------------------------------------------------------
+1. Dice manager host clicks "Host Session", gets code "KALIMA".
+2. Dice manager host reads out the code.
+3. Dice manager players open "Join Session", paste KALIMA, enter names, join.
+4. Map bridge app opens, also connects to the same relay, sends
+   JOIN_REQ { code: "KALIMA", name: "Map" }.
+5. Relay accepts, map bridge is now in the same room.
+6. Host clicks "Link token" on a character — dice manager sends CHAR_TOKEN_LINK.
+7. Map bridge receives CHAR_TOKEN_LINK and stores the association.
+8. Host rolls a Rifle check — dice manager sends ROLL_RESULT.
+9. Dice manager also sends ROLL_AT_TOKEN (if a token link exists).
+10. Map bridge renders the result next to the correct token.
+11. Map bridge player moves a token — sends MAP_TOKEN_MOVE.
+12. Relay forwards MAP_TOKEN_MOVE to all participants.
+13. Dice manager ignores it (no-op case in Other_68.gml switch).
+14. Other map bridge instances update their rendering.
+
+NOTES FOR MAP APP DEVELOPERS
+--------------------------------------------------------------------------------
+- The relay is stateless beyond room membership. It does not persist map state.
+  When the last participant in a room disconnects, the room is destroyed and
+  any map state is lost. Your map app should persist state locally.
+
+- The host of the dice session is also the source of truth for CHARACTER_SYNC
+  messages. Your map app can listen to CHARACTER_SYNC to know which characters
+  are in play and pre-seed token metadata.
+
+- Use the sender field to disambiguate who did what. The relay does not
+  sanitize sender names.
+
+- HEARTBEAT messages arrive every ~30 seconds from each participant. Your map
+  app should also emit heartbeats so the relay does not mark it idle.
+
+- Timestamps (ts) come from each sender's current_time and are not synchronized
+  across machines. Use them only for ordering within a single sender's stream.
+
+- If you need a map state snapshot when joining mid-session, send
+  MAP_STATE_REQUEST. Any existing map instance should reply with MAP_STATE_FULL.
+
+- The dice manager does NOT care what sprite or grid coordinates you use.
+  All map rendering concerns live entirely inside the map bridge app.
+
+- Recommended tech stack for a map bridge: any language that can open a TCP
+  socket and parse JSON. Electron + React works. Love2D works. A static HTML
+  page using a small Node.js TCP-to-WebSocket bridge works.
+
+- Protocol version is currently 1. Future versions will bump the "v" field.
+  Reject messages with an unknown "v" value.
+
+END OF DOCUMENT
+================================================================================

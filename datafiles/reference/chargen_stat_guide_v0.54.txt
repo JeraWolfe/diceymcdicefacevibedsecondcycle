@@ -1,0 +1,163 @@
+================================================================================
+  HOW CHARACTER GENERATION ASSIGNS ABILITY SCORES
+  DiceyMcDiceFaces v0.54 — Written for the Councilman
+================================================================================
+
+THE SHORT VERSION
+=================
+
+When you click "Generate," the app has 60 ability points to spread
+across your 6 stats. It does these things in order:
+
+  1. Gives every stat a starting floor (usually 4, aliens vary)
+  2. HARD REQUIREMENT: Forces your profession's primary stat to its
+     minimum (9 or 11 depending on profession)
+  3. HARD REQUIREMENT: Forces your profession's secondary stat to its
+     minimum (always 9)
+  4. Spends leftover points using WEIGHTED RANDOM — stats your
+     profession(s) care about get more, dump stats get less
+
+If steps 2-3 aren't met, the character is ILLEGAL per the PHB.
+The generator always passes steps 2-3. Always.
+
+Diplomat secondary professions do NOT add extra stat requirements.
+They just make the generator PREFER those stats.
+
+
+PROFESSION REQUIREMENTS (PHB Table P1)
+========================================
+
+These are HARD MINIMUMS. Non-negotiable.
+
+  Profession      Primary Stat  Min    Secondary Stat  Min
+  ───────────     ────────────  ───    ──────────────  ───
+  Combat Spec     STR            9     CON              9
+  Diplomat        INT            9     WIL              9
+  Free Agent      DEX            9     WIL              9
+  Tech Op         INT           11     DEX              9
+  Mindwalker      WIL           11     PER              9
+
+Notice: Combat Spec, Diplomat, and Free Agent need 9/9.
+        Tech Op and Mindwalker need 11/9.
+
+For Diplomats: ONLY Diplomat requirements (INT 9, WIL 9) are enforced
+as hard minimums. The secondary profession does NOT add requirements.
+
+
+THE LONG VERSION (Like You're Five)
+====================================
+
+Imagine you have 60 marbles to put in 6 cups.
+
+CUP LABELS:  STR  DEX  CON  INT  WIL  PER
+
+STEP 1: PUT 4 MARBLES IN EACH CUP
+  You start with 4 in every cup. That's 24 marbles used, 36 left.
+  (Aliens get slight adjustments — Weren get +2 STR, -1 DEX, etc.)
+
+STEP 2: FILL THE PRIMARY CUP (HARD REQUIREMENT)
+  Your profession says "this cup MUST have at least this many."
+
+  If you're a Tech Op, INT must be at least 11.
+  If INT is at 4, we add 7 marbles. Now you have 29 left.
+
+  If you're a Combat Spec, STR must be at least 9.
+  If STR is at 4, we add 5 marbles. Now you have 31 left.
+
+STEP 3: FILL THE SECONDARY CUP (HARD REQUIREMENT)
+  Same deal for the secondary attribute.
+
+  Tech Op needs DEX at least 9. Add marbles until it's there.
+  Combat Spec needs CON at least 9. Add marbles until it's there.
+
+  >>> YOUR CHARACTER IS NOW LEGAL. Requirements met. <<<
+
+STEP 4: SPEND THE REST WISELY
+  You still have ~26 marbles. Here's where it gets smart.
+
+  Each cup gets a "weight" — how attractive it is to marbles.
+
+  Base weight for every cup:         1  (everyone gets a little)
+  Your profession's primary stat:   +3  (this is your main thing)
+  Your profession's secondary stat: +2  (this matters too)
+
+  For DIPLOMATS with a secondary profession:
+  Secondary prof's primary stat:    +2  (soft preference, NOT required)
+  Secondary prof's secondary stat:  +1  (mild preference)
+
+  The app randomly drops marbles one at a time, but cups with higher
+  weights catch more. Think of wider cups catching more rain.
+
+STEP 5: SAFETY NET
+  If somehow points are left over (everything hit 14), dump into
+  the lowest stat. This almost never happens.
+
+
+WHAT THIS LOOKS LIKE IN PRACTICE
+==================================
+
+EXAMPLE: Combat Spec
+  Hard requirements: STR >= 9, CON >= 9  ← ENFORCED FIRST
+  Then weighted distribution:
+    STR has weight 4 (1 base + 3 primary)
+    CON has weight 3 (1 base + 2 secondary)
+    Everything else has weight 1
+  Result: STR ~12, CON ~11, others ~8-9
+
+EXAMPLE: Tech Op
+  Hard requirements: INT >= 11, DEX >= 9  ← ENFORCED FIRST
+  Then weighted distribution:
+    INT has weight 4 (1 base + 3 primary)
+    DEX has weight 3 (1 base + 2 secondary)
+    Everything else has weight 1
+  Result: INT ~13, DEX ~11, others ~8-9
+
+EXAMPLE: Diplomat / Free Agent
+  Hard requirements: INT >= 9, WIL >= 9  ← ENFORCED FIRST (Diplomat only!)
+  Free Agent's DEX 9 / WIL 9 are NOT enforced (secondary prof).
+  But the weights still favor them:
+    INT has weight 4 (1 base + 3 from Diplomat)
+    WIL has weight 4 (1 base + 2 from Diplomat + 1 from Free Agent)
+    DEX has weight 3 (1 base + 2 from Free Agent)
+    Everything else has weight 1
+  Result: INT ~12, WIL ~12, DEX ~11, others ~8-9
+  DEX is NOT 5. It's 11. Because the weights pull it up naturally.
+
+EXAMPLE: Diplomat / Combat Spec
+  Hard requirements: INT >= 9, WIL >= 9  ← ENFORCED FIRST
+  Weights favor STR/CON from Combat Spec:
+    INT has weight 4
+    WIL has weight 3
+    STR has weight 3
+    CON has weight 2
+    Others weight 1
+  Result: INT ~12, WIL ~11, STR ~11, CON ~10, others ~8
+
+
+WHAT CHANGED FROM THE OLD VERSION
+===================================
+
+OLD:
+  - 50/50 coin flip: boost profession stat OR boost random stat
+  - Secondary profession stats got ZERO preference
+  - A Diplomat/Free Agent could have DEX 5 (unplayable)
+
+NEW:
+  - Steps 2-3 enforce hard minimums FIRST (always did, now documented)
+  - Weighted random replaces dumb 50/50 coin flip
+  - Secondary profession stats get soft preference via weights
+  - A Diplomat/Free Agent naturally gets DEX 10-12
+
+
+HARD RULES (ALWAYS TRUE)
+==========================
+
+  - Total ability points ALWAYS = 60
+  - Every stat is between 4 and 14
+  - Primary profession's primary attr >= its minimum (9 or 11)
+  - Primary profession's secondary attr >= its minimum (always 9)
+  - Species modifiers applied (Weren always start with STR 6+)
+  - Diplomat secondary profession does NOT impose stat requirements
+  - Character is ILLEGAL if profession minimums aren't met
+
+================================================================================

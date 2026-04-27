@@ -1,0 +1,170 @@
+{
+  "roll_animation_frames": 30.0,
+  "max_log_entries": 6.0,
+  "colors": {
+    "warning": "#ffcc00",
+    "failure": "#ff4444",
+    "muted": "#888888",
+    "header": "#e94560",
+    "tab_active": "#3a4250",
+    "tab_inactive": "#0f3460",
+    "bg_top": "#f0f4f8",
+    "good": "#53d769",
+    "amazing": "#00bfff",
+    "bg_bottom": "#20c9a0",
+    "bg_wave_y": 0.45,
+    "panel": "#16213e",
+    "border": "#0f3460",
+    "text_dark": "#1a1a2e",
+    "highlight": "#53d769",
+    "text": "#e0e0e0"
+  },
+  "_description": "UI and system configuration",
+  "color_profiles": {
+    "tritanopia": {
+      "amazing": "#56b4e9",
+      "warning": "#cc79a7",
+      "failure": "#d55e00",
+      "highlight": "#009e73",
+      "good": "#009e73"
+    },
+    "custom": {
+      "amazing": "#9b59b6",
+      "warning": "#e67e22",
+      "failure": "#ff4444",
+      "highlight": "#ffcc00",
+      "good": "#53d769"
+    },
+    "greyscale": {
+      "amazing": "#ffffff",
+      "warning": "#999999",
+      "failure": "#666666",
+      "highlight": "#cccccc",
+      "good": "#cccccc"
+    },
+    "_description": "Color sets for accessibility. 'normal' is the default. Others remap success/failure colors for colorblind users.",
+    "normal": {
+      "amazing": "#00bfff",
+      "warning": "#ffcc00",
+      "failure": "#ff4444",
+      "highlight": "#53d769",
+      "good": "#53d769"
+    },
+    "protanopia": {
+      "amazing": "#0072b2",
+      "warning": "#f0e442",
+      "failure": "#e69f00",
+      "highlight": "#56b4e9",
+      "good": "#56b4e9"
+    },
+    "deuteranopia": {
+      "amazing": "#0072b2",
+      "warning": "#f0e442",
+      "failure": "#e69f00",
+      "highlight": "#56b4e9",
+      "good": "#56b4e9"
+    }
+  },
+  "accessibility": {
+    "mode": "custom",
+    "window_mode": "fullscreen"
+  },
+  "dice": {
+    "_description": "Situation die steps from best bonus to worst penalty",
+    "steps": [
+      {
+        "sides": 20.0,
+        "name": "-d20",
+        "bonus": true,
+        "count": 1
+      },
+      {
+        "sides": 12.0,
+        "name": "-d12",
+        "bonus": true,
+        "count": 1
+      },
+      {
+        "sides": 8.0,
+        "name": "-d8",
+        "bonus": true,
+        "count": 1
+      },
+      {
+        "sides": 6.0,
+        "name": "-d6",
+        "bonus": true,
+        "count": 1
+      },
+      {
+        "sides": 4.0,
+        "name": "-d4",
+        "bonus": true,
+        "count": 1
+      },
+      {
+        "sides": 0.0,
+        "name": "+d0",
+        "bonus": false,
+        "count": 1
+      },
+      {
+        "sides": 4.0,
+        "name": "+d4",
+        "bonus": false,
+        "count": 1
+      },
+      {
+        "sides": 6.0,
+        "name": "+d6",
+        "bonus": false,
+        "count": 1
+      },
+      {
+        "sides": 8.0,
+        "name": "+d8",
+        "bonus": false,
+        "count": 1
+      },
+      {
+        "sides": 12.0,
+        "name": "+d12",
+        "bonus": false,
+        "count": 1
+      },
+      {
+        "sides": 20.0,
+        "name": "+d20",
+        "bonus": false,
+        "count": 1
+      },
+      {
+        "sides": 20,
+        "name": "+2d20",
+        "bonus": false,
+        "count": 2
+      },
+      {
+        "sides": 20,
+        "name": "+3d20",
+        "bonus": false,
+        "count": 3
+      },
+      {
+        "sides": 20,
+        "name": "+4d20",
+        "bonus": false,
+        "count": 4
+      }
+    ]
+  },
+  "layout": {
+    "panel_left_x": 16.0,
+    "panel_left_w": 580.0,
+    "panel_right_x": 612.0,
+    "panel_right_w": 360.0,
+    "panel_y": 16.0,
+    "line_height": 20.0,
+    "max_visible_skills": 14.0
+  }
+}

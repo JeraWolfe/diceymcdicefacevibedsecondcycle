@@ -1,0 +1,156 @@
+{
+  "_description":"Profession mechanics - requirements, bonuses, skill categories, costs",
+  "professions":[
+    {
+      "name":"Combat Spec",
+      "action_check_bonus":3.0,
+      "starting_skill_points":40.0,
+      "signature_skills":[
+        "Athletics",
+        "Melee Weapons",
+        "Unarmed Attack",
+        "Modern Ranged Weapons",
+        "Heavy Weapons",
+        "Demolitions",
+        "Tactics",
+        "Stamina"
+      ],
+      "related_skills":[
+        "Acrobatics",
+        "Vehicle Operation",
+        "Awareness",
+        "Resolve",
+        "Stealth",
+        "Interaction",
+        "Leadership",
+        "Primitive Ranged Weapons"
+      ],
+      "requirements":{
+        "secondary":"CON",
+        "primary_min":9.0,
+        "primary":"STR",
+        "secondary_min":9.0
+      },
+      "durability_mod":2.0
+    },
+    {
+      "name":"Diplomat",
+      "action_check_bonus":1.0,
+      "starting_skill_points":45.0,
+      "signature_skills":[
+        "Business",
+        "Knowledge",
+        "Law",
+        "Culture",
+        "Deception",
+        "Entertainment",
+        "Interaction",
+        "Leadership"
+      ],
+      "related_skills":[
+        "Stamina",
+        "Awareness",
+        "Resolve",
+        "Life Science",
+        "Medical Science"
+      ],
+      "requirements":{
+        "secondary":"WIL",
+        "primary_min":9.0,
+        "primary":"INT",
+        "secondary_min":9.0
+      },
+      "durability_mod":0.0
+    },
+    {
+      "name":"Free Agent",
+      "action_check_bonus":2.0,
+      "starting_skill_points":45.0,
+      "signature_skills":[
+        "Acrobatics",
+        "Stealth",
+        "Manipulation",
+        "Modern Ranged Weapons",
+        "Awareness",
+        "Investigate",
+        "Deception",
+        "Interaction"
+      ],
+      "related_skills":[
+        "Athletics",
+        "Unarmed Attack",
+        "Stamina",
+        "Vehicle Operation",
+        "Knowledge",
+        "Resolve",
+        "Entertainment",
+        "Leadership"
+      ],
+      "requirements":{
+        "secondary":"WIL",
+        "primary_min":9.0,
+        "primary":"DEX",
+        "secondary_min":9.0
+      },
+      "durability_mod":1.0
+    },
+    {
+      "name":"Tech Op",
+      "action_check_bonus":3.0,
+      "starting_skill_points":50.0,
+      "signature_skills":[
+        "Knowledge",
+        "Life Science",
+        "Medical Science",
+        "Navigation",
+        "Physical Science",
+        "System Operation",
+        "Technical Science",
+        "Vehicle Operation"
+      ],
+      "related_skills":[
+        "Manipulation",
+        "Stamina",
+        "Awareness",
+        "Business",
+        "Investigate",
+        "Resolve",
+        "Interaction"
+      ],
+      "requirements":{
+        "secondary":"DEX",
+        "primary_min":11.0,
+        "primary":"INT",
+        "secondary_min":9.0
+      },
+      "durability_mod":1.0
+    },
+    {
+      "name":"Mindwalker",
+      "action_check_bonus":1.0,
+      "starting_skill_points":40.0,
+      "signature_skills":[
+        "Telepathy",
+        "Telekinesis",
+        "ESP",
+        "Biokinesis",
+        "Resolve",
+        "Awareness"
+      ],
+      "related_skills":[
+        "Knowledge",
+        "Stamina",
+        "Culture",
+        "Interaction",
+        "Investigate"
+      ],
+      "requirements":{
+        "secondary":"PER",
+        "primary_min":11.0,
+        "primary":"WIL",
+        "secondary_min":9.0
+      },
+      "durability_mod":0.0
+    }
+  ]
+}

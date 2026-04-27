@@ -1,0 +1,597 @@
+{
+  "_description":"Skill rank benefits from PHB Chapter 4. Each skill lists what you gain at specific ranks.",
+  "Melee Weapons":{
+    "broad":"Training with close-combat weapons. Enables parry.",
+    "specialties":{
+      "Blade":{
+        "base":"Proficiency with knives, swords, axes.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Double-Strike: Make two attacks in one action at +1 penalty each."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Improved Parry: -1 step bonus when parrying."
+          },
+          {
+            "rank":7.0,
+            "benefit":"Devastating Strike: +1 damage step on Amazing hits."
+          }
+        ]
+      },
+      "Powered weapon":{
+        "base":"Proficiency with gravmaces, stun batons, tri-staffs.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Double-Strike: Make two attacks in one action at +1 penalty each."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Improved Parry: -1 step bonus when parrying."
+          }
+        ]
+      }
+    }
+  },
+  "Knowledge":{
+    "broad":"General knowledge, computer use, deduction, first aid, languages.",
+    "specialties":{
+      "Deduce":{
+        "base":"Logical reasoning and analysis.",
+        "rank_benefits":[
+        ]
+      },
+      "First aid":{
+        "base":"Treat injuries. O: stabilize, G: heal 1 wound, A: heal 2 wounds.",
+        "rank_benefits":[
+        ]
+      },
+      "Language":{
+        "base":"Each rank = one additional language.",
+        "rank_benefits":[
+        ]
+      },
+      "Computer operation":{
+        "base":"Use computers, access data, run programs.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Unarmed Attack":{
+    "broad":"Untrained fighting. Punch: d4s\/d4+1s\/d4+2s. Overpowering attempts at +1 penalty.",
+    "specialties":{
+      "Brawl":{
+        "base":"Street fighting, boxing, wrestling. Uses unarmed damage table.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Improved Damage: Damage becomes d4+1s\/d4+2s\/d4+3s."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Knockout Blow: On Amazing, target must make CON check or be stunned 1 round."
+          },
+          {
+            "rank":7.0,
+            "benefit":"Double-Strike: Two unarmed attacks at +1 penalty each."
+          }
+        ]
+      },
+      "Power martial arts":{
+        "base":"Karate, tae kwon do. Damage: d6s\/d6+2s\/d4w.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Improved STR Resistance: +1 step to your STR resistance modifier."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Increased Damage: d8s\/d8+2s\/d6w."
+          },
+          {
+            "rank":7.0,
+            "benefit":"Double-Strike: Two attacks at +1 penalty each."
+          },
+          {
+            "rank":9.0,
+            "benefit":"Devastating Damage: d8+2s\/d8+4s\/d8w."
+          }
+        ]
+      }
+    }
+  },
+  "Telepathy":{
+    "broad":"Mental communication and attack.",
+    "specialties":{
+      "Mind reading":{
+        "base":"Read surface thoughts of target.",
+        "rank_benefits":[
+        ]
+      },
+      "Mind shield":{
+        "base":"Defense vs psionic attacks. O: +1, G: +2, A: +3 penalty to attacker.",
+        "rank_benefits":[
+        ]
+      },
+      "Illusion":{
+        "base":"Project false sight\/sound into target's mind. Range 5m\/rank.",
+        "rank_benefits":[
+        ]
+      },
+      "Suggest":{
+        "base":"Plant a thought. Duration: 1\/2\/3 hours by degree.",
+        "rank_benefits":[
+        ]
+      },
+      "Contact":{
+        "base":"Establish mental link. O: simple concepts, G: moderate discussion, A: full conversation.",
+        "rank_benefits":[
+        ]
+      },
+      "Mind blast":{
+        "base":"Psionic attack. Range 10\/20\/40. Dmg: d4+1s\/d4+2s\/d6+2s.",
+        "rank_benefits":[
+          {
+            "rank":5.0,
+            "benefit":"Increased Damage: d4+2s\/d6+2s\/d8+2s."
+          },
+          {
+            "rank":9.0,
+            "benefit":"Devastating Damage: 2d4+2s\/2d6+2s\/2d8+2s."
+          }
+        ]
+      }
+    }
+  },
+  "Heavy Weapons":{
+    "broad":"Heavy ranged weapons: machine guns, rocket launchers.",
+    "specialties":{
+      "Direct fire":{
+        "base":"Machine guns, heavy lasers.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Improved Aim: -1 bonus to situation die."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Burst Control: -1 step penalty on burst fire (normally +1)."
+          }
+        ]
+      },
+      "Indirect fire":{
+        "base":"Grenade launchers, mortars, missiles.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Precision: Reduce scatter by one row on miss."
+          }
+        ]
+      }
+    }
+  },
+  "Medical Science":{
+    "broad":"Advanced medical knowledge.",
+    "specialties":{
+      "Medical knowledge":{
+        "base":"Diagnosis and treatment.",
+        "rank_benefits":[
+        ]
+      },
+      "Surgery":{
+        "base":"Perform surgery. Required for cyber installation.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"-1 step bonus to surgery checks."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Can attempt experimental procedures."
+          }
+        ]
+      },
+      "Xenomedicine":{
+        "base":"Treat alien species.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Telekinesis":{
+    "broad":"Move objects with the mind.",
+    "specialties":{
+      "Levitate":{
+        "base":"Lift objects or self. Weight limit based on WIL.",
+        "rank_benefits":[
+        ]
+      },
+      "Telekinetic strike":{
+        "base":"Kinetic force attack. Range 10\/20\/40.",
+        "rank_benefits":[
+          {
+            "rank":5.0,
+            "benefit":"Increased Damage: +1 damage step."
+          },
+          {
+            "rank":9.0,
+            "benefit":"Devastating: +2 damage steps."
+          }
+        ]
+      },
+      "Kinetic shield":{
+        "base":"Deflect physical attacks. Provides armor-like protection.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Acrobatics":{
+    "broad":"Tumbling, balance, dodging. Fall damage reduction.",
+    "specialties":{
+      "Dodge":{
+        "base":"Active defense against ranged attacks. Costs one action.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Reaction Dodge: Can dodge as a reaction, not just on your action."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Improved Dodge: -1 step bonus to dodge attempts."
+          }
+        ]
+      },
+      "Movie stunts":{
+        "base":"Acrobatic combat maneuvers and cinematic feats.",
+        "rank_benefits":[
+        ]
+      },
+      "Zero-G training":{
+        "base":"Reduces zero-g penalty from +3 to +2. Eliminates light gravity penalty.",
+        "rank_benefits":[
+          {
+            "rank":4.0,
+            "benefit":"Zero-g penalty reduced to +1. Light gravity: -1 bonus."
+          },
+          {
+            "rank":7.0,
+            "benefit":"Zero-g penalty eliminated."
+          },
+          {
+            "rank":10.0,
+            "benefit":"Zero-g: -1 step bonus to physical actions."
+          }
+        ]
+      }
+    }
+  },
+  "Technical Science":{
+    "broad":"Build, repair, and jury-rig technology.",
+    "specialties":{
+      "Juryrig":{
+        "base":"Quick field repairs.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Speed Repair: Halve repair time."
+          }
+        ]
+      },
+      "Repair":{
+        "base":"Standard equipment repair.",
+        "rank_benefits":[
+        ]
+      },
+      "Invention":{
+        "base":"Design and build new devices.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Can attempt Ordinary difficulty inventions."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Can attempt Good difficulty inventions."
+          },
+          {
+            "rank":7.0,
+            "benefit":"Can attempt Amazing difficulty inventions."
+          }
+        ]
+      }
+    }
+  },
+  "ESP":{
+    "broad":"Extrasensory perception.",
+    "specialties":{
+      "Clairvoyance":{
+        "base":"Remote seeing at a distance.",
+        "rank_benefits":[
+        ]
+      },
+      "Precognition":{
+        "base":"Glimpse probable future events. GM provides cryptic hints.",
+        "rank_benefits":[
+        ]
+      },
+      "Empathy":{
+        "base":"Sense emotions of nearby beings.",
+        "rank_benefits":[
+        ]
+      },
+      "Psychometry":{
+        "base":"Read history of objects through touch.",
+        "rank_benefits":[
+        ]
+      },
+      "Clairaudience":{
+        "base":"Remote hearing at a distance.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Awareness":{
+    "broad":"Perception and intuition.",
+    "specialties":{
+      "Intuition":{
+        "base":"Gut feelings, sense danger, read situations.",
+        "rank_benefits":[
+        ]
+      },
+      "Perception":{
+        "base":"Notice details, spot hidden things, hear sounds.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Modern Ranged Weapons":{
+    "broad":"Pistols, rifles, SMGs of all types.",
+    "specialties":{
+      "Pistol":{
+        "base":"All modern pistols. Draw+fire = +1 penalty.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Quick Draw: Draw and fire with no penalty."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Double-Shot: Fire twice at +1 penalty each."
+          },
+          {
+            "rank":7.0,
+            "benefit":"Distance Precision: -1 bonus at medium range."
+          },
+          {
+            "rank":9.0,
+            "benefit":"Rate of Fire Increase: Three shots at +2 penalty each."
+          }
+        ]
+      },
+      "Rifle":{
+        "base":"All rifles and shotguns.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Improved Aim: -1 bonus to all rifle attacks."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Precision Fire: -1 additional bonus when using aimed shot."
+          },
+          {
+            "rank":7.0,
+            "benefit":"Distance Precision: -1 bonus at long range."
+          },
+          {
+            "rank":9.0,
+            "benefit":"Double-Shot: Fire twice at +1 penalty each."
+          }
+        ]
+      },
+      "SMG":{
+        "base":"Submachine guns. Automatic fire capable.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Burst Control: Reduce autofire penalty by 1 step."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Double-Shot: Fire twice at +1 penalty each."
+          }
+        ]
+      }
+    }
+  },
+  "Resolve":{
+    "broad":"Mental and physical willpower.",
+    "specialties":{
+      "Mental resolve":{
+        "base":"Resist psionic attacks, fear, mental compulsion.",
+        "rank_benefits":[
+        ]
+      },
+      "Physical resolve":{
+        "base":"Resist pain, stay conscious, endure hardship.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Biokinesis":{
+    "broad":"Control over biological processes.",
+    "specialties":{
+      "Bioshift":{
+        "base":"Alter own biology temporarily.",
+        "rank_benefits":[
+        ]
+      },
+      "Body armor":{
+        "base":"Toughen skin vs damage.",
+        "rank_benefits":[
+        ]
+      },
+      "Heal":{
+        "base":"Mend wounds psionically. O: 1 wound, G: 2, A: 1 mortal.",
+        "rank_benefits":[
+        ]
+      },
+      "Harm":{
+        "base":"Inflict internal damage. Ignores armor.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Stealth":{
+    "broad":"Hide, sneak, shadow. Success provides penalty to observer's detection.",
+    "specialties":{
+      "Shadow":{
+        "base":"Follow a target without being noticed.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Increased Effect: +1 additional step penalty to observer per rank above 2."
+          }
+        ]
+      },
+      "Hide":{
+        "base":"Stay unnoticed using cover, darkness, stillness.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Increased Effect: +1 additional step penalty to observer per rank above 2."
+          }
+        ]
+      },
+      "Sneak":{
+        "base":"Move silently to avoid detection.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Increased Effect: +1 additional step penalty to observer per rank above 2."
+          }
+        ]
+      }
+    }
+  },
+  "Interaction":{
+    "broad":"Social skills. Can be used as encounter skill to shift NPC attitudes.",
+    "specialties":{
+      "Seduce":{
+        "base":"Romantic persuasion.",
+        "rank_benefits":[
+        ]
+      },
+      "Bargain":{
+        "base":"Negotiate prices and deals.",
+        "rank_benefits":[
+        ]
+      },
+      "Charm":{
+        "base":"Win people over with charisma.",
+        "rank_benefits":[
+        ]
+      },
+      "Intimidate":{
+        "base":"Threaten or coerce.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Vehicle Operation":{
+    "broad":"Operate vehicles of various types.",
+    "specialties":{
+      "Space vehicle":{
+        "base":"Spacecraft, shuttles, fighters.",
+        "rank_benefits":[
+        ]
+      },
+      "Water vehicle":{
+        "base":"Boats, submarines, hovercraft.",
+        "rank_benefits":[
+        ]
+      },
+      "Land vehicle":{
+        "base":"Cars, trucks, tanks, hovercrafts.",
+        "rank_benefits":[
+        ]
+      },
+      "Air vehicle":{
+        "base":"Aircraft, VTOLs, helicopters.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Leadership":{
+    "broad":"Command and inspire others.",
+    "specialties":{
+      "Command":{
+        "base":"Direct allies in combat. Provide action check bonus.",
+        "rank_benefits":[
+        ]
+      },
+      "Inspire":{
+        "base":"Motivate allies. Provide morale bonus.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Athletics":{
+    "broad":"General physical prowess. Jumping, climbing, throwing, swimming.",
+    "specialties":{
+      "Throw":{
+        "base":"Throw objects accurately. Range based on STR.",
+        "rank_benefits":[
+          {
+            "rank":3.0,
+            "benefit":"Distance Precision: -1 step bonus at medium range."
+          },
+          {
+            "rank":5.0,
+            "benefit":"Improved Range: Increase all throw ranges by 50%."
+          },
+          {
+            "rank":7.0,
+            "benefit":"Power Throw: +1 damage die step on thrown weapons."
+          }
+        ]
+      },
+      "Climb":{
+        "base":"Climb vertical surfaces.",
+        "rank_benefits":[
+        ]
+      },
+      "Jump":{
+        "base":"Standing jump 1m\/2m\/3m (O\/G\/A). Running jump 2m\/4m\/6m. Vertical leap 1m\/1.5m\/2m.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  },
+  "Stamina":{
+    "broad":"Physical endurance, resist pain, survival basics.",
+    "specialties":{
+      "Endurance":{
+        "base":"Sustained physical activity. Extended travel checks every 4\/3\/2 hours.",
+        "rank_benefits":[
+        ]
+      },
+      "Resist pain":{
+        "base":"Ignore wound penalties. O: ignore 1 step, G: 2, A: 3.",
+        "rank_benefits":[
+        ]
+      }
+    }
+  }
+}

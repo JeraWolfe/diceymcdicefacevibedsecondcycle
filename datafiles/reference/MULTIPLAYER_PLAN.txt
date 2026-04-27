@@ -1,0 +1,506 @@
+================================================================================
+  DICEYMCDICEFACES — MULTIPLAYER NETWORKING PLAN
+  v0.57.0-plan | Phase 0 Document | For Review Before Implementation
+================================================================================
+
+This is the implementation roadmap for adding remote multiplayer to
+DiceyMcDiceFaces. NO CODE HAS BEEN WRITTEN YET. This document describes
+what will be built. Review and approve before Phase 1 begins.
+
+
+================================================================================
+CONTEXT — Why and What
+================================================================================
+
+DiceyMcDiceFaces needs remote multiplayer so players can run sessions
+together over the internet without being in the same room.
+
+Requirements:
+- One host acts as GM (Among Us style)
+- Players join via a shared session code
+- Avoid port forwarding (no router setup for testers)
+- Two simple core functions: net_send() and net_recv()
+- Protocol for transmitting roll results with all modifier data
+- Protocol for transmitting full character data ("datasoul")
+- Setup instructions document dropped in the game dir
+
+The good news: the codebase is already 90% ready for this.
+- build_statblock_export() returns a fully JSON-serializable struct
+- Roll results are all primitives
+- json_stringify() / json_parse() are already used throughout
+- Zero existing networking code = blank slate, no refactor needed
+
+
+================================================================================
+ARCHITECTURE — Relay Server with Room Codes
+================================================================================
+
+To avoid port forwarding entirely, use a RELAY SERVER model. This is what
+Among Us, Jackbox, Discord, and most party games use.
+
+       Player A (Host/GM)              Player B (Joiner)
+             |                                |
+             |      +--------------+          |
+             +-----> Relay Server  <----------+
+                    | (room ABCD12)|
+                    +--------------+
+                           ^
+                           |
+                      Player C (Joiner)
+
+
+WHY THIS WORKS WITHOUT PORT FORWARDING:
+- All players make OUTGOING connections (firewalls allow these by default)
+- The relay server has a public IP and handles ALL the routing
+- Players never need to know each other's IPs
+- Same model as Discord, Among Us, Jackbox — proven and reliable
+
+
+RELAY SERVER HOSTING OPTIONS:
+
+  1. FREE PUBLIC HOST (Glitch.com / Replit / Railway / Fly.io)
+     - Node.js WebSocket server, ~50-80 lines of code
+     - Free tier handles ~400 simultaneous sessions
+     - Setup: paste code, get URL, done
+     - RECOMMENDED for shipping
+
+  2. VPS ($5/month DigitalOcean droplet)
+     - Full control, no sleep, ~5,000 simultaneous sessions
+     - For if Glitch ever gets too slow
+
+  3. Self-host on home PC + ngrok
+     - For dev testing only, no port forwarding thanks to ngrok tunnel
+
+  4. Run on host player's machine + ngrok
+     - Host pays nothing, ngrok handles NAT
+     - For privacy or LAN games
+
+
+HOW IT FEELS TO USERS:
+
+  GM:
+    1. Opens game
+    2. Clicks "Host Session"
+    3. Sees code: ABCD12
+    4. Texts code to friends
+    5. Done
+
+  Players:
+    1. Open game
+    2. Click "Join Session"
+    3. Type code, type name
+    4. Done
+
+Nobody installs anything extra. Nobody touches router settings. Nobody
+creates accounts. Nobody knows the relay server even exists. The URL is
+hardcoded into the game as a constant. Three fallback URLs in case the
+primary is down.
+
+
+================================================================================
+FILES TO CREATE
+================================================================================
+
+1. scripts/scr_network/scr_network.gml (NEW)
+   Core networking module. Single file with all network logic.
+
+2. scripts/scr_network/scr_network.yy (NEW)
+   GameMaker resource definition.
+
+3. objects/obj_game/Other_68.gml (NEW EVENT)
+   Async Networking event. Receives data from socket.
+
+4. relay_server/server.js (NEW)
+   Standalone Node.js WebSocket relay server (~80 lines).
+   Runs on Glitch/Replit/Fly.io for free.
+
+5. relay_server/package.json (NEW)
+   Node deps (just `ws`).
+
+6. relay_server/README.md (NEW)
+   How to deploy to Glitch in 5 minutes.
+
+7. datafiles/reference/MULTIPLAYER_PLAN.txt (THIS FILE)
+   The plan you're reading. Drops in Phase 0.
+
+8. datafiles/reference/MULTIPLAYER_GUIDE.txt (NEW, Phase 3)
+   Tester instructions in plain English.
+
+
+================================================================================
+FILES TO EDIT
+================================================================================
+
+  objects/obj_game/Create_0.gml          Init network state vars
+  objects/obj_game/Draw_64.gml           Welcome screen Host/Join buttons,
+                                          in-game player list, status indicator
+  objects/obj_game/Step_0.gml            Host/Join button handlers
+  scripts/scr_ui_helpers/scr_ui_helpers.gml
+                                          Add net broadcast hook to log_roll
+  scripts/scr_data_loader/scr_data_loader.gml
+                                          Add net broadcast hook to
+                                          save_hero_and_track
+  diceymcdicefacevibed.yyp                Register new script + included files
+  datafiles/changelog.json                v0.57.0 entry
+
+
+================================================================================
+CORE FUNCTIONS (scr_network.gml)
+================================================================================
+
+CONNECTION:
+  net_init(host, port)              Connect to relay server
+  net_disconnect()                  Clean shutdown
+  net_is_connected()                Returns bool
+
+SESSION (Among Us style):
+  net_host_session(player_name)     Generate code, become host
+  net_join_session(code, name)      Join an existing session
+  net_leave_session()
+  net_get_session_code()            Returns "ABCD12"
+  net_get_players()                 Returns array of {name, is_host}
+  net_is_host()                     Returns bool
+
+CORE SEND/RECEIVE (the two functions you asked for):
+  net_send(msg_type, payload)       Encode + send message
+                                    payload is any struct, gets json_stringify'd
+  net_recv()                        Called from Async Network event
+                                    Returns {type, sender, payload} or undefined
+
+ROLL PROTOCOL:
+  net_send_roll(roll_result, char_name)
+                                    Broadcast roll to all in session
+                                    Wraps roll struct + char + timestamp + sender
+
+CHARACTER (DATASOUL) PROTOCOL:
+  net_send_character(stat)          Broadcast full character via
+                                    build_statblock_export
+                                    Other players get a read-only copy
+  net_request_character(char_name)  Ask host for a specific character
+
+CHAT / MISC:
+  net_send_chat(text)               Simple chat message
+  net_send_status(text)             GM status updates
+
+
+================================================================================
+MESSAGE FORMAT (the protocol)
+================================================================================
+
+Every message on the wire is a JSON object:
+
+{
+  "v": 1,                       // protocol version
+  "type": "ROLL_RESULT",        // message type (see table below)
+  "session": "ABCD12",          // room code
+  "sender": "Alice",            // who sent it
+  "ts": 1712345678,             // unix timestamp
+  "payload": { ... }            // type-specific data
+}
+
+
+MESSAGE TYPES:
+
+  Type            Direction         Payload                  Purpose
+  --------------  ----------------  -----------------------  -----------------
+  JOIN_REQ        Client -> Relay   {code, name}             Request to join
+  JOIN_OK         Relay -> Client   {players, host_name}     Join accepted
+  JOIN_FAIL       Relay -> Client   {reason}                 Bad code, full
+  PLAYER_LIST     Relay -> All      {players}                Roster updated
+  ROLL_RESULT     Any -> All        {roll, char_name}        Someone rolled
+  CHARACTER_SYNC  Any -> All        {statblock_json}         Full character bcast
+  CHAR_REQUEST    Client -> Host    {char_name}              Player wants char
+  CHAT            Any -> All        {text}                   Chat message
+  GM_STATUS       Host -> All       {text}                   GM narration
+  KICK            Host -> Relay     {name}                   Host removes player
+  HEARTBEAT       Both              {}                       Keep alive
+
+
+================================================================================
+ROLL TRANSMISSION PROTOCOL
+================================================================================
+
+A roll on the wire looks like:
+
+{
+  "v": 1,
+  "type": "ROLL_RESULT",
+  "session": "ABCD12",
+  "sender": "Alice",
+  "ts": 1712345678,
+  "payload": {
+    "char_name": "Rax Voss",
+    "skill_name": "Perception",
+    "control_roll": 14,
+    "situation_roll": 3,
+    "situation_step": 5,
+    "total": 11,
+    "degree": 2,
+    "degree_name": "GOOD",
+    "is_critical_failure": false,
+    "modifiers": ["Broad+1", "Perceptive+2", "Wounds+1"],
+    "difficulty": "Hard"
+  }
+}
+
+When other players receive this, it gets passed to their local log_roll()
+(without the network re-broadcast hook to prevent infinite loops). The
+result appears in their roll log with a "[remote]" tag.
+
+
+================================================================================
+DATASOUL ENCODING (Character -> Network String)
+================================================================================
+
+The "datasoul" is the user's term for the complete character data — all
+ability scores, skills, weapons, armor, gear, perks, flaws, cybertech,
+lore, everything. The entire character represented as a single string
+that can travel across the wire.
+
+ALREADY SOLVED in the existing codebase:
+  json_stringify(build_statblock_export(hero))
+
+That single line returns a string. That string IS the datasoul. It can be:
+- Sent over the network as-is
+- Stored in a database
+- Pasted into chat
+- Compressed if needed (GameMaker has buffer_compress)
+
+For very large characters, we can compress before sending:
+
+  function net_send_character(_stat) {
+      var _json = json_stringify(build_statblock_export(_stat));
+      var _buf = buffer_create(string_byte_length(_json), buffer_grow, 1);
+      buffer_write(_buf, buffer_string, _json);
+      var _compressed = buffer_compress(_buf, 0, buffer_get_size(_buf));
+      // ... send _compressed via network_send_packet
+      buffer_delete(_buf);
+      buffer_delete(_compressed);
+  }
+
+
+================================================================================
+WIRING INTO EXISTING CODE
+================================================================================
+
+HOOK 1 — After every roll:
+  File: scripts/scr_ui_helpers/scr_ui_helpers.gml
+  In:   log_roll()
+  Add:  if (net_is_connected()) net_send_roll(_result, _name);
+
+HOOK 2 — After save_hero_and_track:
+  File: scripts/scr_data_loader/scr_data_loader.gml
+  In:   save_hero_and_track()
+  Add:  if (net_is_connected() && net_is_host()) net_send_character(_stat);
+
+HOOK 3 — Async Networking Event:
+  File: objects/obj_game/Other_68.gml (NEW EVENT)
+  GameMaker fires this when network data arrives.
+
+      var _msg = net_recv();
+      if (_msg == undefined) exit;
+      switch (_msg.type) {
+          case "ROLL_RESULT":    log_remote_roll(_msg); break;
+          case "CHARACTER_SYNC": apply_remote_character(_msg.payload); break;
+          case "CHAT":           show_chat_message(_msg); break;
+          case "PLAYER_LIST":    net_player_list = _msg.payload.players; break;
+          // ...
+      }
+
+
+================================================================================
+RELAY SERVER (server.js) — Pseudocode
+================================================================================
+
+About 50-80 lines of Node.js. Runs on Glitch/Replit/Fly.io for free.
+
+  const WebSocket = require('ws');
+  const server = new WebSocket.Server({ port: process.env.PORT || 8080 });
+  const sessions = {}; // { code: { host: ws, players: [{ws, name}] } }
+
+  function generateCode() { /* random 6-char ABCD12 */ }
+  function broadcast(session, msg, exclude) { /* send to all players */ }
+  function findSessionFor(ws) { /* lookup which room a socket is in */ }
+  function removeFromSessions(ws) { /* cleanup on disconnect */ }
+
+  server.on('connection', (ws) => {
+    ws.on('message', (data) => {
+      const msg = JSON.parse(data);
+
+      if (msg.type === 'CREATE') {
+        const code = generateCode();
+        sessions[code] = { host: ws, players: [{ws, name: msg.name}] };
+        ws.send(JSON.stringify({type: 'CREATED', code}));
+      }
+      else if (msg.type === 'JOIN_REQ') {
+        const session = sessions[msg.code];
+        if (!session) {
+          ws.send(JSON.stringify({type:'JOIN_FAIL', reason:'No such session'}));
+          return;
+        }
+        session.players.push({ws, name: msg.name});
+        broadcast(session, {
+          type:'PLAYER_LIST',
+          players: session.players.map(p => p.name)
+        });
+      }
+      else {
+        // Forward any other message to all players in the same session
+        const session = findSessionFor(ws);
+        if (session) broadcast(session, msg, ws);
+      }
+    });
+    ws.on('close', () => removeFromSessions(ws));
+  });
+
+
+================================================================================
+SCALABILITY (one free server, many sessions)
+================================================================================
+
+Per-connection cost: ~10 KB of RAM. Almost zero CPU when idle.
+Per-session cost (5 players): ~50 KB RAM, ~1-2 messages/sec when active.
+
+Capacity by tier:
+
+  Tier              Cost       Max Sessions      Notes
+  ----------------  ---------  ----------------  ------------------
+  Glitch.com free   $0         ~400 simul.       Sleeps after 5 min
+  Replit free       $0         ~400 simul.       Similar to Glitch
+  Fly.io free       $0         ~300 simul.       3 instances, 256MB
+  Railway.app       $5/mo      ~6,000 simul.     8 GB RAM
+  DigitalOcean      $5/mo      ~2,000 simul.     1 GB RAM, 1 TB bw
+  DO 2GB            $12/mo     ~4,000 simul.     2 GB RAM
+  Dedicated         $50+/mo    20,000+ simul.    Effectively unlimited
+
+Real-world bandwidth math:
+- One dice roll over the wire: ~500 bytes
+- Average session: ~200 rolls in 4 hours = 100 KB per player per session
+- One full character sync: ~5-10 KB
+- 100 sessions x 6 players x 100 KB = 60 MB total per session-night
+
+For DiceyMcDiceFaces, one free Glitch instance can host the entire user
+base of this app comfortably. You'd need 400+ concurrent sessions on the
+same Tuesday night to start hitting limits.
+
+THE BOTTLENECK won't be users — it'll be how often Glitch sleeps. Free
+tier sleeps after 5 min idle. First connection of the day takes ~5 sec
+to wake the server. After that, instant. Free trick: use UptimeRobot
+(also free) to ping every 5 min, keeps it always-awake.
+
+
+================================================================================
+PHASING — Build It in Stages
+================================================================================
+
+PHASE 0: Plan dump for review (NO code changes) <-- YOU ARE HERE
+  Step 0.1: Write MULTIPLAYER_PLAN.txt to game dir
+  Step 0.2: Register in .yyp
+  Step 0.3: Changelog entry "plan dropped for review"
+  Step 0.4: Commit and STOP. Wait for user review.
+
+
+PHASE 1: Foundation (~200 lines GML + 80 Node.js)
+  Step 1.1: Create scr_network.gml with constants
+  Step 1.2: Add network state vars to Create_0.gml
+  Step 1.3: net_init(host, port)
+  Step 1.4: net_disconnect()
+  Step 1.5: net_is_connected()
+  Step 1.6: net_send(msg_type, payload)
+  Step 1.7: net_recv()
+  Step 1.8: Async Networking event (Other_68.gml)
+  Step 1.9: relay_server/server.js
+  Step 1.10: package.json + README.md
+  Step 1.11: Local test (two GM instances same machine)
+  Step 1.12: net_send_roll()
+  Step 1.13: Test roll transmission
+  Step 1.14: Commit, QA, STOP for review
+
+
+PHASE 2: Session Management + UI (~120 lines GML)
+  Step 2.1: net_host_session()
+  Step 2.2: net_join_session()
+  Step 2.3: net_leave_session()
+  Step 2.4: Async handlers for JOIN_OK/JOIN_FAIL/PLAYER_LIST
+  Step 2.5: Host/Join buttons on welcome screen
+  Step 2.6: Button handlers in Step_0.gml
+  Step 2.7: Session code popup + join code popup
+  Step 2.8: Player name input
+  Step 2.9: Connected players list in sidebar
+  Step 2.10: Connection status indicator
+  Step 2.11: Two-PC test over internet
+  Step 2.12: Commit, QA, STOP for review
+
+
+PHASE 3: Full Sync + Polish (~80 lines GML + docs)
+  Step 3.1: net_send_character() — datasoul broadcast
+  Step 3.2: net_request_character()
+  Step 3.3: Hook log_roll -> net_send_roll
+  Step 3.4: Hook save_hero_and_track -> net_send_character
+  Step 3.5: Remote roll receiver (with [remote: name] tag)
+  Step 3.6: Remote character receiver
+  Step 3.7: net_send_chat() + chat display
+  Step 3.8: net_send_status() — GM banner
+  Step 3.9: Reconnection logic (3 retries)
+  Step 3.10: Heartbeat (every 30 sec)
+  Step 3.11: Write MULTIPLAYER_GUIDE.txt
+  Step 3.12: Register in .yyp
+  Step 3.13: Full session test (1 GM + 3 players)
+  Step 3.14: Changelog v0.57.0 final entry
+  Step 3.15: Commit, full QA, ship multiplayer beta
+
+
+================================================================================
+WHAT THIS PLAN DOES NOT INCLUDE
+================================================================================
+
+- Voice chat (use Discord)
+- Video (use Discord)
+- Persistence on relay server (sessions die when host leaves — by design)
+- Authentication (anyone with code can join — by design, like Among Us)
+- Anti-cheat (it's a TTRPG, trust the GM)
+- Spectator mode (could add later)
+
+
+================================================================================
+ESTIMATED FINAL STATS
+================================================================================
+
+  Lines added:        ~400 GML + 80 Node.js + ~200 lines documentation
+  Total after MP:     ~5,800 actual code lines (still well under 8,000)
+  New functions:      ~18 (all in scr_network.gml)
+  New files:          6 (scr_network.gml + .yy, Other_68.gml event,
+                          server.js, package.json, README.md)
+  New docs:           2 (MULTIPLAYER_PLAN.txt, MULTIPLAYER_GUIDE.txt)
+  Edited files:       5 (Create_0, Step_0, Draw_64, scr_ui_helpers,
+                          scr_data_loader)
+
+
+================================================================================
+SETUP STORY (one-time, by the developer)
+================================================================================
+
+1. Sign up for Glitch.com (free, 30 seconds, just an email)
+2. Create new project
+3. Paste in the relay server code (we provide it)
+4. Glitch assigns a public URL automatically
+5. Take that URL, paste it into scr_network.gml as the default host constant
+6. Build the game
+
+After that, players just download the game. Nobody else ever has to
+think about the relay server again. It's invisible infrastructure.
+
+For redundancy, we'll bake in 2-3 fallback URLs. If the primary is down,
+the game tries the next one. Three free hosts. Belt, suspenders,
+parachute.
+
+
+================================================================================
+END OF PLAN — Awaiting Review
+================================================================================
+
+If approved, Phase 1 begins next. Each phase will commit, run QA, and
+stop for review before the next phase begins. Total estimated time to
+ship multiplayer beta: ~3 phases of work.
+
+The cat is chill. The doegs are accounted for. KALIMA awaits.

@@ -1,0 +1,2033 @@
+================================================================================
+FUNCTION REFERENCE — POST-REFACTOR (VERBOSE)
+DiceyMcDiceFaces: Charma for Alternity
+Generated: 2026-04-05
+Every function in the codebase, grouped by file.
+================================================================================
+
+
+################################################################################
+FILE: objects/obj_game/Create_0.gml
+################################################################################
+
+EVENT: Create_0
+FILE: Create_0.gml : line 1
+CATEGORY: DATA
+CALLED BY: GameMaker engine (room start)
+CALLS: init_all_data, generate_all_coded_portraits, read_json, write_json,
+       create_statblock, update_hero, load_campaign, parse_hex_color,
+       apply_color_profile, dropdown, get_career_names_for_profession
+DESCRIPTION: Master initialization event. Disables application surface drawing,
+  calls init_all_data() to load all JSON data, initializes portrait system,
+  creates a blank hero statblock, sets up all UI state variables (tabs, scroll,
+  animation, combat, equipment, grid, roll log, GM mode, chargen dropdowns),
+  configures window mode from config, computes layout dimensions, loads campaign,
+  and applies colorblind mode. This is the single setup point for the entire app.
+
+
+################################################################################
+FILE: objects/obj_game/Step_0.gml
+################################################################################
+
+EVENT: Step_0
+FILE: Step_0.gml : line 1
+CATEGORY: INPUT
+CALLED BY: GameMaker engine (every frame)
+CALLS: btn_clicked, save_hero_and_track, game_end, execute_staged_roll,
+       dropdown_group_click, generate_random_character, update_hero,
+       sanitize_hero_filename, roster_add_ref, save_campaign,
+       load_character_from_path, add_recent_character, add_to_party,
+       statblock_import, create_statblock, get_roll_log_path,
+       build_browser_list, add_specialty_rank0, find_skill,
+       increase_skill_rank, add_broad_skill_to_hero,
+       load_custom_portrait_dialog, scan_portrait_directory,
+       statblock_export, save_all_data_dialog, load_all_data_dialog,
+       build_skill_request, build_feat_request, build_attack_request,
+       build_initiative_request, meta_roll, prepare_roll, quick_roll_skill,
+       set_ability, get_ability_score_for_skill,
+       handle_tab_character, handle_tab_equipment, handle_tab_combat,
+       handle_tab_psionics, handle_tab_perks_flaws, handle_tab_cybertech,
+       handle_tab_rolllog, handle_tab_grid, handle_tab_aura,
+       handle_gm_party, handle_gm_npcs, handle_gm_encounter,
+       handle_gm_campaign, apply_color_profile, write_json
+DESCRIPTION: Main input processing event, runs every frame. Reads mouse click
+  and scroll wheel. Processes global exit (saves hero, ends game). Manages roll
+  animation timer. Routes through state machine: welcome screen (accessibility,
+  recent chars, new/load/voss), chargen popup (dropdown interaction, generate),
+  skill browser (add/remove skills, stat group switching, scroll), and main
+  screen. Main screen processes right panel buttons (new char, menu, portrait,
+  file ops, situation die, roll, quick rolls), then dispatches to GM tab handlers
+  or player tab handlers based on mode and current tab.
+
+
+################################################################################
+FILE: objects/obj_game/Draw_64.gml
+################################################################################
+
+EVENT: Draw_64
+FILE: Draw_64.gml : line 1
+CATEGORY: GRAPHICAL
+CALLED BY: GameMaker engine (every frame, Draw GUI layer)
+CALLS: ui_btn, draw_tab_character, draw_tab_equipment, draw_tab_combat,
+       draw_tab_psionics, draw_tab_perks_flaws, draw_tab_cybertech,
+       draw_tab_rolllog, draw_tab_info, draw_tab_grid, draw_tab_aura,
+       draw_gm_party, draw_gm_npcs, draw_gm_encounter, draw_gm_campaign,
+       draw_gm_resources, draw_portrait, get_species_name, get_profession_name,
+       get_total_skill_cost_hero, get_adjusted_skill_points,
+       scan_portrait_directory, parse_hex_color, get_step,
+       situation_step_name, build_browser_list, get_single_skill_cost_hero,
+       is_profession_skill_hero, dropdown.draw, dropdown.draw_list,
+       dropdown_group_draw_lists, mouse_in, get_fx_data, find_skill
+DESCRIPTION: Full UI rendering event. Draws gradient background with wave swoop.
+  Renders welcome screen (buttons, recent characters, changelog, accessibility
+  popup) or main screen. Main screen has left panel (GM tools or player tabs +
+  content), right panel (portrait, dice roller, staged roll info, roll history,
+  file ops, status message), and overlays (skill browser, chargen popup, tooltip).
+  Left panel supports vertical or horizontal tab layout. Registers all button
+  rects in btn struct for Step_0 click detection.
+
+
+################################################################################
+FILE: scripts/scr_ui_helpers/scr_ui_helpers.gml
+################################################################################
+
+FUNCTION: apply_color_profile(_mode)
+FILE: scr_ui_helpers.gml : line 13
+CATEGORY: GRAPHICAL
+CALLED BY: Step_0 (welcome screen accessibility buttons), Create_0
+CALLS: parse_hex_color, write_json
+DESCRIPTION: Applies a colorblind palette from global.config.color_profiles.
+  Overwrites the game's five active signal colors (good, failure, warning,
+  amazing, highlight) using hex values from the named profile. Saves the mode
+  preference to config.json for persistence across sessions.
+
+FUNCTION: btn_clicked(_key)
+FILE: scr_ui_helpers.gml : line 28
+CATEGORY: INPUT
+CALLED BY: Step_0, all handle_tab_* functions, all handle_gm_* functions
+CALLS: (none — uses variable_struct_exists, point_in_rectangle)
+DESCRIPTION: Checks if a named button rectangle was clicked this frame. Looks
+  up the key in obj_game.btn struct, then tests if the GUI mouse position falls
+  within the stored [x1, y1, x2, y2] rectangle. Returns true/false. This is the
+  universal click check used ~200+ times across Step_0 and tab handlers.
+
+FUNCTION: log_roll(_name, _result)
+FILE: scr_ui_helpers.gml : line 38
+CATEGORY: DATA
+CALLED BY: meta_roll, _execute_instant, quick_roll_skill, do_hit_damage_roll,
+           handle_tab_combat (damage rolls), handle_gm_encounter
+CALLS: append_roll_log_file
+DESCRIPTION: Unified roll logging function. Sets the result's skill_name field,
+  stores it as last_roll, builds a modifier string for display, inserts a
+  summary into the roll_log array (newest first), appends to the persistent
+  roll log file, marks rolllog_dirty for tab reload, and caps log at
+  max_log_entries. Replaces 17 copy-pasted log blocks from pre-refactor.
+
+FUNCTION: log_info(_text)
+FILE: scr_ui_helpers.gml : line 64
+CATEGORY: DATA
+CALLED BY: handle_tab_combat (weapon info)
+CALLS: log_roll
+DESCRIPTION: Logs an informational message to the roll log without rolling dice.
+  Creates a dummy roll result struct with degree_name set to the text, then
+  passes it to log_roll with name "INFO". Used for weapon stat readouts.
+
+FUNCTION: apply_cant_fail(_roll)
+FILE: scr_ui_helpers.gml : line 74
+CATEGORY: DATA
+CALLED BY: execute_staged_roll, _execute_instant
+CALLS: (none)
+DESCRIPTION: If cant_fail_mode is enabled and the roll is a failure (degree <= 0)
+  but not a critical failure (natural 20), upgrades the result to MARGINAL
+  (degree 0). Modifies the roll struct in place.
+
+FUNCTION: build_weapon_export_array(_stat)
+FILE: scr_ui_helpers.gml : line 91
+CATEGORY: DATA
+CALLED BY: build_statblock_export
+CALLS: (none)
+DESCRIPTION: Builds an export-ready array of v4 weapon arrays from a statblock.
+  Each weapon becomes a 7-element array: [name, skill_keyword, dmg_o, dmg_g,
+  dmg_a, range, damage_type_string]. Used by all save/export functions.
+
+FUNCTION: build_skill_request(_stat, _broad, _spec, _extra_pen)
+FILE: scr_ui_helpers.gml : line 132
+CATEGORY: DATA
+CALLED BY: Step_0 (quick rolls, main roll), handle_tab_combat,
+           handle_tab_psionics, resolve_roll
+CALLS: find_skill, get_ability_score_for_skill
+DESCRIPTION: Builds a roll request struct for a skill check. Looks up the skill
+  in the statblock, falling back to broad skill if specialty not found, then to
+  untrained (half ability score). Sets score thresholds, base penalty (0 for
+  trained, +1 for broad/untrained), training label, and ability key. Returns
+  the request struct ready for meta_roll or prepare_roll.
+
+FUNCTION: build_feat_request(_stat, _ab_key, _ab_name, _extra_pen)
+FILE: scr_ui_helpers.gml : line 170
+CATEGORY: DATA
+CALLED BY: Step_0 (quick rolls), handle_tab_combat, handle_tab_character,
+           resolve_roll
+CALLS: get_ability_score_for_skill
+DESCRIPTION: Builds a roll request for a PHB feat check. Uses the FULL ability
+  score (not half) with +d4 base penalty. Returns a request struct with
+  roll_type "feat" and training "feat".
+
+FUNCTION: build_attack_request(_stat, _wep, _base_pen)
+FILE: scr_ui_helpers.gml : line 181
+CATEGORY: DATA
+CALLED BY: handle_tab_combat, resolve_roll
+CALLS: find_best_skill_for_weapon
+DESCRIPTION: Builds a roll request for a weapon attack. Uses
+  find_best_skill_for_weapon to determine the best applicable skill (trained >
+  broad > untrained). Resolves ability from weapon skill_keyword via
+  keyword_tree. Returns request with weapon reference for post-hit tracking.
+
+FUNCTION: build_initiative_request(_stat)
+FILE: scr_ui_helpers.gml : line 199
+CATEGORY: DATA
+CALLED BY: Step_0 (roll_initiative), handle_tab_combat
+CALLS: (none)
+DESCRIPTION: Builds a roll request for an initiative (action check) roll. Uses
+  the statblock's action_check scores. Roll type "initiative" triggers
+  alternity_action_check (failures become marginal).
+
+FUNCTION: apply_fx_modifiers(_stat, _req)
+FILE: scr_ui_helpers.gml : line 225
+CATEGORY: DATA
+CALLED BY: prepare_roll, quick_roll_skill
+CALLS: get_roll_keywords, get_fx_data, roll_has_tag
+DESCRIPTION: THE unified modifier engine. Iterates through all active FX entries
+  in hero.fx, looks up each in global.fx_database, generates keyword tags for
+  the roll, and checks for matches. Supports three modes: keyword_tiers
+  (per-quality keyword sets), quality_scale (same keywords, scaled modifier),
+  and fixed (flat keywords + flat modifier). Modifies req.base_penalty in place
+  and appends modifier descriptions to req.modifiers array. Zero code changes
+  needed to add new modifiers — just edit fx_database.json.
+
+FUNCTION: resolve_roll(_stat, _keyword_str, _extra_pen)
+FILE: scr_ui_helpers.gml : line 300
+CATEGORY: DATA
+CALLED BY: keyword_roll
+CALLS: build_feat_request, build_initiative_request, build_attack_request,
+       build_skill_request
+DESCRIPTION: Resolves a natural-language keyword string into a roll request
+  struct. Handles: "STR feat" → feat request, "initiative" → action check,
+  "weapon name attack" → attack request, specialty name → skill request, broad
+  name → skill request, weapon keyword → skill request, bare ability name →
+  feat. Falls back to unknown INT feat. Returns request ready for meta_roll.
+
+FUNCTION: keyword_roll(_stat, _keyword_str, _extra_pen)
+FILE: scr_ui_helpers.gml : line 363
+CATEGORY: DATA
+CALLED BY: (external/API callers)
+CALLS: meta_roll, resolve_roll
+DESCRIPTION: One-liner convenience function: resolves a keyword string to a roll
+  request and immediately executes it via meta_roll. Returns the roll result.
+
+FUNCTION: prepare_roll(_stat, _req)
+FILE: scr_ui_helpers.gml : line 379
+CATEGORY: DATA
+CALLED BY: Step_0 (main roll button), handle_tab_character (untrained feat),
+           meta_roll
+CALLS: apply_fx_modifiers, get_wound_penalty
+DESCRIPTION: Phase 1 of the staged roll system. Computes all automatic modifiers:
+  training annotation (broad/feat/untrained +1), perk/flaw/cybertech modifiers
+  via apply_fx_modifiers, and wound penalties. Stores the result in
+  obj_game.staged_roll with the computed situation step. Sets the situation die
+  adjuster to the computed value. Player can then adjust with < > before rolling.
+
+FUNCTION: execute_staged_roll()
+FILE: scr_ui_helpers.gml : line 415
+CATEGORY: DATA
+CALLED BY: Step_0 (roll animation complete), meta_roll
+CALLS: alternity_check, alternity_action_check, apply_cant_fail,
+       get_difficulty_descriptor, log_roll
+DESCRIPTION: Phase 2 of the staged roll system. Reads the staged roll and
+  current situation_step. Calculates player delta (if they adjusted the die),
+  logs it. Rolls dice via alternity_check or alternity_action_check. Applies
+  cant-fail mode. Logs the result. Tracks hit for attack rolls (stores weapon
+  and degree for damage follow-up). Clears staged_roll. Returns roll result.
+
+FUNCTION: meta_roll(_stat, _req)
+FILE: scr_ui_helpers.gml : line 456
+CATEGORY: DATA
+CALLED BY: Step_0 (initiative), handle_tab_combat (initiative)
+CALLS: prepare_roll, execute_staged_roll
+DESCRIPTION: Combined prepare + execute for instant rolls. Backwards-compatible
+  wrapper that stages and immediately executes a roll. Used when no player
+  adjustment is needed (e.g., initiative from quick roll buttons).
+
+FUNCTION: quick_roll_skill(_stat, _req)
+FILE: scr_ui_helpers.gml : line 476
+CATEGORY: DATA
+CALLED BY: Step_0 (quick rolls), handle_tab_combat, handle_tab_psionics
+CALLS: apply_fx_modifiers, get_wound_penalty, _execute_instant
+DESCRIPTION: Quick roll that adds auto-mods ON TOP of the player's current
+  situation die setting. Applies training annotation, FX modifiers, and wound
+  penalties. The final step = player's chosen base + all automatic adjustments.
+  If the player offset their base from neutral, logs it as "Player Set". Calls
+  _execute_instant to roll and log.
+
+FUNCTION: _execute_instant(_req, _stat, _sit)
+FILE: scr_ui_helpers.gml : line 511
+CATEGORY: DATA
+CALLED BY: quick_roll_skill
+CALLS: alternity_check, alternity_action_check, apply_cant_fail,
+       get_difficulty_descriptor, log_roll
+DESCRIPTION: Instantly rolls dice at the given situation step, applies cant-fail,
+  sets modifiers and difficulty on the result, logs it, and tracks hits for
+  attack rolls. Returns the roll result struct.
+
+FUNCTION: do_hit_damage_roll()
+FILE: scr_ui_helpers.gml : line 530
+CATEGORY: DATA
+CALLED BY: handle_tab_combat
+CALLS: parse_and_roll_damage, log_roll
+DESCRIPTION: Rolls damage for the last successful weapon hit. Reads
+  last_combat_weapon and last_combat_degree to determine the damage tier
+  (Ordinary/Good/Amazing). Parses and rolls the damage string, logs the result,
+  then clears the hit tracking state.
+
+FUNCTION: get_roll_keywords(_req)
+FILE: scr_ui_helpers.gml : line 562
+CATEGORY: DATA
+CALLED BY: apply_fx_modifiers
+CALLS: (none — reads global.keyword_tree)
+DESCRIPTION: Generates an array of keyword tags for a roll request. Tags include:
+  ability key (str/dex/etc.), roll type (skill/feat/attack), training level,
+  broad skill name (lowercased), specialty name (lowercased), and category tags
+  from keyword_tree (combat, ranged, melee, psionic, social, tech, etc.).
+  Attack rolls always get "combat" tag.
+
+FUNCTION: roll_has_tag(_tags, _tag)
+FILE: scr_ui_helpers.gml : line 599
+CATEGORY: DATA
+CALLED BY: apply_fx_modifiers
+CALLS: array_contains (GML built-in)
+DESCRIPTION: Wrapper around array_contains for readability. Returns true if the
+  given tag string exists in the tags array.
+
+FUNCTION: dropdown(_key, _label, _options, _max_vis, _on_change)
+FILE: scr_ui_helpers.gml : line 608
+CATEGORY: INPUT
+CALLED BY: Create_0 (chargen setup)
+CALLS: (none — returns struct with methods)
+DESCRIPTION: Creates a self-contained dropdown struct with draw(), draw_list(),
+  click(), value(), and set_options() methods. The struct manages its own open
+  state, selected index, and option list. Used by the chargen popup for species,
+  profession, career, and secondary selections.
+
+FUNCTION: dropdown_group_click(_dds)
+FILE: scr_ui_helpers.gml : line 663
+CATEGORY: INPUT
+CALLED BY: Step_0 (chargen popup)
+CALLS: dropdown.click (method on each dropdown)
+DESCRIPTION: Handles mouse click within a group of dropdown structs. First checks
+  open dropdowns for list item selection, then checks closed dropdowns for
+  opening. Ensures only one dropdown is open at a time. Returns true if any
+  dropdown consumed the click.
+
+FUNCTION: dropdown_group_draw_lists(_dds)
+FILE: scr_ui_helpers.gml : line 677
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64 (chargen popup, drawn last for z-order)
+CALLS: dropdown.draw_list (method on each dropdown)
+DESCRIPTION: Draws all open dropdown option lists in a group. Called last in the
+  draw order to ensure dropdown lists render on top of other UI elements.
+
+FUNCTION: draw_section_header(_x, _y, _title, _rightText, _rightColor)
+FILE: scr_ui_helpers.gml : line 687
+CATEGORY: GRAPHICAL
+CALLED BY: (available for tab draw functions)
+CALLS: (none)
+DESCRIPTION: Draws a section header in c_header color with optional right-side
+  text in the given color. Simple helper to reduce repetition in tab renderers.
+
+FUNCTION: draw_checkbox_inline(_x, _y, _checked, _label, _btnKey)
+FILE: scr_ui_helpers.gml : line 697
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_combat (inline), draw_combat_options_row
+CALLS: (none)
+DESCRIPTION: Draws a 14x14 checkbox with label text. Registers a button rect
+  under the given key. Filled green square when checked, empty border when not.
+
+FUNCTION: draw_combat_options_row(_x, _y, _lh, _woundKey, _cantfailKey)
+FILE: scr_ui_helpers.gml : line 712
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_combat, draw_tab_psionics
+CALLS: draw_checkbox_inline
+DESCRIPTION: Draws the wound-penalty and cant-fail checkboxes used by both the
+  Combat and Psionics tabs. Returns the new _ly after drawing.
+
+FUNCTION: draw_encounter_char_row(_lx, _ly, _lh, _charStat, _labelColor, _isParty)
+FILE: scr_ui_helpers.gml : line 721
+CATEGORY: GRAPHICAL
+CALLED BY: draw_gm_encounter
+CALLS: (none)
+DESCRIPTION: Draws one character row in the encounter tracker showing: name,
+  action check scores, initiative phase, actions remaining, resistance mods
+  (STR/DEX/WIL), and durability status (OK/STUNNED/WOUNDED/MORTAL/DEAD).
+  Returns new _ly.
+
+FUNCTION: draw_scrollable_info_blocks(_lx, _ly, _lw, _lh, _blocks, _totalHeight, _scrollVarName)
+FILE: scr_ui_helpers.gml : line 757
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_info, draw_gm_resources
+CALLS: (none)
+DESCRIPTION: Draws an array of pre-built info blocks with vertical scrolling.
+  Clamps scroll offset, clips rendering to visible area, and early-outs when
+  past the bottom. Used by both the player Info tab and GM Resources tab.
+
+FUNCTION: info_add_line(_blocks, _label, _desc, _col, _width)
+FILE: scr_ui_helpers.gml : line 784
+CATEGORY: GRAPHICAL
+CALLED BY: build_gm_resource_blocks, build_player_info_blocks
+CALLS: (none)
+DESCRIPTION: Adds a content line to an info blocks array. If only label is given,
+  adds a header-style line. If both label and desc, combines them with indent.
+  Empty label+desc creates a spacer. Returns height added.
+
+FUNCTION: info_add_section(_blocks, _title, _lh)
+FILE: scr_ui_helpers.gml : line 801
+CATEGORY: GRAPHICAL
+CALLED BY: build_gm_resource_blocks, build_player_info_blocks
+CALLS: (none)
+DESCRIPTION: Adds a section header block (c_header color) to the info blocks
+  array. Returns height added (line height + 4 padding).
+
+FUNCTION: build_gm_resource_blocks(_blocks, _lh, _width)
+FILE: scr_ui_helpers.gml : line 809
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_info (GM mode), draw_gm_resources
+CALLS: info_add_section, info_add_line
+DESCRIPTION: Populates an info blocks array with the GM customization guide
+  content. Covers: custom equipment, skills, perks/flaws/cybertech, psionics,
+  NPC templates, species, and campaign management. Returns total height.
+
+FUNCTION: build_player_info_blocks(_blocks, _lh, _width)
+FILE: scr_ui_helpers.gml : line 870
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_info (player mode)
+CALLS: info_add_section, info_add_line
+DESCRIPTION: Populates an info blocks array with the player help guide content.
+  Covers: how to roll, right panel, all 10 tabs, ability scores, durability,
+  and dice reference. Returns total height.
+
+FUNCTION: draw_inspectable_row(_lx, _ly, _lw, _lh, _text, _inspectIdx, _inspectType, _inspKeyPrefix, _btnInfo)
+FILE: scr_ui_helpers.gml : line 967
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_equipment (gear view)
+CALLS: draw_inspect_highlight, mouse_in, ui_btn
+DESCRIPTION: Draws a row with inspect highlight, hover effect, and an optional
+  button (e.g., remove "X"). Registers a button rect for the row name area.
+  Returns new _ly.
+
+FUNCTION: draw_expandable_catalog_item(_lx, _ly, _lw, _lh, _name, _globalIdx, _owned, _expandedVar, _nameKeyPrefix, _extraText, _ownedTag)
+FILE: scr_ui_helpers.gml : line 986
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_equipment (weapon add), draw_tab_cybertech, draw_tab_grid
+CALLS: mouse_in
+DESCRIPTION: Draws an expandable catalog item with expand/collapse arrow, owned
+  tag (e.g., "[INSTALLED]"), hover highlight, and optional extra text. Registers
+  a click rect for the name area. Returns new _ly for just the name row; caller
+  draws expanded content below if expanded.
+
+FUNCTION: draw_combat_skill_row(_cols, _ly, _lh, _name, _skillName, _scoreOrd, _scoreGood, _scoreAmz, _training, _trainingColor, _totalPenalty, _btnKey, _btnLabel)
+FILE: scr_ui_helpers.gml : line 1001
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_combat (unarmed, defensive, feat rows)
+CALLS: situation_step_name, ui_btn
+DESCRIPTION: Draws a single combat-style skill row with columns: name, skill
+  name, score (O/G/A), training, situation die, and optional roll button.
+  Computes situation step from total penalty. Returns new _ly.
+
+
+################################################################################
+FILE: scripts/scr_draw_tabs/scr_draw_tabs.gml
+################################################################################
+
+FUNCTION: draw_tab_character(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 7
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: ui_btn, draw_durability_circles, get_wound_penalty,
+       get_total_skill_cost_hero, get_adjusted_skill_points,
+       get_single_skill_cost_hero, is_profession_skill_hero,
+       get_ability_score_for_skill, find_skill, mouse_in
+DESCRIPTION: Draws Tab 0 (Character/Skills). Renders 6 stat group buttons with
+  +/- controls, durability circles (stun/wound/mortal) with reset buttons,
+  action check display, filtered skill list by active ability group with
+  rank/score/cost/category columns, active perks/flaws toggle row, scroll
+  buttons, untrained check section, and skill browser button. Builds
+  skill_index_map each frame for filtered row mapping.
+
+FUNCTION: draw_tab_equipment(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 177
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: ui_btn, draw_inspect_highlight, draw_inspectable_row,
+       draw_expandable_catalog_item, mouse_in, hero_has_weapon
+DESCRIPTION: Draws Tab 1 (Equipment). Renders three sub-tab views (weapons/
+  armor/gear) with verbose/compact toggle, PL filter, and add panel. Weapons
+  view shows inventory with skill/type/range/damage or add panel with category
+  grouping. Armor view shows equipped armor or available list. Gear view shows
+  inventory or available list. Custom weapon/gear creation buttons when adding.
+
+FUNCTION: draw_tab_combat(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 460
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: ui_btn, draw_combat_options_row, find_best_skill_for_weapon,
+       get_wound_penalty, situation_step_name, draw_combat_skill_row,
+       find_skill, get_ability_score_for_skill, mouse_in
+DESCRIPTION: Draws Tab 2 (Combat). Renders quick roll buttons, action phase
+  tracker (4 clickable phase boxes), wound/cant-fail/range options,
+  weapon attack table with full skill matching, clickable damage codes,
+  post-success damage prompt, unarmed combat (punch/kick), defensive skills
+  (Dodge, Power martial arts), and feat checks for all 6 abilities.
+
+FUNCTION: draw_tab_psionics(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 677
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: ui_btn, draw_combat_options_row, find_skill, get_wound_penalty,
+       situation_step_name
+DESCRIPTION: Draws Tab 3 (Psionics). Checks if hero has any psionic broad
+  skills (Telepathy/Telekinesis/ESP/Biokinesis). If not, shows explanation
+  message. If yes, draws each discipline with broad skill entry and specialty
+  entries, including score/training/situation die columns and psionic power
+  descriptions (hardcoded switch for ~18 known powers). Roll button per skill.
+
+FUNCTION: draw_tab_perks_flaws(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 796
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: ui_btn, get_perks_cost, get_flaws_benefit, get_fx_data, find_fx,
+       has_fx, mouse_in
+DESCRIPTION: Draws Tab 4 (Perks & Flaws). Renders perks/flaws sub-tab buttons,
+  hero's installed perks/flaws from fx array with cost/refund and remove buttons,
+  then available list from global.fx_database filtered by type with scroll.
+  Shows quality tier upgrades for owned perks. Click-to-add with hover highlight.
+
+FUNCTION: draw_tab_cybertech(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 914
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: ui_btn, get_cyber_tolerance, get_cyber_used, get_fx_data, has_fx,
+       draw_expandable_catalog_item
+DESCRIPTION: Draws Tab 5 (Cybertech). Shows tolerance meter (used/max),
+  installed cyberware with active/inactive toggles and descriptions, then
+  available cyberware grouped by category (neural/body/sensory/weapon/utility)
+  with expandable details showing quality tiers (O/G/A) and add buttons.
+  Shows prerequisites inline.
+
+FUNCTION: draw_tab_rolllog(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 1024
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: load_roll_log_tail, get_roll_log_path, ui_btn
+DESCRIPTION: Draws Tab 6 (Roll Log). Reloads from file if dirty. Shows last 100
+  entries newest-first, color-coded by degree (Amazing=blue, Good=green,
+  Ordinary=white, Marginal=yellow, Failure=red). Copy-to-clipboard button per
+  entry. Scroll up/down buttons. Shows line numbers and file path.
+
+FUNCTION: draw_tab_info(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 1094
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: build_gm_resource_blocks, build_player_info_blocks,
+       draw_scrollable_info_blocks
+DESCRIPTION: Draws Tab 7 (Info/Reference). In GM mode, shows "GM Resources &
+  Customization" guide built by build_gm_resource_blocks. In player mode, shows
+  "How To Use Your Character" guide built by build_player_info_blocks. Both
+  rendered via draw_scrollable_info_blocks with vertical scrolling.
+
+FUNCTION: draw_tab_grid(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 1117
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: ui_btn, get_deck_slots, get_program_data, draw_circuit_border,
+       draw_expandable_catalog_item
+DESCRIPTION: Draws Tab 8 (Grid/Cyberdeck). Three sub-tab views: Programs
+  (installed list or add panel filtered by type/PL with quality tiers),
+  Computer (current deck + available computers with processor selection), and
+  Builder (custom program creation + homebrew list). Shows deck summary with
+  slot usage.
+
+FUNCTION: draw_tab_aura(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 1631
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64
+CALLS: ui_btn, get_species_name, get_profession_name
+DESCRIPTION: Draws Tab 9 (Aura/Lore). Renders identity fields (species,
+  profession, gender, height, weight, hair) with edit buttons, character traits
+  section (moral attitude, temperament pill buttons for 25 options pick 2-3,
+  motivation pill buttons for 16 options pick 1-2), personality freeform with
+  edit, and lifepath/backstory with edit. Voss is read-only. Scroll handled
+  via info_scroll.
+
+FUNCTION: _gm_get_best_awareness_score(_stat)
+FILE: scr_draw_tabs.gml : line 1284
+CATEGORY: DATA
+CALLED BY: draw_gm_party
+CALLS: find_skill
+DESCRIPTION: Returns the best awareness score string for a character. Priority:
+  Perception specialty > Intuition specialty > Awareness broad > untrained WIL.
+  Returns formatted string like "Perception 12/6/3" or "Untrained 5".
+
+FUNCTION: draw_gm_party(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 1311
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64 (GM mode)
+CALLS: ui_btn, _gm_get_best_awareness_score, find_skill, get_species_name,
+       get_profession_name, mouse_in
+DESCRIPTION: Draws GM Tab 0 (Party). Shows party management buttons (Import,
+  New Char, Save All), then each party member with 3-row display: Row 1 = name,
+  species, profession, HP, edit/move/remove buttons. Row 2 = senses, mental
+  resolve, physical resolve. Row 3 = resistance mods, enhanced senses (species
+  + FX), psionics. Selected row has highlight background.
+
+FUNCTION: draw_gm_npcs(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 1397
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64 (GM mode)
+CALLS: ui_btn, get_npcs_by_faction, get_species_name, get_profession_name,
+       mouse_in
+DESCRIPTION: Draws GM Tab 1 (NPCs). Shows NPC management buttons (Quick NPC,
+  Import, + Faction), then NPCs grouped by faction with headers. Each NPC row
+  shows name, species, profession, and Edit/To Party/Remove buttons. Selected
+  NPC has highlight background.
+
+FUNCTION: draw_gm_encounter(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 1471
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64 (GM mode)
+CALLS: ui_btn, draw_encounter_char_row
+DESCRIPTION: Draws GM Tab 2 (Encounter). Shows Roll All Init / New Round /
+  Clear Init buttons. Draws initiative bar with 4 phase columns (Amazing/Good/
+  Ordinary/Marginal), populates with character names sorted by initiative. Below
+  shows detailed view with column headers (Name, AC, Phase, Acts, Res Mods,
+  S/W/M Status) for all party members then NPCs.
+
+FUNCTION: draw_gm_campaign(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 1558
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64 (GM mode)
+CALLS: ui_btn
+DESCRIPTION: Draws GM Tab 3 (Campaign). Shows Scan Files / Import File /
+  Export All buttons, summary counts, then scrollable roster list. Each roster
+  entry shows name, file path, and status ([Party], [NPC], or Party/NPC load
+  buttons for unloaded characters). Scroll indicators for long lists.
+
+FUNCTION: draw_gm_resources(_lx, _ly, _lw, _lh)
+FILE: scr_draw_tabs.gml : line 1785
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64 (GM mode)
+CALLS: build_gm_resource_blocks, draw_scrollable_info_blocks
+DESCRIPTION: Draws GM Tab 4 (Resources). Builds the GM customization guide
+  blocks and renders them via draw_scrollable_info_blocks using gm_roster_scroll
+  for scroll state.
+
+
+################################################################################
+FILE: scripts/scr_tab_handlers/scr_tab_handlers.gml
+################################################################################
+
+FUNCTION: _gm_list_handler(_list, _prefix, _selVar, _editSource, _moveFunc, _removeFunc, _moveMsg, _removeMsg)
+FILE: scr_tab_handlers.gml : line 11
+CATEGORY: INPUT
+CALLED BY: handle_gm_party, handle_gm_npcs
+CALLS: btn_clicked, update_hero, save_campaign
+DESCRIPTION: Shared handler for GM party/NPC character list operations. Handles
+  select (click row), edit (switch to player sheet), move (party<->NPC), and
+  remove operations. Iterates backward for safe deletion. Updates selection
+  index after list changes. Saves campaign after move/remove.
+
+FUNCTION: _toggle_inspect(_idx, _type)
+FILE: scr_tab_handlers.gml : line 42
+CATEGORY: INPUT
+CALLED BY: handle_tab_equipment
+CALLS: (none)
+DESCRIPTION: Toggles the equipment inspect panel. If already inspecting this
+  item at this index and type, closes it. Otherwise opens inspection for the
+  given item.
+
+FUNCTION: _gm_import_and_add(_addFunc, _factionName, _statusPrefix)
+FILE: scr_tab_handlers.gml : line 49
+CATEGORY: INPUT
+CALLED BY: handle_gm_party, handle_gm_npcs
+CALLS: statblock_import, save_hero_and_track, roster_add_ref,
+       sanitize_hero_filename, save_campaign
+DESCRIPTION: Shared import-from-file logic for GM tabs. Opens file dialog,
+  imports character, adds to party or NPCs via the provided function, saves
+  to disk, adds to roster, saves campaign. Shows status message.
+
+FUNCTION: handle_gm_party()
+FILE: scr_tab_handlers.gml : line 61
+CATEGORY: INPUT
+CALLED BY: Step_0 (GM mode, gm_tab == 0)
+CALLS: _gm_list_handler, _gm_import_and_add, btn_clicked, add_to_party,
+       move_party_to_npcs, remove_from_party, save_hero_and_track,
+       save_campaign
+DESCRIPTION: Input handler for GM Party tab. Delegates list operations to
+  _gm_list_handler. Handles Import, New Char, and Save All buttons. Save All
+  iterates all party members and saves each to disk.
+
+FUNCTION: handle_gm_npcs()
+FILE: scr_tab_handlers.gml : line 75
+CATEGORY: INPUT
+CALLED BY: Step_0 (GM mode, gm_tab == 1)
+CALLS: _gm_list_handler, _gm_import_and_add, btn_clicked, generate_quick_npc,
+       add_to_npcs, move_npc_to_party, remove_from_npcs, save_hero_and_track,
+       roster_add_ref, sanitize_hero_filename, save_campaign, get_string
+DESCRIPTION: Input handler for GM NPC tab. Handles Quick NPC generation (random
+  template), Import, and Add Faction. Quick NPC inherits the selected NPC's
+  faction. Add Faction prompts for name, deduplicates, saves campaign.
+
+FUNCTION: _for_all_combatants(_func)
+FILE: scr_tab_handlers.gml : line 105
+CATEGORY: DATA
+CALLED BY: handle_gm_encounter
+CALLS: (none — applies provided function)
+DESCRIPTION: Utility that runs a function on every party member and NPC.
+  Iterates global.party then global.npcs, calling func(stat) for each.
+
+FUNCTION: handle_gm_encounter()
+FILE: scr_tab_handlers.gml : line 111
+CATEGORY: INPUT
+CALLED BY: Step_0 (GM mode, gm_tab == 2)
+CALLS: btn_clicked, _for_all_combatants, alternity_action_check, log_roll
+DESCRIPTION: Input handler for GM Encounter tab. Roll All Init: rolls action
+  check for every combatant, sets init phase and actions. New Round: resets
+  actions_left for all. Clear Init: resets initiative and actions for all.
+
+FUNCTION: handle_gm_campaign()
+FILE: scr_tab_handlers.gml : line 132
+CATEGORY: INPUT
+CALLED BY: Step_0 (GM mode, gm_tab == 3)
+CALLS: btn_clicked, scan_characters_directory, save_campaign, statblock_import,
+       save_hero_and_track, sanitize_hero_filename, roster_add_ref,
+       export_campaign_full, import_player_to_party, import_to_npcs
+DESCRIPTION: Input handler for GM Campaign tab. Handles Scan Files (rebuilds
+  roster from characters/ folder), Import File (adds to roster), Export All
+  (saves all chars + campaign), and per-roster-entry Load to Party / Load to
+  NPC buttons. Scroll handled in Step_0.
+
+FUNCTION: _toggle_pill_list(_loreData, _fieldKey, _btnPrefix, _options, _maxPicks, _maxLabel)
+FILE: scr_tab_handlers.gml : line 185
+CATEGORY: INPUT
+CALLED BY: handle_tab_aura
+CALLS: btn_clicked
+DESCRIPTION: Shared toggle logic for lore pill buttons (temperament,
+  motivations). Checks each option's button, finds if already selected, toggles
+  it on/off. Enforces max picks limit with status message. Sets hero_dirty.
+
+FUNCTION: handle_tab_aura()
+FILE: scr_tab_handlers.gml : line 202
+CATEGORY: INPUT
+CALLED BY: Step_0 (current_tab == 9)
+CALLS: btn_clicked, _toggle_pill_list, get_string
+DESCRIPTION: Input handler for Aura/Lore tab. Voss is read-only (early return).
+  Handles identity field edits (gender, height, weight, hair via get_string),
+  moral attitude edit, temperament pill toggles (25 options, max 3),
+  motivation pill toggles (16 options, max 2), personality edit, and lifepath
+  edit. Each change sets hero_dirty.
+
+FUNCTION: handle_tab_equipment()
+FILE: scr_tab_handlers.gml : line 261
+CATEGORY: INPUT
+CALLED BY: Step_0 (current_tab == 1)
+CALLS: btn_clicked, _toggle_inspect, remove_weapon, update_hero,
+       hero_has_weapon, add_weapon, set_armor, remove_gear,
+       string_to_damage_type, get_string
+DESCRIPTION: Input handler for Equipment tab. Handles sub-tab switching,
+  add panel toggle, verbose toggle, PL adjustment, weapon add/remove/inspect
+  (with category support), armor equip/inspect, gear add/remove/inspect, and
+  custom weapon/gear creation via get_string dialogs.
+
+FUNCTION: handle_tab_combat()
+FILE: scr_tab_handlers.gml : line 362
+CATEGORY: INPUT
+CALLED BY: Step_0 (current_tab == 2)
+CALLS: btn_clicked, meta_roll, build_initiative_request, quick_roll_skill,
+       build_attack_request, build_skill_request, build_feat_request,
+       find_skill, find_best_skill_for_weapon, do_hit_damage_roll,
+       parse_and_roll_damage, log_roll, log_info
+DESCRIPTION: Input handler for Combat tab. Handles initiative roll, round reset,
+  phase placement clicks, wound/cant-fail/range toggles, weapon attack rolls,
+  per-tier damage rolls, all-tier damage rolls, weapon info, punch/kick,
+  defensive skill rolls (Dodge, Power martial arts), and feat checks for all
+  6 abilities.
+
+FUNCTION: handle_tab_psionics()
+FILE: scr_tab_handlers.gml : line 430
+CATEGORY: INPUT
+CALLED BY: Step_0 (current_tab == 3)
+CALLS: btn_clicked, quick_roll_skill, build_skill_request, find_skill
+DESCRIPTION: Input handler for Psionics tab. Handles wound/cant-fail toggles
+  and psionic skill rolls. Iterates 4 FX disciplines (Telepathy/TK/ESP/Bio),
+  rolls broad or specialty skills. Button indices track across all displayed
+  psionic skills.
+
+FUNCTION: handle_tab_perks_flaws()
+FILE: scr_tab_handlers.gml : line 456
+CATEGORY: INPUT
+CALLED BY: Step_0 (current_tab == 4)
+CALLS: btn_clicked, remove_perk_from_hero, toggle_flaw_on_hero,
+       add_perk_to_hero
+DESCRIPTION: Input handler for Perks/Flaws tab. Handles sub-tab switch,
+  remove installed perks/flaws (indexed by draw order), and add from available
+  list (indexed by fx_database draw order, gated by active view to prevent
+  cross-fire from stale rects).
+
+FUNCTION: handle_tab_cybertech()
+FILE: scr_tab_handlers.gml : line 476
+CATEGORY: INPUT
+CALLED BY: Step_0 (current_tab == 5)
+CALLS: btn_clicked, remove_cybertech_from_hero, add_cybertech_to_hero
+DESCRIPTION: Input handler for Cybertech tab. Handles toggle active/inactive
+  for installed cyberware, remove installed cyberware, expand/collapse available
+  items, and add from database at quality tiers (O/G/A).
+
+FUNCTION: handle_tab_rolllog()
+FILE: scr_tab_handlers.gml : line 511
+CATEGORY: INPUT
+CALLED BY: Step_0 (current_tab == 6)
+CALLS: btn_clicked, clipboard_set_text
+DESCRIPTION: Input handler for Roll Log tab. Handles scroll up/down buttons
+  and copy-to-clipboard buttons for each visible log entry.
+
+FUNCTION: handle_tab_character()
+FILE: scr_tab_handlers.gml : line 530
+CATEGORY: INPUT
+CALLED BY: Step_0 (current_tab == 0)
+CALLS: btn_clicked, increase_skill_rank, decrease_skill_rank, update_hero,
+       build_browser_list, build_feat_request, prepare_roll
+DESCRIPTION: Input handler for Character/Skills tab. Handles stat group button
+  clicks, skill +/- buttons (mapped through skill_index_map), skill row
+  selection, perk/flaw active toggles, scroll up/down, skill browser open,
+  untrained toggle, and untrained feat roll.
+
+FUNCTION: handle_tab_grid()
+FILE: scr_tab_handlers.gml : line 591
+CATEGORY: INPUT
+CALLED BY: Step_0 (current_tab == 8)
+CALLS: btn_clicked, get_program_data, get_deck_slots, get_string
+DESCRIPTION: Input handler for Grid/Cyberdeck tab. Handles sub-tab switching,
+  add panel toggle, program remove, available program add at quality tiers
+  (M/O/G/A) with slot capacity check, computer selection with processor quality,
+  and custom program builder via get_string dialogs.
+
+
+################################################################################
+FILE: scripts/scr_alternity_statblock/scr_alternity_statblock.gml
+################################################################################
+
+FUNCTION: string_to_damage_type(_s)
+FILE: scr_alternity_statblock.gml : line 23
+CATEGORY: DATA
+CALLED BY: careers_from_import, handle_tab_equipment, generate_quick_npc
+CALLS: (none)
+DESCRIPTION: Converts a damage type string ("LI", "HI", "EN") to its
+  DAMAGE_TYPE enum value (0, 1, 2). Returns 0 (LI) as default.
+
+FUNCTION: careers_from_import(_careers)
+FILE: scr_alternity_statblock.gml : line 31
+CATEGORY: DATA
+CALLED BY: init_all_data
+CALLS: string_to_damage_type
+DESCRIPTION: Converts an imported career array from JSON format (string damage
+  types) to runtime format (enum damage types). Each career struct gets broads,
+  specs, weapons (with enum conversion), armor, and gear arrays.
+
+FUNCTION: get_broad_skill_scores(_stat, _broad_name)
+FILE: scr_alternity_statblock.gml : line 67
+CATEGORY: DATA
+CALLED BY: add_specialty_rank0, recalc_skill_scores, statblock_import_data
+CALLS: (none)
+DESCRIPTION: Searches a statblock's skills array for the broad skill entry
+  (specialty == "") matching the given broad name. Returns a struct with idx,
+  ordinary, good, amazing scores, and ability key. Returns undefined if not found.
+
+FUNCTION: add_specialty_rank0(_stat, _broad_name, _spec_name)
+FILE: scr_alternity_statblock.gml : line 80
+CATEGORY: DATA
+CALLED BY: Step_0 (skill browser add), apply_career_to_statblock,
+           generate_quick_npc
+CALLS: find_skill, get_broad_skill_scores
+DESCRIPTION: Adds a rank-0 specialty under an existing broad skill. Finds the
+  correct insertion point (after the last specialty of that broad). Uses the
+  broad skill's scores as starting values. Returns false if broad not found
+  or specialty already exists.
+
+FUNCTION: build_browser_list(_stat, _ability_filter)
+FILE: scr_alternity_statblock.gml : line 112
+CATEGORY: DATA
+CALLED BY: Step_0 (skill browser open, stat group switch)
+CALLS: find_skill
+DESCRIPTION: Builds the flat list of browsable entries for the skill browser.
+  Iterates global.skill_tree, filtered by ability. For each broad skill, adds
+  a "broad" entry (owned or not). If owned, adds specialty entries: "specialty"
+  (owned) or "add" (not owned). Returns array of structs with type, broad,
+  specialty, ability, owned fields.
+
+FUNCTION: create_statblock(_name, _profession, _career)
+FILE: scr_alternity_statblock.gml : line 159
+CATEGORY: DATA
+CALLED BY: Create_0, generate_random_character, generate_quick_npc, Step_0
+CALLS: (none)
+DESCRIPTION: Creates a new blank Alternity character statblock struct. Sets all
+  default values: identity (name, profession, career, species, secondary_prof),
+  abilities (all 10), action check, durability (stun/wound/mortal), empty skills/
+  weapons/gear arrays, "None" armor, empty background, lore struct (PHB Step 8
+  attributes), empty deck, and empty fx array.
+
+FUNCTION: set_ability(_stat, _ability_name, _score)
+FILE: scr_alternity_statblock.gml : line 227
+CATEGORY: DATA
+CALLED BY: Step_0 (ability +/-), generate_random_character, generate_quick_npc
+CALLS: (none)
+DESCRIPTION: Sets an ability score and auto-calculates derived values: untrained
+  (score div 2) and resistance modifier ((score div 2) - 5). Routes to the
+  correct struct field (str/dex/con/int_/wil/per).
+
+FUNCTION: calculate_action_check(_stat)
+FILE: scr_alternity_statblock.gml : line 246
+CATEGORY: DATA
+CALLED BY: update_hero, generate_random_character, generate_quick_npc
+CALLS: (none)
+DESCRIPTION: Calculates action check scores from (DEX + INT) / 2 + profession
+  bonus. Sets ordinary, good (ordinary/2), amazing (ordinary/4), and marginal
+  (ordinary + 1) thresholds.
+
+FUNCTION: calculate_durability(_stat)
+FILE: scr_alternity_statblock.gml : line 262
+CATEGORY: DATA
+CALLED BY: update_hero, generate_random_character, generate_quick_npc
+CALLS: (none)
+DESCRIPTION: Calculates durability from CON + profession durability_mod. Sets
+  stun and wound max to CON+mod, mortal max to (CON+mod)/2. Resets all current
+  values to max.
+
+FUNCTION: add_skill(_stat, _ability, _broad_name, _specialty_name, _rank, _score_ord, _score_good, _score_amz)
+FILE: scr_alternity_statblock.gml : line 281
+CATEGORY: DATA
+CALLED BY: add_broad_skill_to_hero, statblock_import_data
+CALLS: (none)
+DESCRIPTION: Adds a skill struct to the statblock's skills array. The struct
+  contains ability, broad_skill, specialty (empty string for broad), rank, and
+  three score thresholds. Low-level function — callers compute scores.
+
+FUNCTION: add_weapon(_stat, _name, _skill_kw, _dmg_ord, _dmg_good, _dmg_amz, _range_str, _damage_type)
+FILE: scr_alternity_statblock.gml : line 296
+CATEGORY: DATA
+CALLED BY: apply_career_to_statblock, handle_tab_equipment, generate_quick_npc,
+           statblock_import_data
+CALLS: (none)
+DESCRIPTION: Adds a weapon struct to the statblock's weapons array. The struct
+  contains name, skill_keyword (maps to keyword_tree.weapon_skills), damage
+  strings for three tiers, range string, and DAMAGE_TYPE enum.
+
+FUNCTION: set_armor(_stat, _name, _li, _hi, _en)
+FILE: scr_alternity_statblock.gml : line 310
+CATEGORY: DATA
+CALLED BY: apply_career_to_statblock, handle_tab_equipment, statblock_import_data
+CALLS: (none)
+DESCRIPTION: Sets armor on the statblock. Overwrites name and three absorption
+  codes (LI, HI, En — stored as strings like "d6-1").
+
+FUNCTION: remove_weapon(_stat, _idx)
+FILE: scr_alternity_statblock.gml : line 318
+CATEGORY: DATA
+CALLED BY: handle_tab_equipment
+CALLS: (none)
+DESCRIPTION: Removes a weapon from the statblock by index. Bounds-checked.
+
+FUNCTION: remove_gear(_stat, _idx)
+FILE: scr_alternity_statblock.gml : line 322
+CATEGORY: DATA
+CALLED BY: handle_tab_equipment
+CALLS: (none)
+DESCRIPTION: Removes a gear item from the statblock by index. Bounds-checked.
+
+FUNCTION: hero_has_weapon(_stat, _name)
+FILE: scr_alternity_statblock.gml : line 329
+CATEGORY: DATA
+CALLED BY: handle_tab_equipment, draw_tab_equipment
+CALLS: (none)
+DESCRIPTION: Returns true if the statblock has a weapon with the given name.
+  Used to prevent duplicate weapon additions.
+
+FUNCTION: build_statblock_export(_stat)
+FILE: scr_alternity_statblock.gml : line 343
+CATEGORY: DATA
+CALLED BY: statblock_export, save_hero_and_track
+CALLS: get_species_name, get_profession_name, build_weapon_export_array
+DESCRIPTION: Builds the v4 export struct for a statblock. Converts skills to
+  compact arrays ([name, ability/broad, rank/-1]), weapons to 7-element arrays,
+  armor to 4-element array. Includes damage taken, FX array, deck, lore,
+  portrait path. Sets _format and _version fields.
+
+FUNCTION: statblock_export(_stat)
+FILE: scr_alternity_statblock.gml : line 378
+CATEGORY: DATA
+CALLED BY: Step_0 (export button)
+CALLS: build_statblock_export, get_save_filename
+DESCRIPTION: Exports a character to a JSON file via save dialog. Calls
+  build_statblock_export to create the data, then writes to the user-chosen
+  path. Returns true/false for success/cancel.
+
+FUNCTION: statblock_import()
+FILE: scr_alternity_statblock.gml : line 389
+CATEGORY: DATA
+CALLED BY: Step_0 (import, welcome load), _gm_import_and_add, handle_gm_campaign
+CALLS: get_open_filename, statblock_import_data
+DESCRIPTION: Imports a character from a JSON file via open dialog. Reads the
+  file, parses JSON, delegates to statblock_import_data. Returns statblock or
+  undefined.
+
+FUNCTION: _resolve_enum(_val, _parser)
+FILE: scr_alternity_statblock.gml : line 401
+CATEGORY: DATA
+CALLED BY: statblock_import_data
+CALLS: (provided parser function)
+DESCRIPTION: Resolves a string-or-number value using a parser function. If the
+  value is a string, calls the parser (e.g., parse_profession_name). If already
+  a number, returns as-is. Used for v3/v4 import compatibility.
+
+FUNCTION: statblock_import_data(_data)
+FILE: scr_alternity_statblock.gml : line 407
+CATEGORY: DATA
+CALLED BY: statblock_import, load_character_from_path
+CALLS: create_statblock, _resolve_enum, parse_profession_name, parse_species_name,
+       set_ability, calculate_action_check, calculate_durability,
+       get_ability_score_for_skill, get_broad_skill_scores, add_skill,
+       add_weapon, set_armor, string_to_damage_type
+DESCRIPTION: Builds a complete statblock from parsed JSON data. Handles v2
+  (nested objects), v3 (lowercase keys), and v4 (compact arrays) formats.
+  Reconstructs abilities, skills (from compact or object arrays), weapons,
+  armor, gear, background, lore (with migration from old field names), FX
+  array, and deck. Returns statblock struct or undefined if format mismatch.
+
+FUNCTION: draw_durability_circles(_x, _y, _label, _current, _max_val, _bar_color, _text_color)
+FILE: scr_alternity_statblock.gml : line 507
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_character
+CALLS: (none)
+DESCRIPTION: Draws clickable durability circles. Shows "Label: damage/max" text
+  followed by circles representing hit points. Filled circles = damage taken.
+  Click a circle to set damage level. Returns new current value if clicked,
+  or -1 if no click detected.
+
+FUNCTION: get_fx_data(_name)
+FILE: scr_alternity_statblock.gml : line 528
+CATEGORY: DATA
+CALLED BY: apply_fx_modifiers, get_perks_cost, get_flaws_benefit,
+           add_perk_to_hero, add_cybertech_to_hero, remove_cybertech_from_hero,
+           draw_tab_perks_flaws, draw_tab_cybertech, get_cyber_used
+CALLS: (none — reads global.fx_lookup + global.fx_database)
+DESCRIPTION: Looks up full FX definition from global.fx_database by name.
+  Uses O(1) lookup via global.fx_lookup hash map. Returns struct with all FX
+  data (keywords, modifier, quality_scale, etc.) or undefined if not found.
+
+FUNCTION: get_program_data(_name)
+FILE: scr_alternity_statblock.gml : line 535
+CATEGORY: DATA
+CALLED BY: get_deck_slots, draw_tab_grid, handle_tab_grid
+CALLS: (none — reads global.program_lookup + global.programs)
+DESCRIPTION: Looks up full program definition from global.programs by name.
+  Uses O(1) lookup via global.program_lookup hash map. Returns struct or
+  undefined.
+
+FUNCTION: get_deck_slots(_stat)
+FILE: scr_alternity_statblock.gml : line 543
+CATEGORY: DATA
+CALLED BY: handle_tab_grid, draw_tab_grid
+CALLS: get_program_data
+DESCRIPTION: Returns {used, total} slot counts for the hero's cyberdeck.
+  Reads processor quality from global.processor_quality for total memory.
+  Sums slot costs of all installed programs for used count.
+
+FUNCTION: update_hero(_stat)
+FILE: scr_alternity_statblock.gml : line 559
+CATEGORY: DATA
+CALLED BY: Step_0 (many places), Create_0, generate_quick_npc, all handlers
+           that modify character
+CALLS: calculate_action_check, calculate_durability, recalc_skill_scores,
+       load_portrait_for_hero
+DESCRIPTION: Master update function — recalculates ALL derived values from base
+  data. Must be called after ANY character modification. Recalculates ability
+  derived values (untrained, resistance modifier), action check, durability
+  (preserves current damage), skill scores, and loads appropriate portrait.
+
+FUNCTION: get_wound_penalty(_stat)
+FILE: scr_alternity_statblock.gml : line 584
+CATEGORY: DATA
+CALLED BY: prepare_roll, quick_roll_skill, draw_tab_character, draw_tab_combat,
+           draw_tab_psionics
+CALLS: (none)
+DESCRIPTION: Returns situation die step penalty from wounds and mortal damage.
+  Mortal damage adds its count directly. Wound damage adds +2 if at max, +1
+  if at half or more.
+
+FUNCTION: sanitize_hero_filename(_name)
+FILE: scr_alternity_statblock.gml : line 602
+CATEGORY: DATA
+CALLED BY: save_hero_and_track, Step_0, _gm_import_and_add, handle_gm_npcs,
+           handle_gm_campaign, _build_char_refs, load_custom_portrait_dialog
+CALLS: (none)
+DESCRIPTION: Strips spaces, apostrophes, and Windows-illegal characters from
+  hero name to create safe file paths. Converts to lowercase, replaces spaces
+  with underscores, removes /\:*?"<>|. Returns "unnamed" if result is empty.
+
+FUNCTION: append_roll_log_file(_stat, _roll)
+FILE: scr_alternity_statblock.gml : line 615
+CATEGORY: DATA
+CALLED BY: log_roll
+CALLS: get_roll_log_path, situation_step_name, get_difficulty_descriptor
+DESCRIPTION: Appends a roll entry to the character's persistent log file.
+  Formats: timestamp | skill_name [difficulty] | d20:X +dY:Z = total (mods) =>
+  degree. Uses file_text_open_append for efficient file I/O.
+
+FUNCTION: load_roll_log_tail(_stat, _count)
+FILE: scr_alternity_statblock.gml : line 634
+CATEGORY: DATA
+CALLED BY: draw_tab_rolllog
+CALLS: get_roll_log_path
+DESCRIPTION: Loads the last N lines from a character's roll log file. Reads
+  entire file, strips trailing newlines, then returns the last _count entries.
+  Returns empty array if file doesn't exist.
+
+FUNCTION: get_roll_log_path(_stat)
+FILE: scr_alternity_statblock.gml : line 654
+CATEGORY: DATA
+CALLED BY: append_roll_log_file, load_roll_log_tail, draw_tab_rolllog,
+           Step_0 (voss log reset)
+CALLS: sanitize_hero_filename
+DESCRIPTION: Returns the file path for a character's persistent roll log.
+  Format: global.save_path + sanitized_name + "_rolllog.log".
+
+FUNCTION: _read_digits(_str, _pos)
+FILE: scr_alternity_statblock.gml : line 664
+CATEGORY: DATA
+CALLED BY: parse_and_roll_damage
+CALLS: (none)
+DESCRIPTION: Reads consecutive digit characters from a string starting at a
+  given position. Returns the string of digits found. Helper for damage parsing.
+
+FUNCTION: parse_and_roll_damage(_dmg)
+FILE: scr_alternity_statblock.gml : line 675
+CATEGORY: DATA
+CALLED BY: do_hit_damage_roll, handle_tab_combat (damage tier rolls)
+CALLS: _read_digits, roll_die (implicit via irandom_range)
+DESCRIPTION: Parses damage strings like "d6+1w", "d8+2s", "3d8w", "2d4+2w"
+  and rolls them. Extracts die count, sides, modifier (+/-N), and type
+  (s=stun, w=wound, m=mortal). Rolls the dice, applies modifier. Returns
+  struct with roll, modifier, total, die info, type info, and formatted text.
+
+FUNCTION: get_difficulty_descriptor(_step)
+FILE: scr_alternity_statblock.gml : line 703
+CATEGORY: DATA
+CALLED BY: execute_staged_roll, _execute_instant, append_roll_log_file
+CALLS: (none)
+DESCRIPTION: Returns a PHB difficulty label based on the situation die step
+  (Table P16). Maps step 0-10 to labels from "Amazing bonus (-d20)" through
+  "Critical penalty (+d20)". Returns "Standard" for out-of-range.
+
+FUNCTION: find_best_skill_for_weapon(_stat, _wep)
+FILE: scr_alternity_statblock.gml : line 715
+CATEGORY: DATA
+CALLED BY: build_attack_request, draw_tab_combat, handle_tab_combat
+CALLS: find_skill, get_ability_score_for_skill
+DESCRIPTION: Finds the hero's best applicable skill for a weapon. Resolves
+  weapon.skill_keyword via global.keyword_tree.weapon_skills to get broad/spec
+  names. Tries specialty first (trained, 0 penalty), then broad (+1 penalty),
+  then untrained (half ability, +1 penalty). Returns struct with idx, scores,
+  use_type, penalty, and skill_name.
+
+FUNCTION: get_portrait_filename(_stat)
+FILE: scr_alternity_statblock.gml : line 763
+CATEGORY: DATA
+CALLED BY: load_portrait_for_hero
+CALLS: get_species_name, get_profession_name
+DESCRIPTION: Returns the expected default portrait filename for a character.
+  Format: "portraits/{species}_{profession}.png". For diplomat dual-class:
+  "portraits/{species}_diplomat_{secondary}.png". Species/profession names
+  lowercased with spaces as underscores.
+
+FUNCTION: load_portrait_for_hero(_stat)
+FILE: scr_alternity_statblock.gml : line 784
+CATEGORY: GRAPHICAL
+CALLED BY: update_hero
+CALLS: get_portrait_filename
+DESCRIPTION: Loads the appropriate portrait sprite for a character. Frees any
+  existing portrait. Priority: custom portrait path > default species+profession
+  portrait. Uses sprite_add to load PNG from disk. Sets global.portrait_sprite
+  and global.portrait_path. Returns sprite ID or -1.
+
+FUNCTION: load_custom_portrait_dialog(_stat)
+FILE: scr_alternity_statblock.gml : line 818
+CATEGORY: GRAPHICAL
+CALLED BY: Step_0 (portrait browse button)
+CALLS: get_open_filename, sanitize_hero_filename
+DESCRIPTION: Opens a file dialog for custom portrait selection. Loads the image,
+  generates a local filename based on character name, saves a copy to the
+  portraits/ directory for persistence. Updates global portrait state and
+  character's portrait_path.
+
+FUNCTION: draw_portrait(_x, _y, _w, _h, _border_color)
+FILE: scr_alternity_statblock.gml : line 849
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64 (right panel)
+CALLS: (none)
+DESCRIPTION: Draws the portrait scaled to fit the given area, or a placeholder
+  if no portrait is loaded. Placeholder shows a colored silhouette (head +
+  shoulders) with "Click to set portrait" text. Always draws border.
+
+FUNCTION: scan_portrait_directory()
+FILE: scr_alternity_statblock.gml : line 888
+CATEGORY: DATA
+CALLED BY: Step_0 (portrait preset button)
+CALLS: (none)
+DESCRIPTION: Scans the portraits/ folder for existing preset images. Checks all
+  species x profession combinations (6x5=30) plus diplomat dual variants (6x4=24).
+  Returns array of {name, path} structs with title-cased display names.
+
+FUNCTION: draw_glow(_x, _y, _r, _col, _layers)
+FILE: scr_alternity_statblock.gml : line 920
+CATEGORY: GRAPHICAL
+CALLED BY: generate_all_coded_portraits
+CALLS: (none)
+DESCRIPTION: Draws a layered glow effect using concentric transparent circles.
+  Alpha decreases from center outward. Used for portrait generation effects.
+
+FUNCTION: draw_particles(_x, _y, _w, _h, _count, _col, _smin, _smax)
+FILE: scr_alternity_statblock.gml : line 931
+CATEGORY: GRAPHICAL
+CALLED BY: generate_all_coded_portraits
+CALLS: (none)
+DESCRIPTION: Scatters random particles (varying alpha and size) within a
+  rectangular area. Used for atmosphere effects in portrait generation.
+
+FUNCTION: draw_energy_lines(_cx, _cy, _count, _rmin, _rmax, _col)
+FILE: scr_alternity_statblock.gml : line 945
+CATEGORY: GRAPHICAL
+CALLED BY: generate_all_coded_portraits
+CALLS: (none)
+DESCRIPTION: Draws crackling energy lines radiating outward from a center point.
+  Each line has multiple jagged segments. Used for psionic and combat effects
+  in portrait generation.
+
+FUNCTION: draw_armor_plates(_x, _y, _w, _h, _col, _hi)
+FILE: scr_alternity_statblock.gml : line 965
+CATEGORY: GRAPHICAL
+CALLED BY: generate_all_coded_portraits
+CALLS: (none)
+DESCRIPTION: Draws layered armor plating with edge highlights. Random plate
+  positions and sizes within the given area. Used for armored character
+  silhouettes in portrait generation.
+
+FUNCTION: draw_weapon_silhouette(_cx, _cy, _type, _col)
+FILE: scr_alternity_statblock.gml : line 983
+CATEGORY: GRAPHICAL
+CALLED BY: generate_all_coded_portraits
+CALLS: (none)
+DESCRIPTION: Draws a weapon silhouette from line segments. Types: 0=rifle
+  (long barrel + stock), 1=pistol (compact), 2=blade (sweeping curve),
+  3=fist (knuckles), 4=psi orb (concentric rings). Used in portrait generation.
+
+FUNCTION: _save_surface_as_sprite(_surf, _pw, _ph, _path)
+FILE: scr_alternity_statblock.gml : line 1026
+CATEGORY: GRAPHICAL
+CALLED BY: generate_all_coded_portraits
+CALLS: (none — uses GML surface/sprite functions)
+DESCRIPTION: Captures a surface to a sprite, saves it to disk as a PNG, then
+  cleans up by deleting the temporary sprite and freeing the surface.
+
+FUNCTION: _draw_profession_icon(_px, _py, _p, _col)
+FILE: scr_alternity_statblock.gml : line 1036
+CATEGORY: GRAPHICAL
+CALLED BY: generate_all_coded_portraits
+CALLS: (none)
+DESCRIPTION: Draws a small profession icon glyph at a given position. Each
+  profession has a distinct symbol: 0=crosshairs, 1=star, 2=eye/lens,
+  3=gear, 4=psi waves. Used in portrait generation corner icons.
+
+FUNCTION: generate_all_coded_portraits()
+FILE: scr_alternity_statblock.gml : line 1052
+CATEGORY: GRAPHICAL
+CALLED BY: Create_0
+CALLS: draw_glow, draw_particles, draw_energy_lines, draw_armor_plates,
+       draw_weapon_silhouette, _draw_profession_icon, _save_surface_as_sprite
+DESCRIPTION: Generates 54 epic sci-fi portrait images (6 species x 5 professions
+  = 30 standard + 24 diplomat dual variants) using layered draw effects on
+  surfaces. Each portrait has 8 layers: gradient background, atmospheric
+  particles, energy effects, species silhouette (with species-specific detail),
+  weapon silhouette, profession icon, top glow, and border. Only generates
+  missing portraits (skips existing files).
+
+FUNCTION: draw_inspect_highlight(_x, _y, _w, _h, _active)
+FILE: scr_alternity_statblock.gml : line 1343
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_equipment, draw_inspectable_row
+CALLS: (none)
+DESCRIPTION: Draws a filled highlight box with outline border when active.
+  Used to show which equipment item is being inspected. No-op when not active.
+
+FUNCTION: ui_btn(_key, _x1, _y1, _x2, _y2, _text, _base_color, _hover_color)
+FILE: scr_alternity_statblock.gml : line 1354
+CATEGORY: GRAPHICAL
+CALLED BY: Draw_64, all draw_tab_* functions, all draw_gm_* functions
+CALLS: (none)
+DESCRIPTION: THE meta button function. Registers a click rect in obj_game.btn
+  AND draws the button (filled rectangle with centered text) in one call.
+  Returns true if hovering for inline hover effects. Base color when normal,
+  hover color when mouse is over.
+
+FUNCTION: mouse_in(_x1, _y1, _x2, _y2)
+FILE: scr_alternity_statblock.gml : line 1370
+CATEGORY: INPUT
+CALLED BY: draw_tab_equipment, draw_tab_combat, draw_tab_perks_flaws,
+           draw_tab_character, Draw_64 (multiple places)
+CALLS: (none)
+DESCRIPTION: Returns true if the GUI mouse position is inside the given
+  rectangle. Simple hover check used across all draw functions.
+
+FUNCTION: draw_circuit_border(_x, _y, _w, _h, _col)
+FILE: scr_alternity_statblock.gml : line 1376
+CATEGORY: GRAPHICAL
+CALLED BY: draw_tab_grid
+CALLS: (none)
+DESCRIPTION: Draws a sci-fi circuit-trace border with notches on top and bottom
+  edges. Creates a connected line path with angular cutouts at 30%/35% and
+  55%/60% positions. Used for Grid tab deck summary decoration.
+
+FUNCTION: add_to_party(_stat)
+FILE: scr_alternity_statblock.gml : line 1395
+CATEGORY: DATA
+CALLED BY: Step_0 (welcome, chargen, import), handle_gm_party,
+           move_npc_to_party, import_player_to_party
+CALLS: (none)
+DESCRIPTION: Adds a character statblock to global.party. Deduplicates by name —
+  if a character with the same name exists, replaces it. Otherwise appends.
+
+FUNCTION: remove_from_party(_partyArrayIndex)
+FILE: scr_alternity_statblock.gml : line 1402
+CATEGORY: DATA
+CALLED BY: handle_gm_party (via _gm_list_handler)
+CALLS: (none)
+DESCRIPTION: Removes a character from the party by index. Bounds-checked.
+
+FUNCTION: add_to_npcs(_statblock, _factionName)
+FILE: scr_alternity_statblock.gml : line 1410
+CATEGORY: DATA
+CALLED BY: handle_gm_npcs, move_party_to_npcs, import_to_npcs
+CALLS: (none)
+DESCRIPTION: Adds a statblock to global.npcs with a faction tag. Deduplicates
+  by name — replaces existing or appends.
+
+FUNCTION: remove_from_npcs(_npcArrayIndex)
+FILE: scr_alternity_statblock.gml : line 1420
+CATEGORY: DATA
+CALLED BY: handle_gm_npcs (via _gm_list_handler)
+CALLS: (none)
+DESCRIPTION: Removes an NPC by index from global.npcs. Bounds-checked.
+
+FUNCTION: move_npc_to_party(_npcArrayIndex)
+FILE: scr_alternity_statblock.gml : line 1426
+CATEGORY: DATA
+CALLED BY: handle_gm_npcs (via _gm_list_handler)
+CALLS: add_to_party
+DESCRIPTION: Moves an NPC from global.npcs to global.party. Removes from NPC
+  list, then adds to party via add_to_party.
+
+FUNCTION: move_party_to_npcs(_partyArrayIndex, _factionName)
+FILE: scr_alternity_statblock.gml : line 1435
+CATEGORY: DATA
+CALLED BY: handle_gm_party (via _gm_list_handler)
+CALLS: add_to_npcs
+DESCRIPTION: Moves a party member from global.party to global.npcs with the
+  given faction. Removes from party list, then adds to NPCs.
+
+FUNCTION: switch_active_character(_partyArrayIndex)
+FILE: scr_alternity_statblock.gml : line 1446
+CATEGORY: DATA
+CALLED BY: (available for GM mode)
+CALLS: update_hero
+DESCRIPTION: Switches the active hero to a party member by index. Sets
+  obj_game.hero and party_selected, then calls update_hero. Bounds-checked.
+
+FUNCTION: get_npcs_by_faction(_factionName)
+FILE: scr_alternity_statblock.gml : line 1456
+CATEGORY: DATA
+CALLED BY: draw_gm_npcs
+CALLS: (none)
+DESCRIPTION: Returns an array of {idx, stat} structs for all NPCs in the given
+  faction. The idx is the global index in global.npcs array. Used to group
+  NPCs by faction in the GM NPC tab display.
+
+FUNCTION: export_campaign_full()
+FILE: scr_alternity_statblock.gml : line 1467
+CATEGORY: DATA
+CALLED BY: handle_gm_campaign
+CALLS: save_hero_and_track, save_campaign
+DESCRIPTION: Saves ALL party members and NPCs to individual character files,
+  then saves campaign.json. Full campaign export operation.
+
+FUNCTION: _build_char_refs(_list, _includeFaction)
+FILE: scr_alternity_statblock.gml : line 1479
+CATEGORY: DATA
+CALLED BY: save_campaign
+CALLS: sanitize_hero_filename
+DESCRIPTION: Builds an array of path reference objects from a character list.
+  Each ref has name and path (constructed from save_path + sanitized name).
+  If includeFaction is true, also copies faction field. Used to create
+  campaign.json party/NPC references.
+
+FUNCTION: _load_chars_from_refs(_refs, _applyFaction)
+FILE: scr_alternity_statblock.gml : line 1493
+CATEGORY: DATA
+CALLED BY: load_campaign, load_all_data_dialog
+CALLS: load_character_from_path
+DESCRIPTION: Loads statblocks from path reference arrays. For each ref, attempts
+  to load the character file. If applyFaction is true, copies the faction field
+  from the ref onto the loaded statblock. Returns array of successfully loaded
+  statblocks.
+
+FUNCTION: save_all_data_dialog()
+FILE: scr_alternity_statblock.gml : line 1506
+CATEGORY: DATA
+CALLED BY: Step_0 (save_lib button)
+CALLS: get_save_filename, _build_char_refs
+DESCRIPTION: Opens save dialog, writes a campaign bundle JSON to the chosen file.
+  Bundle includes roster, party refs, NPC refs (with factions), and faction list.
+  Returns path or empty string if cancelled.
+
+FUNCTION: load_all_data_dialog()
+FILE: scr_alternity_statblock.gml : line 1521
+CATEGORY: DATA
+CALLED BY: Step_0 (load_lib button)
+CALLS: get_open_filename, _load_chars_from_refs
+DESCRIPTION: Opens load dialog, reads a campaign bundle JSON and applies it to
+  globals. Accepts both "alternity_campaign_bundle" and "alternity_campaign"
+  formats. Loads roster, factions, party, and NPCs. Returns path or empty
+  string if cancelled or invalid.
+
+FUNCTION: import_player_to_party(_path)
+FILE: scr_alternity_statblock.gml : line 1540
+CATEGORY: DATA
+CALLED BY: handle_gm_campaign
+CALLS: load_character_from_path, add_to_party, roster_add_ref
+DESCRIPTION: Loads a character from file and adds to the party. Also adds to
+  roster for tracking. Returns true on success, false if load failed.
+
+FUNCTION: import_to_npcs(_filePath, _factionName)
+FILE: scr_alternity_statblock.gml : line 1552
+CATEGORY: DATA
+CALLED BY: handle_gm_campaign
+CALLS: load_character_from_path, add_to_npcs, roster_add_ref
+DESCRIPTION: Loads a character from file and adds to the NPC list with the
+  given faction. Also adds to roster. Returns true on success.
+
+
+################################################################################
+FILE: scripts/scr_chargen/scr_chargen.gml
+################################################################################
+
+FUNCTION: get_species_name(_sp)
+FILE: scr_chargen.gml : line 5
+CATEGORY: DATA
+CALLED BY: build_statblock_export, Draw_64, draw_gm_party, draw_gm_npcs,
+           draw_tab_aura, generate_random_character, get_portrait_filename
+CALLS: (none)
+DESCRIPTION: Returns the display name for a species index from global.species_data.
+  Returns "Unknown" if index is out of range.
+
+FUNCTION: get_profession_name(_prof)
+FILE: scr_chargen.gml : line 9
+CATEGORY: DATA
+CALLED BY: build_statblock_export, Draw_64, draw_gm_party, draw_gm_npcs,
+           draw_tab_aura, generate_random_character, get_portrait_filename
+CALLS: (none)
+DESCRIPTION: Returns the display name for a PROFESSION enum value. Maps 0-4
+  to "Combat Spec", "Diplomat", "Free Agent", "Tech Op", "Mindwalker".
+
+FUNCTION: parse_species_name(_name)
+FILE: scr_chargen.gml : line 16
+CATEGORY: DATA
+CALLED BY: statblock_import_data (via _resolve_enum)
+CALLS: (none)
+DESCRIPTION: Parses a species name string to its index. Case-insensitive match
+  against global.species_data. Returns 0 (Human) as default.
+
+FUNCTION: parse_profession_name(_name)
+FILE: scr_chargen.gml : line 21
+CATEGORY: DATA
+CALLED BY: statblock_import_data (via _resolve_enum), generate_quick_npc
+CALLS: (none)
+DESCRIPTION: Parses a profession name string to its enum value. Case-insensitive
+  match. Returns 0 (Combat Spec) as default.
+
+FUNCTION: get_species_mods(_sp)
+FILE: scr_chargen.gml : line 27
+CATEGORY: DATA
+CALLED BY: generate_random_character
+CALLS: (none)
+DESCRIPTION: Returns the 6-element ability modifier array for a species index.
+  These are added to base ability scores during character generation.
+  Returns [0,0,0,0,0,0] if out of range.
+
+FUNCTION: get_species_starting_broads(_sp)
+FILE: scr_chargen.gml : line 31
+CATEGORY: DATA
+CALLED BY: generate_random_character, generate_quick_npc
+CALLS: (none)
+DESCRIPTION: Returns the array of starting broad skill names for a species.
+  These skills are added for free during character generation. Returns empty
+  array if out of range.
+
+FUNCTION: get_profession_requirements(_prof)
+FILE: scr_chargen.gml : line 35
+CATEGORY: DATA
+CALLED BY: generate_random_character
+CALLS: ability_name_to_index
+DESCRIPTION: Returns the profession's ability requirements as a struct with
+  ab1 (primary ability index), ab1_min (minimum score), ab2 (secondary ability
+  index), ab2_min. Read from global.professions. Used during chargen to ensure
+  generated characters meet profession minimums.
+
+FUNCTION: get_careers_for_profession(_prof)
+FILE: scr_chargen.gml : line 54
+CATEGORY: DATA
+CALLED BY: get_career_names_for_profession, generate_random_character
+CALLS: (none)
+DESCRIPTION: Returns the array of career structs for a profession index from
+  global.career_data. Returns empty array if out of range.
+
+FUNCTION: get_career_names_for_profession(_prof)
+FILE: scr_chargen.gml : line 59
+CATEGORY: DATA
+CALLED BY: Create_0 (chargen dropdown callbacks)
+CALLS: get_careers_for_profession
+DESCRIPTION: Returns an array of career name strings for a profession. Used to
+  populate the career dropdown in the chargen popup.
+
+FUNCTION: apply_career_to_statblock(_stat, _career, _additive)
+FILE: scr_chargen.gml : line 68
+CATEGORY: DATA
+CALLED BY: generate_random_character
+CALLS: find_skill, add_broad_skill_to_hero, add_specialty_rank0,
+       increase_skill_rank, add_weapon, set_armor
+DESCRIPTION: Applies a career's skills and equipment to a statblock. If
+  additive=false, wipes existing skills/weapons/gear first (primary career).
+  If additive=true, keeps existing (diplomat secondary). Adds broad skills,
+  specialties at target ranks, weapons, armor, and gear from the career struct.
+  Always adds Unarmed weapon when not additive.
+
+FUNCTION: generate_random_character(_species_choice, _prof_choice, _career_choice, _sec_prof_choice, _sec_career_choice)
+FILE: scr_chargen.gml : line 122
+CATEGORY: DATA
+CALLED BY: Step_0 (chargen generate button)
+CALLS: get_species_mods, get_profession_requirements, get_careers_for_profession,
+       create_statblock, set_ability, calculate_action_check, calculate_durability,
+       apply_career_to_statblock, get_species_starting_broads, find_skill,
+       add_broad_skill_to_hero, generate_random_name, get_species_name,
+       get_profession_name
+DESCRIPTION: Full character generation. Pass -1 for random on any choice.
+  Distributes exactly 60 ability points using weighted random (profession
+  abilities get higher weights). Meets hard profession requirements. Applies
+  species mods, picks career, applies career skills/equipment, adds species
+  starting broads, handles diplomat dual-class (secondary profession + career
+  applied additively). Generates random name and background text.
+
+FUNCTION: generate_random_name()
+FILE: scr_chargen.gml : line 248
+CATEGORY: DATA
+CALLED BY: generate_random_character, generate_quick_npc
+CALLS: (none — reads global.names)
+DESCRIPTION: Returns a random "Firstname Lastname" string by picking randomly
+  from global.names.first_names and global.names.last_names arrays.
+
+FUNCTION: get_specialties_for_broad(_broad_name)
+FILE: scr_chargen.gml : line 254
+CATEGORY: DATA
+CALLED BY: (available for skill tree queries)
+CALLS: (none — reads global.skill_tree)
+DESCRIPTION: Returns the array of specialty name strings for a given broad skill
+  name from global.skill_tree. Returns empty array if broad not found.
+
+FUNCTION: find_skill(_stat, _broad_name, _spec_name)
+FILE: scr_chargen.gml : line 261
+CATEGORY: DATA
+CALLED BY: build_skill_request, build_browser_list, add_specialty_rank0,
+           apply_career_to_statblock, generate_random_character,
+           generate_quick_npc, Step_0 (skill browser, quick rolls),
+           handle_tab_combat, handle_tab_psionics, draw_tab_combat,
+           draw_tab_psionics, draw_gm_party, _gm_get_best_awareness_score,
+           find_best_skill_for_weapon, add_broad_skill_to_hero
+CALLS: (none)
+DESCRIPTION: Finds a skill in a statblock's skills array by broad skill name
+  and specialty name. For broad skills, pass empty string as spec_name.
+  Returns the array index, or -1 if not found. THE universal skill lookup.
+
+FUNCTION: generate_quick_npc(_template_idx)
+FILE: scr_chargen.gml : line 276
+CATEGORY: DATA
+CALLED BY: handle_gm_npcs
+CALLS: create_statblock, generate_random_name, parse_profession_name,
+       set_ability, get_species_starting_broads, find_skill,
+       add_broad_skill_to_hero, add_specialty_rank0, increase_skill_rank,
+       add_weapon, set_armor, string_to_damage_type,
+       calculate_action_check, calculate_durability, recalc_skill_scores,
+       update_hero
+DESCRIPTION: Generates a fully formed NPC from a global.npc_templates entry.
+  Creates statblock with random name, sets abilities from template, adds species
+  broads, applies template skills at specified ranks, adds weapon and armor,
+  sets gear and background. Fully calculates all derived values.
+
+
+################################################################################
+FILE: scripts/scr_data_loader/scr_data_loader.gml
+################################################################################
+
+FUNCTION: read_json(_path)
+FILE: scr_data_loader.gml : line 39
+CATEGORY: DATA
+CALLED BY: init_all_data, load_or_create, Create_0, load_character_from_path,
+           scan_characters_directory, load_campaign
+CALLS: (none — uses GML file_text functions + json_parse)
+DESCRIPTION: Reads a JSON file from disk and returns the parsed struct/array.
+  Returns undefined if file doesn't exist. Reads line by line, concatenates,
+  then parses via json_parse.
+
+FUNCTION: write_json(_path, _data)
+FILE: scr_data_loader.gml : line 50
+CATEGORY: DATA
+CALLED BY: init_all_data (recent chars), save_hero_and_track, save_campaign,
+           apply_color_profile, add_recent_character, Step_0 (config save)
+CALLS: (none — uses GML file_text functions + json_stringify)
+DESCRIPTION: Writes a struct/array to disk as pretty-printed JSON. Creates or
+  overwrites the file at the given path.
+
+FUNCTION: load_or_create(_path, _default_func)
+FILE: scr_data_loader.gml : line 58
+CATEGORY: DATA
+CALLED BY: init_all_data (recent characters)
+CALLS: read_json, write_json
+DESCRIPTION: Loads JSON from path. If missing, calls the provided default
+  function to generate initial data, writes it to disk, and returns it.
+  Ensures user-writable files always exist.
+
+FUNCTION: parse_hex_color(_hex)
+FILE: scr_data_loader.gml : line 75
+CATEGORY: DATA
+CALLED BY: Create_0 (all color initialization), apply_color_profile,
+           Draw_64 (accessibility custom palette)
+CALLS: (none)
+DESCRIPTION: Converts a "#rrggbb" hex string to a GML color value. Strips
+  leading #, converts each hex pair to decimal using string position lookup
+  in "0123456789abcdef", then calls make_colour_rgb.
+
+FUNCTION: ability_name_to_index(_name)
+FILE: scr_data_loader.gml : line 92
+CATEGORY: DATA
+CALLED BY: get_profession_requirements
+CALLS: (none)
+DESCRIPTION: Maps an ability abbreviation string ("STR", "DEX", etc.) to its
+  index (0-5). Case-insensitive via string_upper. Returns 0 as default.
+
+FUNCTION: init_all_data()
+FILE: scr_data_loader.gml : line 103
+CATEGORY: DATA
+CALLED BY: Create_0
+CALLS: read_json, careers_from_import, load_or_create
+DESCRIPTION: Master initialization function. Creates characters/ directory,
+  loads all 12 JSON data files into globals: config, professions, skill_tree,
+  species_data, names, equipment (weapons/armor/gear), programs/computers/
+  processor_quality, npc_templates, career_data (with damage type conversion),
+  fx_database (with lookup table), keyword_tree, reference tables (skill rank
+  benefits, combat tables, GM tables), ability key/name constants, changelog,
+  and recent characters.
+
+FUNCTION: add_recent_character(_name, _path)
+FILE: scr_data_loader.gml : line 187
+CATEGORY: DATA
+CALLED BY: Step_0 (after loading/creating characters), save_hero_and_track
+CALLS: write_json
+DESCRIPTION: Adds a character to the recent list. Sets last_character to the
+  path, removes any existing entry with the same path (deduplication), inserts
+  at front, caps at 10 entries, writes to recent_characters.json.
+
+FUNCTION: save_hero_and_track(_stat)
+FILE: scr_data_loader.gml : line 207
+CATEGORY: DATA
+CALLED BY: Step_0 (tab switch, exit, welcome, chargen), handle_gm_party,
+           _gm_import_and_add, handle_gm_npcs, handle_gm_campaign,
+           export_campaign_full
+CALLS: sanitize_hero_filename, write_json, build_statblock_export,
+       add_recent_character
+DESCRIPTION: Saves the hero to characters/ directory and tracks in recent list.
+  Generates safe filename from hero name, writes v4 export JSON, then calls
+  add_recent_character.
+
+FUNCTION: load_character_from_path(_path)
+FILE: scr_data_loader.gml : line 217
+CATEGORY: DATA
+CALLED BY: Step_0 (welcome continue, recent chars, voss), _load_chars_from_refs,
+           import_player_to_party, import_to_npcs
+CALLS: read_json, statblock_import_data
+DESCRIPTION: Loads a character from a specific file path. Reads JSON, validates
+  _format field, delegates to statblock_import_data for full statblock
+  reconstruction. Returns statblock or undefined.
+
+FUNCTION: save_campaign()
+FILE: scr_data_loader.gml : line 231
+CATEGORY: DATA
+CALLED BY: Step_0 (chargen), handle_gm_party, handle_gm_npcs,
+           handle_gm_campaign, export_campaign_full, _gm_import_and_add
+CALLS: write_json, _build_char_refs
+DESCRIPTION: Saves campaign state to campaign.json. Includes factions, roster,
+  party refs (without faction), and NPC refs (with faction).
+
+FUNCTION: load_campaign()
+FILE: scr_data_loader.gml : line 242
+CATEGORY: DATA
+CALLED BY: Create_0
+CALLS: read_json, _load_chars_from_refs
+DESCRIPTION: Loads campaign state from campaign.json if it exists. Restores
+  factions, roster, party (loaded from refs), and NPCs (loaded with factions).
+  Ensures factions array always has at least "Unaffiliated".
+
+FUNCTION: scan_characters_directory()
+FILE: scr_data_loader.gml : line 254
+CATEGORY: DATA
+CALLED BY: handle_gm_campaign
+CALLS: read_json
+DESCRIPTION: Scans the characters/ folder and rebuilds global.roster with all
+  found character files. Uses file_find_first/next to iterate *.json files.
+  Validates each file has _format "alternity_statblock". Deduplicates by path.
+
+FUNCTION: roster_add_ref(_name, _path)
+FILE: scr_data_loader.gml : line 277
+CATEGORY: DATA
+CALLED BY: Step_0 (chargen), _gm_import_and_add, handle_gm_npcs,
+           handle_gm_campaign, import_player_to_party, import_to_npcs
+CALLS: (none)
+DESCRIPTION: Adds a character reference {name, path} to global.roster.
+  Deduplicates by path — if path already exists, does nothing.
+
+
+################################################################################
+FILE: scripts/scr_dice/scr_dice.gml
+################################################################################
+
+FUNCTION: get_step(_step)
+FILE: scr_dice.gml : line 10
+CATEGORY: DATA
+CALLED BY: alternity_check, roll_situation, situation_step_name,
+           Draw_64 (result display)
+CALLS: (none — reads global.config.dice.steps)
+DESCRIPTION: Returns the step config struct at the given index from the dice
+  steps array. Clamps index to valid range. Each step has: sides (die faces),
+  count (number of dice), bonus (true=subtracted, false=added), name (display).
+
+FUNCTION: situation_step_name(_step)
+FILE: scr_dice.gml : line 19
+CATEGORY: DATA
+CALLED BY: Draw_64 (situation die display), draw_tab_combat, draw_tab_psionics,
+           append_roll_log_file, draw_combat_skill_row
+CALLS: get_step
+DESCRIPTION: Returns the display string for a situation die step, like "+d8",
+  "-d4", "+2d20", etc. Read from the step config's name field.
+
+FUNCTION: roll_die(_sides)
+FILE: scr_dice.gml : line 22
+CATEGORY: DATA
+CALLED BY: alternity_check, roll_situation
+CALLS: (none — uses irandom_range)
+DESCRIPTION: Rolls a single die with the given number of sides. Returns
+  1..sides, or 0 if sides <= 0.
+
+FUNCTION: roll_situation(_step)
+FILE: scr_dice.gml : line 25
+CATEGORY: DATA
+CALLED BY: alternity_check
+CALLS: get_step, roll_die
+DESCRIPTION: Rolls the situation die for a given step. Handles multi-die steps
+  (e.g., +2d20 rolls two d20s and sums them). Returns total situation die value.
+
+FUNCTION: alternity_check(_score_ord, _score_good, _score_amz, _situation_step)
+FILE: scr_dice.gml : line 35
+CATEGORY: DATA
+CALLED BY: execute_staged_roll, _execute_instant
+CALLS: roll_die, roll_situation, get_step
+DESCRIPTION: THE core Alternity dice check. Rolls d20 control die + situation
+  die. If step is bonus, subtracts situation from control; if penalty, adds it.
+  Natural 20 = critical failure. Compares total against thresholds: <= amazing
+  = AMAZING (3), <= good = GOOD (2), <= ordinary = ORDINARY (1), > ordinary =
+  FAILURE (0), critical = -1. Returns full result struct.
+
+FUNCTION: alternity_action_check(_ac_ord, _ac_good, _ac_amz, _situation_step)
+FILE: scr_dice.gml : line 53
+CATEGORY: DATA
+CALLED BY: execute_staged_roll, _execute_instant, handle_gm_encounter
+CALLS: alternity_check
+DESCRIPTION: Action check variant — failures become MARGINAL (degree 0) instead
+  of failure. Calls alternity_check, then upgrades any failure/critical result
+  to marginal. Used for initiative rolls.
+
+
+################################################################################
+FILE: scripts/scr_skill_costs/scr_skill_costs.gml
+################################################################################
+
+FUNCTION: get_profession_skill_list(_prof)
+FILE: scr_skill_costs.gml : line 12
+CATEGORY: DATA
+CALLED BY: is_profession_skill
+CALLS: (none — reads global.professions)
+DESCRIPTION: Returns the array of broad skill names that count as profession
+  (signature) skills for the given profession index. Returns empty array if
+  out of range.
+
+FUNCTION: is_profession_skill(_prof, _broad_name)
+FILE: scr_skill_costs.gml : line 20
+CATEGORY: DATA
+CALLED BY: is_profession_skill_hero
+CALLS: get_profession_skill_list
+DESCRIPTION: Returns true if the given broad skill name is in the profession's
+  signature skills list. Simple linear search.
+
+FUNCTION: is_profession_skill_hero(_stat, _broad_name)
+FILE: scr_skill_costs.gml : line 30
+CATEGORY: DATA
+CALLED BY: draw_tab_character, get_broad_cost_for_hero, get_spec_base_for_hero
+CALLS: is_profession_skill
+DESCRIPTION: Checks if a broad skill is a profession skill for the hero,
+  checking both primary and secondary (diplomat dual-class) professions.
+  Returns true if either profession lists it.
+
+FUNCTION: get_broad_cost_for_hero(_stat, _broad_name)
+FILE: scr_skill_costs.gml : line 41
+CATEGORY: DATA
+CALLED BY: get_single_skill_cost_hero
+CALLS: is_profession_skill_hero
+DESCRIPTION: Returns the skill point cost to purchase a broad skill.
+  Profession skills cost 3 points, other skills cost 4 points (PHB p.34).
+
+FUNCTION: get_spec_base_for_hero(_stat, _broad_name)
+FILE: scr_skill_costs.gml : line 46
+CATEGORY: DATA
+CALLED BY: get_single_skill_cost_hero, increase_skill_rank, decrease_skill_rank
+CALLS: is_profession_skill_hero
+DESCRIPTION: Returns the base specialty cost for a hero. Profession skills
+  have base 1, other skills have base 2. Used in rank cost calculations.
+
+FUNCTION: get_spec_rank_cost(_base, _current_rank)
+FILE: scr_skill_costs.gml : line 52
+CATEGORY: DATA
+CALLED BY: increase_skill_rank, decrease_skill_rank
+CALLS: (none)
+DESCRIPTION: Returns the cost to upgrade FROM current_rank TO current_rank+1.
+  Formula: base + current_rank. E.g., profession base 1: rank 1=1, 2=2, 3=3.
+
+FUNCTION: get_spec_total_cost(_base, _rank)
+FILE: scr_skill_costs.gml : line 60
+CATEGORY: DATA
+CALLED BY: get_single_skill_cost_hero
+CALLS: (none)
+DESCRIPTION: Returns total points spent on a specialty at given rank.
+  Formula: rank * base + rank*(rank-1)/2. E.g., profession rank 3 = 3*1 + 3 = 6.
+
+FUNCTION: get_single_skill_cost_hero(_stat, _sk)
+FILE: scr_skill_costs.gml : line 66
+CATEGORY: DATA
+CALLED BY: draw_tab_character, get_total_skill_cost_hero
+CALLS: get_broad_cost_for_hero, get_spec_total_cost, get_spec_base_for_hero
+DESCRIPTION: Returns the skill point cost for a single skill entry. Broad
+  skills return their flat cost. Specialties return total cost at current rank.
+
+FUNCTION: get_total_skill_cost_hero(_stat)
+FILE: scr_skill_costs.gml : line 75
+CATEGORY: DATA
+CALLED BY: Draw_64 (right panel, browser), draw_tab_character
+CALLS: get_single_skill_cost_hero
+DESCRIPTION: Returns the total skill points spent across all skills in the
+  statblock. Sums get_single_skill_cost_hero for every skill entry.
+
+FUNCTION: get_starting_skill_points(_prof)
+FILE: scr_skill_costs.gml : line 83
+CATEGORY: DATA
+CALLED BY: get_adjusted_skill_points
+CALLS: (none — reads global.professions)
+DESCRIPTION: Returns the starting skill point budget for a profession.
+  Read from professions.json. Returns 40 as default if out of range.
+
+FUNCTION: get_perks_cost(_stat)
+FILE: scr_skill_costs.gml : line 98
+CATEGORY: DATA
+CALLED BY: draw_tab_perks_flaws, get_adjusted_skill_points
+CALLS: get_fx_data
+DESCRIPTION: Returns total skill points spent on perks. Iterates hero.fx for
+  type "perk", looks up each in fx_database, applies quality scaling (O=1x,
+  G=2x, A=3x base cost for quality-scaled perks). Single-tier perks use flat
+  cost.
+
+FUNCTION: get_flaws_benefit(_stat)
+FILE: scr_skill_costs.gml : line 117
+CATEGORY: DATA
+CALLED BY: draw_tab_perks_flaws, get_adjusted_skill_points
+CALLS: get_fx_data
+DESCRIPTION: Returns total skill points gained from flaws. FX database stores
+  flaw costs as negative values; benefit = abs(cost). Iterates hero.fx for
+  type "flaw".
+
+FUNCTION: get_adjusted_skill_points(_stat)
+FILE: scr_skill_costs.gml : line 130
+CATEGORY: DATA
+CALLED BY: Draw_64 (right panel, browser), draw_tab_character
+CALLS: get_starting_skill_points, get_perks_cost, get_flaws_benefit
+DESCRIPTION: Returns the effective skill point budget adjusted for perks and
+  flaws. Formula: starting points - perk cost + flaw benefit.
+
+FUNCTION: find_fx(_stat, _name, _type, _active_only)
+FILE: scr_skill_costs.gml : line 136
+CATEGORY: DATA
+CALLED BY: has_fx, draw_tab_perks_flaws
+CALLS: (none)
+DESCRIPTION: Generic FX lookup in hero.fx array. Searches by name, optionally
+  filtered by type (empty string = any) and active_only flag. Returns the
+  matching fx entry struct, or undefined.
+
+FUNCTION: has_fx(_stat, _name, _type, _active_only)
+FILE: scr_skill_costs.gml : line 151
+CATEGORY: DATA
+CALLED BY: draw_tab_perks_flaws, draw_tab_cybertech, add_cybertech_to_hero,
+           remove_cybertech_from_hero, get_cyber_tolerance
+CALLS: find_fx
+DESCRIPTION: Returns true if the hero has a matching FX entry. Wrapper around
+  find_fx that returns boolean. Default: any type, active only.
+
+FUNCTION: add_perk_to_hero(_stat, _name)
+FILE: scr_skill_costs.gml : line 158
+CATEGORY: DATA
+CALLED BY: handle_tab_perks_flaws
+CALLS: get_fx_data
+DESCRIPTION: Adds or upgrades a perk on the hero. Determines available quality
+  tiers from fx_database quality_scale. If already owned, tries to upgrade to
+  next tier (O→G→A). If not owned, adds at first tier. Returns true if
+  added/upgraded, false if can't upgrade further or single-tier already owned.
+
+FUNCTION: remove_perk_from_hero(_stat, _name)
+FILE: scr_skill_costs.gml : line 196
+CATEGORY: DATA
+CALLED BY: handle_tab_perks_flaws
+CALLS: (none)
+DESCRIPTION: Removes a perk from the hero's fx array by name and type "perk".
+  Iterates backward for safe deletion.
+
+FUNCTION: toggle_flaw_on_hero(_stat, _name)
+FILE: scr_skill_costs.gml : line 203
+CATEGORY: DATA
+CALLED BY: handle_tab_perks_flaws
+CALLS: (none)
+DESCRIPTION: Toggles a flaw on or off. If hero already has it (type "flaw"),
+  removes it. If not, adds it with empty quality and active=true.
+
+FUNCTION: get_cyber_tolerance(_stat)
+FILE: scr_skill_costs.gml : line 216
+CATEGORY: DATA
+CALLED BY: draw_tab_cybertech, add_cybertech_to_hero
+CALLS: has_fx
+DESCRIPTION: Returns the maximum cyber tolerance for a character. Base = CON
+  score. Mechalus species gets +4. "Cyber Tolerance" perk adds +2.
+
+FUNCTION: get_cyber_used(_stat)
+FILE: scr_skill_costs.gml : line 229
+CATEGORY: DATA
+CALLED BY: draw_tab_cybertech, add_cybertech_to_hero
+CALLS: get_fx_data
+DESCRIPTION: Returns total cyber size installed. Iterates hero.fx for type
+  "cybertech", sums the size field from each FX database entry.
+
+FUNCTION: add_cybertech_to_hero(_stat, _name, _quality)
+FILE: scr_skill_costs.gml : line 243
+CATEGORY: DATA
+CALLED BY: handle_tab_cybertech
+CALLS: has_fx, get_fx_data, add_cybertech_to_hero (recursive for prereqs),
+       get_cyber_tolerance, get_cyber_used
+DESCRIPTION: Adds cyberware to the hero via the fx array. Auto-adds
+  prerequisites recursively. Checks cyber tolerance (won't exceed limit).
+  Returns false if already owned, not in database, or would exceed tolerance.
+  Adds entry with name, type "cybertech", quality, and active=true.
+
+FUNCTION: remove_cybertech_from_hero(_stat, _name)
+FILE: scr_skill_costs.gml : line 266
+CATEGORY: DATA
+CALLED BY: handle_tab_cybertech
+CALLS: get_fx_data, has_fx (implicit via prereq check)
+DESCRIPTION: Removes cyberware from the hero's fx array. First checks if any
+  other installed cyberware depends on this as a prerequisite — refuses removal
+  if so. Returns true if removed, false if blocked by dependency or not found.
+
+FUNCTION: get_ability_score_for_skill(_stat, _ability)
+FILE: scr_skill_costs.gml : line 287
+CATEGORY: DATA
+CALLED BY: build_skill_request, build_feat_request, recalc_skill_scores,
+           add_broad_skill_to_hero, find_best_skill_for_weapon,
+           Step_0 (ability +/-), draw_tab_combat, handle_tab_character
+CALLS: (none)
+DESCRIPTION: Returns the raw ability score for a given ability key string.
+  Routes "str"→stat.str.score, "dex"→stat.dex.score, "int"→stat.int_.score,
+  etc. Returns 10 as default.
+
+FUNCTION: recalc_skill_scores(_stat)
+FILE: scr_skill_costs.gml : line 297
+CATEGORY: DATA
+CALLED BY: update_hero, increase_skill_rank, decrease_skill_rank,
+           generate_quick_npc
+CALLS: get_ability_score_for_skill, get_broad_skill_scores
+DESCRIPTION: Recalculates all skill scores in the statblock from base ability
+  scores. Broad skills: rank 0 = ability/2, rank 1+ = ability + (rank-1).
+  Specialties: broad_ordinary + rank. Then sets good = ordinary/2, amazing =
+  ordinary/4 for all skills.
+
+FUNCTION: increase_skill_rank(_stat, _idx)
+FILE: scr_skill_costs.gml : line 316
+CATEGORY: DATA
+CALLED BY: handle_tab_character, Step_0 (skill browser add),
+           apply_career_to_statblock, generate_quick_npc
+CALLS: get_spec_base_for_hero, get_spec_rank_cost, recalc_skill_scores
+DESCRIPTION: Increases a specialty skill's rank by 1 (max 3). Returns the point
+  cost of the upgrade. Broads don't rank up (returns 0). Recalculates all
+  skill scores after change.
+
+FUNCTION: decrease_skill_rank(_stat, _idx)
+FILE: scr_skill_costs.gml : line 328
+CATEGORY: DATA
+CALLED BY: handle_tab_character
+CALLS: get_spec_base_for_hero, get_spec_rank_cost, recalc_skill_scores
+DESCRIPTION: Decreases a skill's rank. For broad skills (specialty==""),
+  pressing - removes the entire broad skill AND all its specialties. For
+  specialties at rank 0, removes the skill entirely. For specialties at rank
+  1+, decreases rank by 1. Returns point cost refunded. Recalculates scores.
+
+FUNCTION: add_broad_skill_to_hero(_stat, _broad_name)
+FILE: scr_skill_costs.gml : line 348
+CATEGORY: DATA
+CALLED BY: Step_0 (skill browser), apply_career_to_statblock,
+           generate_random_character, generate_quick_npc
+CALLS: find_skill, get_ability_score_for_skill, add_skill
+DESCRIPTION: Adds a broad skill to the hero from global.skill_tree. Looks up
+  the ability for the broad skill, computes initial scores (ability, ability/2,
+  ability/4), and adds it via add_skill with rank 1, empty specialty. Returns
+  false if already owned.
+
+
+################################################################################
+TOTAL: 197 functions + 3 events = 200 entries documented
+################################################################################
+
+================================================================================
+END OF FUNCTION REFERENCE
+================================================================================

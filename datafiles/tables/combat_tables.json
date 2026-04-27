@@ -1,0 +1,189 @@
+{
+  "armor_operation":{
+    "_description":"Armor types and their penalties without Armor Operation skill",
+    "note":"Characters without Armor Operation skill suffer full action check and DEX resistance penalties from heavy armor."
+  },
+  "_description":"Combat reference tables from the Alternity PHB.",
+  "situation_die_modifiers":{
+    "_description":"PHB Table P16",
+    "steps":[
+      {
+        "name":"Critical",
+        "modifier":"+4",
+        "description":"Worst possible conditions."
+      },
+      {
+        "name":"Extreme",
+        "modifier":"+3",
+        "description":"Very difficult conditions."
+      },
+      {
+        "name":"Moderate",
+        "modifier":"+2",
+        "description":"Challenging conditions."
+      },
+      {
+        "name":"Slight",
+        "modifier":"+1",
+        "description":"Minor hindrance."
+      },
+      {
+        "name":"Marginal",
+        "modifier":"0",
+        "description":"Normal conditions."
+      },
+      {
+        "name":"Ordinary",
+        "modifier":"-1",
+        "description":"Slightly favorable."
+      },
+      {
+        "name":"Good",
+        "modifier":"-2",
+        "description":"Favorable conditions."
+      },
+      {
+        "name":"Amazing",
+        "modifier":"-3",
+        "description":"Best possible conditions."
+      }
+    ]
+  },
+  "movement_rates":{
+    "types":[
+      "Walk (no action cost)",
+      "Run (1 action)",
+      "Sprint (all-out, 1 action per phase)"
+    ],
+    "_description":"PHB Table P8: Combat Movement Rates",
+    "note":"Base rates derived from STR+DEX. Walk=base, Run=base*2, Sprint=base*3."
+  },
+  "range_modifiers":{
+    "_description":"PHB Table P22: Range Modifiers by Weapon Type",
+    "weapons":[
+      {
+        "medium":"+1 step",
+        "long":"+2 steps",
+        "type":"Pistol",
+        "short":"-1 step"
+      },
+      {
+        "medium":"none",
+        "long":"+1 step",
+        "type":"Rifle",
+        "short":"-1 step"
+      },
+      {
+        "medium":"+1 step",
+        "long":"+3 steps",
+        "type":"SMG",
+        "short":"-1 step"
+      },
+      {
+        "medium":"none",
+        "long":"+1 step",
+        "type":"Shotgun",
+        "short":"-1 step"
+      },
+      {
+        "medium":"+1 step",
+        "long":"+3 steps",
+        "type":"Bow\/Crossbow\/Sling",
+        "short":"none"
+      },
+      {
+        "medium":"none",
+        "long":"+1 step",
+        "type":"Heavy Weapon",
+        "short":"-1 step"
+      },
+      {
+        "medium":"+1 step",
+        "long":"+2 steps",
+        "type":"Thrown",
+        "short":"none"
+      }
+    ]
+  },
+  "autofire_modes":{
+    "_description":"PHB Sidebar: Automatic Weapon Attack Modes",
+    "modes":[
+      {
+        "name":"Single Fire",
+        "description":"One shot per action. Normal attack.",
+        "modifier":"none"
+      },
+      {
+        "name":"Burst Fire",
+        "description":"3-round burst. +1 step penalty, +1 damage step on hit.",
+        "modifier":"+1 step"
+      },
+      {
+        "name":"Autofire",
+        "description":"Full auto. +2 step penalty. Hits d4 targets in area.",
+        "modifier":"+2 steps"
+      }
+    ]
+  },
+  "actions_per_round":{
+    "_description":"PHB Table P7: Actions per Round",
+    "note":"Based on (CON+WIL)\/2. Score 1-6: 1 action. 7-12: 2 actions. 13+: 3 actions."
+  },
+  "damage_summary":{
+    "types":[
+      {
+        "knockout":"All stun boxes marked = unconscious.",
+        "type":"Stun (s)",
+        "description":"Light damage. Bumps, bruises. Clears at end of scene.",
+        "overflow":"Extra stun becomes wound (2:1)."
+      },
+      {
+        "knockout":"All wound boxes = unconscious.",
+        "penalty":"Half full: +1 step. Full: +2 step.",
+        "type":"Wound (w)",
+        "description":"Lasting injuries. Secondary: 2 wound = 1 stun.",
+        "overflow":"Extra wound becomes mortal (2:1)."
+      },
+      {
+        "overflow":"No overflow — character dies.",
+        "type":"Mortal (m)",
+        "description":"Severe vital damage. +1 step per box taken.",
+        "death":"All mortal boxes = death."
+      }
+    ],
+    "_description":"PHB Compiled Tables: Damage Types"
+  },
+  "impact_damage":{
+    "_description":"PHB: Falling\/Impact Damage by severity",
+    "table":[
+      {
+        "L":"d8+d4m",
+        "T":"d12+8m",
+        "result":"Failure",
+        "S":"d6+3w",
+        "M":"d6+2m"
+      },
+      {
+        "L":"d8+2m",
+        "T":"d12+6m",
+        "result":"Ordinary",
+        "S":"d4+2w",
+        "M":"d4+2m"
+      },
+      {
+        "L":"d6+2m",
+        "T":"d8+6m",
+        "result":"Good",
+        "S":"d4+1w",
+        "M":"d4+1m"
+      },
+      {
+        "L":"d4+2m",
+        "T":"d6+4m",
+        "result":"Amazing",
+        "S":"d8+2w",
+        "M":"d8+2w"
+      }
+    ]
+  }
+}

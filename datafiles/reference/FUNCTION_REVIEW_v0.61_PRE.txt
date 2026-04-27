@@ -1,0 +1,1055 @@
+============================================================
+DICEYMCDICEFACES — FUNCTION REVIEW (PRE)
+Generated: 2026-04-07T06:36:24.649Z
+Total functions: 244
+============================================================
+
+
+=== scripts/scr_alternity_statblock/scr_alternity_statblock.gml ===
+    1566 lines, 66 functions
+
+  L24  string_to_damage_type(_s)
+
+  L33  careers_from_import(_careers)
+        @function careers_from_import(career_array) @description Converts imported career array
+        (string damage types → enums)
+
+  L68  get_broad_skill_scores(_stat, _broad_name)
+        @function get_broad_skill_scores(statblock, broad_name) @description Returns the broad
+        skill's scores as a struct, or undefined if not found
+
+  L81  add_specialty_rank0(_stat, _broad_name, _spec_name)
+        @function add_specialty_rank0(statblock, broad_name, spec_name) @description Adds a rank-0
+        specialty under an existing broad skill (uses broad skill scores) @returns {bool} true if
+        added, false if broad skill not found or specialty already exists
+
+  L113  build_browser_list(_stat, _ability_filter)
+        @function build_browser_list(statblock, [ability_filter]) @description Builds the flat list
+        of browsable entries for the skill browser. Returns array of structs: { type:
+        "broad"/"specialty"/"add", broad, specialty, ability, owned } If ability_filter is provided
+        (e.g. "str"), only includes skills of that ability.
+
+  L160  create_statblock(_name, _profession, _career)
+        @function create_statblock(name, profession, career) @description Creates a new Alternity
+        character stat block as a struct @param {string} _name         Hero's name @param {real}  
+        _profession   PROFESSION enum value @param {string} _career       Career name (e.g.
+        "Soldier", "Pilot") @returns {struct} Complete Alternity stat block
+
+  L228  set_ability(_stat, _ability_name, _score)
+        @function set_ability(statblock, ability_name, score) @description Sets an ability score and
+        auto-calculates untrained & resistance modifier
+
+  L247  calculate_action_check(_stat)
+        @function calculate_action_check(statblock) @description Calculates action check scores from
+        DEX + INT + profession bonus
+
+  L264  calculate_durability(_stat)
+        @function calculate_durability(statblock) @description Calculates durability from CON and
+        profession
+
+  L282  add_skill(_stat, _ability, _broad_name, _specialty_name, _rank, _score_ord, _score_good, _score_amz)
+        @function add_skill(statblock, ability, broad_name, specialty_name, rank, score_ord,
+        score_good, score_amz) @description Adds a skill to the stat block
+
+  L297  add_weapon(_stat, _name, _skill_kw, _dmg_ord, _dmg_good, _dmg_amz, _range_str, _damage_type)
+        @function add_weapon(statblock, name, skill_keyword, dmg_ord, dmg_good, dmg_amz, range_str,
+        damage_type) @description Adds a weapon to the stat block. skill_keyword maps to
+        keyword_tree.weapon_skills.
+
+  L312  set_armor(_stat, _name, _li, _hi, _en)
+        @function set_armor(statblock, name, li, hi, en) @description Sets armor on the stat block
+
+  L319  remove_weapon(_stat, _idx)
+
+  L323  remove_gear(_stat, _idx)
+
+  L330  hero_has_weapon(_stat, _name)
+
+  L344  build_statblock_export(_stat)
+        @function build_statblock_export(statblock) @description Builds the v4 export struct for a
+        statblock. Used by statblock_export and save_hero_and_track.
+
+  L379  statblock_export(_stat)
+        @function statblock_export(statblock) @description Exports a character stat block to a JSON
+        file via save dialog.
+
+  L390  statblock_import()
+        @function statblock_import() @description Imports a character stat block from a JSON file
+        via open dialog.
+
+  L402  _resolve_enum(_val, _parser)
+        @function _resolve_enum(val, parser) @description Resolves a string-or-number value using a
+        parser function if string.
+
+  L408  statblock_import_data(_data)
+        @function statblock_import_data(data) @description Builds a statblock from parsed JSON data.
+        Returns struct or undefined.
+
+  L511  draw_durability_circles(_x, _y, _label, _current, _max_val, _bar_color, _text_color)
+        @function draw_durability_circles(x, y, label, current, max_val, bar_color, text_color)
+        @description Draws a row of clickable durability circles. Left=damaged (filled),
+        right=healthy (outlined). Click damaged circle → heal back. Click healthy → damage. Returns
+        the new current value if clicked, or -1 if no click. Caller assigns the result and calls
+        log_health_change(). Label format matches the rest of the app: "Stun: 12/12" (current/max),
+        NOT "Stun: 0/12" (damage/max).
+
+  L532  get_fx_data(_name)
+        @function get_fx_data(name) @description Looks up full FX definition from global.fx_database
+        by name. Returns struct or undefined.
+
+  L540  get_program_data(_name)
+        @function get_program_data(name) @description Looks up full program definition from
+        global.programs by name. Returns struct or undefined.
+
+  L548  get_deck_slots(_stat)
+        @function get_deck_slots(statblock) @description Returns { used, total } slot counts for the
+        hero's cyberdeck.
+
+  L563  update_hero(_stat)
+        @function update_hero(statblock) @description Master update - recalculates ALL derived
+        values from base data
+
+  L588  get_wound_penalty(_stat)
+        @function get_wound_penalty(statblock) @description Returns situation die step penalty from
+        wounds/mortal damage
+
+  L606  sanitize_hero_filename(_name)
+        @function sanitize_hero_filename(name) @description Strips spaces, apostrophes, and
+        Windows-illegal chars from hero name for safe file paths
+
+  L619  append_roll_log_file(_stat, _roll)
+        @function append_roll_log_file(hero, roll_result) @description Appends a roll entry to the
+        character's persistent log file
+
+  L639  load_roll_log_tail(_stat, _count)
+        @function load_roll_log_tail(hero, count) @description Loads the last N lines from the
+        character's roll log file
+
+  L658  get_roll_log_path(_stat)
+        @function get_roll_log_path(hero)
+
+  L668  _read_digits(_str, _pos)
+        @function _read_digits(str, start_pos) @description Reads consecutive digit characters from
+        str starting at start_pos. Returns string of digits.
+
+  L679  parse_and_roll_damage(_dmg)
+        @function parse_and_roll_damage(dmg_string) @description Parses "d6+1w", "d8+2s", "d4m", or
+        multi-die "3d8w", "2d4+2w" and rolls it.
+
+  L707  get_difficulty_descriptor(_step)
+        @function get_difficulty_descriptor(situation_step) @description Returns PHB difficulty
+        label based on the situation die step (Table P16).
+
+  L719  find_best_skill_for_weapon(_stat, _wep)
+        @function find_best_skill_for_weapon(statblock, weapon) @description Finds the hero's best
+        applicable skill for a weapon. Uses weapon.skill_keyword → keyword_tree.weapon_skills for
+        resolution.
+
+  L767  get_portrait_filename(_stat)
+        @function get_portrait_filename(statblock) @description Returns the expected default
+        portrait filename for this character
+
+  L788  load_portrait_for_hero(_stat)
+        @function load_portrait_for_hero(statblock) @description Loads the appropriate portrait
+        sprite. Returns sprite ID or -1.
+
+  L822  load_custom_portrait_dialog(_stat)
+        @function load_custom_portrait_dialog(statblock) @description Opens file dialog, copies
+        image to portraits/ dir, saves relative path
+
+  L853  draw_portrait(_x, _y, _w, _h, _border_color)
+        @function draw_portrait(x, y, w, h, border_color) @description Draws the portrait (or
+        placeholder) scaled to fit the given area
+
+  L892  scan_portrait_directory()
+        @function scan_portrait_directory() @description Scans portraits/ folder for existing preset
+        images, returns array of {name, path}
+
+  L924  draw_glow(_x, _y, _r, _col, _layers)
+        @function draw_glow(x, y, radius, color, layers) @description Draws a layered glow effect
+        using concentric transparent circles
+
+  L935  draw_particles(_x, _y, _w, _h, _count, _col, _smin, _smax)
+        @function draw_particles(x, y, w, h, count, color, size_min, size_max) @description Scatter
+        particles for atmosphere (fog, sparks, dust)
+
+  L949  draw_energy_lines(_cx, _cy, _count, _rmin, _rmax, _col)
+        @function draw_energy_lines(cx, cy, count, min_r, max_r, color) @description Draw crackling
+        energy lines radiating outward
+
+  L969  draw_armor_plates(_x, _y, _w, _h, _col, _hi)
+        @function draw_armor_plates(x, y, w, h, color, highlight) @description Draw layered armor
+        plating with edge highlights
+
+  L987  draw_weapon_silhouette(_cx, _cy, _type, _col)
+        @function draw_weapon_silhouette(cx, cy, type, color) @description Draw a weapon silhouette
+        from line segments. type: 0=rifle, 1=pistol, 2=blade, 3=fist, 4=psi
+
+  L1030  _save_surface_as_sprite(_surf, _pw, _ph, _path)
+        @function _save_surface_as_sprite(surface, width, height, path) @description Captures a
+        surface to a sprite, saves to disk, and cleans up.
+
+  L1040  _draw_profession_icon(_px, _py, _p, _col)
+        @function _draw_profession_icon(px, py, profession_index, icon_color) @description Draws a
+        small profession icon glyph at given position.
+
+  L1056  generate_all_coded_portraits()
+        @function generate_all_coded_portraits() @description Generates 54 epic sci-fi portrait
+        images using layered draw effects.
+
+  L1347  draw_inspect_highlight(_x, _y, _w, _h, _active)
+        @function draw_inspect_highlight(x, y, w, h, active) @description Draws a filled+outlined
+        inspect highlight box if active.
+
+  L1358  ui_btn(_key, _x1, _y1, _x2, _y2, _text, _base_color, _hover_color)
+        @function ui_btn(key, x1, y1, x2, y2, text, base_color, hover_color) @description THE meta
+        button function. Registers click rect + draws the button in one call. Returns true if
+        hovering (for inline hover effects).
+
+  L1374  mouse_in(_x1, _y1, _x2, _y2)
+        @function mouse_in(x1, y1, x2, y2) @description Returns true if mouse GUI position is inside
+        the rectangle
+
+  L1380  draw_circuit_border(_x, _y, _w, _h, _col)
+        @function draw_circuit_border(x, y, w, h, col) @description Draws a sci-fi circuit-trace
+        border with notches on top and bottom edges.
+
+  L1399  add_to_party(_stat)
+        @function add_to_party(statblock) @description Adds a character statblock to the global
+        party array (dedupes by name)
+
+  L1407  remove_from_party(_partyArrayIndex)
+        @function remove_from_party(index) @description Removes a character from the party by index
+
+  L1414  add_to_npcs(_statblock, _factionName)
+        @function add_to_npcs(statblock, faction) @description Adds a statblock to the NPC list with
+        faction tag
+
+  L1423  remove_from_npcs(_npcArrayIndex)
+        @function remove_from_npcs(index) @description Removes an NPC by index
+
+  L1430  move_npc_to_party(_npcArrayIndex)
+        @function move_npc_to_party(index) @description Moves an NPC to the party list
+
+  L1440  move_party_to_npcs(_partyArrayIndex, _factionName)
+        @function move_party_to_npcs(index, faction) @description Moves a party member to the NPC
+        list
+
+  L1450  switch_active_character(_partyArrayIndex)
+        @function switch_active_character(index) @description Switches the active hero to a party
+        member by index
+
+  L1460  get_npcs_by_faction(_factionName)
+        @function get_npcs_by_faction(faction) @description Returns array of {idx, stat} for NPCs in
+        given faction
+
+  L1471  export_campaign_full()
+        @function export_campaign_full() @description Saves all party and NPC characters to disk,
+        then saves campaign.json
+
+  L1484  _build_char_refs(_list, _includeFaction)
+        @function _build_char_refs(list, include_faction) @description Builds path reference array
+        from a character list. For NPCs, includes faction.
+
+  L1497  _load_chars_from_refs(_refs, _applyFaction)
+        @function _load_chars_from_refs(refs, target_array, apply_faction) @description Loads
+        statblocks from path refs into target array. Optionally applies faction tag.
+
+  L1511  save_all_data_dialog()
+        @function save_all_data_dialog() @description Opens save dialog, writes campaign bundle to
+        chosen file. Returns path or "".
+
+  L1526  load_all_data_dialog()
+        @function load_all_data_dialog() @description Opens load dialog, reads campaign bundle and
+        applies to globals. Returns path or "".
+
+  L1545  import_player_to_party(_path)
+        @function import_player_to_party(path) @description Loads a character from file and adds to
+        party. Returns true on success.
+
+  L1557  import_to_npcs(_filePath, _factionName)
+        @function import_to_npcs(path, faction) @description Loads a character from file and adds to
+        NPC list. Returns true on success.
+
+
+=== scripts/scr_chargen/scr_chargen.gml ===
+    311 lines, 15 functions
+
+  L5  get_species_name(_sp)
+
+  L9  get_profession_name(_prof)
+
+  L16  parse_species_name(_name)
+
+  L21  parse_profession_name(_name)
+
+  L27  get_species_mods(_sp)
+
+  L31  get_species_starting_broads(_sp)
+
+  L35  get_profession_requirements(_prof)
+
+  L54  get_careers_for_profession(_prof)
+
+  L59  get_career_names_for_profession(_prof)
+
+  L68  apply_career_to_statblock(_stat, _career, _additive)
+        @function apply_career_to_statblock(statblock, career_data, additive) @description Applies
+        career skills & equipment. If additive=true, doesn't clear existing.
+
+  L122  generate_random_character(_species_choice, _prof_choice, _career_choice, _sec_prof_choice, _sec_career_choice)
+        @function generate_random_character(species, prof, career, sec_prof, sec_career)
+        @description Full character generation. Pass -1 for random on any choice.
+        sec_prof/sec_career only used when prof=DIPLOMAT.
+
+  L248  generate_random_name()
+
+  L254  get_specialties_for_broad(_broad_name)
+
+  L261  find_skill(_stat, _broad_name, _spec_name)
+
+  L275  generate_quick_npc(_template_idx)
+        @function generate_quick_npc(template_index) @description Generates a fully formed NPC from
+        a global.npc_templates entry.
+
+
+=== scripts/scr_data_loader/scr_data_loader.gml ===
+    495 lines, 21 functions
+
+  L39  read_json(_path)
+        @description Central Data Loader All game data lives in JSON files that ship with the game.
+        Loaded once at startup via read_json(). No fallback generators.  JSON FILES (datafiles/ —
+        included with build): config.json          - UI colors, dice steps, layout, misc settings
+        professions.json     - Profession mechanics (names, requirements, bonuses, skill lists)
+        skills.json          - Skill tree (broad skills + specialties) species.json         -
+        Playable species (mods, starting skills, traits) careers.json         - Career packages by
+        profession (skills + equipment) names.json           - Random name generation lists
+        fx_database.json     - Unified FX entries (perks, flaws, cybertech) keyword_tree.json    -
+        Master keyword→ability→category mapping tables/skill_rank_benefits.json - PHB rank benefit
+        tables tables/combat_tables.json       - Combat reference tables tables/gm_tables.json      
+        - GM reference tables  USER-WRITABLE FILES (save directory — created on first run):
+        changelog.json         - Development changelog (load_or_create) recent_characters.json -
+        Recent character list (load_or_create)  GLOBALS SET: global.config       - Parsed config
+        struct global.professions  - Array of profession structs (indexed by PROFESSION enum)
+        global.skill_tree   - Array of { ability, broad, specialties[] } global.species_data - Array
+        of { name, mods[], starting_broads[], traits } global.career_data  - Array of arrays
+        (indexed by profession), each = [career structs] global.names        - Struct {
+        first_names[], last_names[] } global.fx_database  - Array of FX entry structs
+        global.fx_lookup    - Struct mapping FX name → index global.keyword_tree - Master keyword
+        mapping struct @function read_json(path) @description Reads a JSON file from disk and
+        returns the parsed struct/array, or undefined if missing.
+
+  L54  reload_changelog()
+        @function reload_changelog() @description Read changelog.json into global.changelog.
+        Self-heals against the stale-cache problem: if the file we get back has fewer than
+        CHANGELOG_MIN_EXPECTED entries, we delete the working_directory copy and re-read, forcing
+        GameMaker to re-extract the bundled included file from the asset bundle. The bundled
+        datafiles/changelog.json is the source of truth.
+
+  L89  write_json(_path, _data)
+        @function write_json(path, data) @description Writes a struct/array to disk as
+        pretty-printed JSON.
+
+  L97  load_or_create(_path, _default_func)
+        @function load_or_create(path, default_func) @description Loads JSON from path; if missing,
+        calls default_func to generate data, writes it, and returns it.
+
+  L114  parse_hex_color(_hex)
+        @function parse_hex_color(hex) @description Converts a "#rrggbb" hex string to a GML color
+        value.
+
+  L131  ability_name_to_index(_name)
+        @function ability_name_to_index(name) @description Maps an ability abbreviation ("STR",
+        "DEX", etc.) to its index (0-5).
+
+  L142  init_all_data()
+        @function init_all_data() @description Master initialization: loads all JSON data files into
+        globals. Called once at game start.
+
+  L222  add_recent_character(_name, _path)
+        @function add_recent_character(name, path) @description Adds a character to the recent list.
+        Removes duplicates, caps at 10.
+
+  L242  save_hero_and_track(_stat)
+        @function save_hero_and_track(statblock) @description Saves the hero to characters/ dir and
+        tracks in recents
+
+  L260  rename_hero(_stat, _old_name, _new_name)
+        @function rename_hero(stat, old_name, new_name) @description Rename a character on disk:
+        writes the new file at the new sanitized path, deletes the old file (if names differ),
+        updates the recent_characters list, the roster, the campaign reference, the rolllog file,
+        and last_char_path. Safe to call even when only the display name changes (no file rename
+        happens unless the sanitized filename changes).
+
+  L325  load_character_from_path(_path)
+        @function load_character_from_path(path) @description Loads a character from a specific file
+        path. Returns statblock or undefined.
+
+  L340  save_campaign()
+        @function save_campaign() @description Saves campaign state: roster refs, party refs, NPC
+        refs with factions
+
+  L351  load_campaign()
+        @function load_campaign() @description Loads campaign state from campaign.json if it exists
+
+  L363  scan_characters_directory()
+        @function scan_characters_directory() @description Scans characters/ folder and rebuilds
+        roster with all found files
+
+  L385  roster_add_ref(_name, _path)
+        @function roster_add_ref(name, path) @description Adds a character reference to the roster
+        (dedupes by path)
+
+  L403  session_log_load()
+        @function session_log_load() @description Load the persistent session log into
+        obj_game.session_log_entries. Returns silently if the file doesn't exist (first run).
+
+  L423  session_log_save()
+        @function session_log_save() @description Persist obj_game.session_log_entries to disk.
+
+  L436  session_log_append(_entry)
+        @function session_log_append(entry) @description Push a new entry to the front, prune to
+        SESSION_LOG_MAX, save. Entry should be a struct with { kind, sender, character, text, total,
+        degree, timestamp_ms, ts_str }.
+
+  L448  session_log_format_time(_ms)
+        @function session_log_format_time(ms) @description Convert a current_time-ish ms value into
+        a "HH:MM:SS" string using the system clock as the reference (so old entries show wall time).
+
+  L456  session_log_make_roll_entry(_sender, _character, _skill, _degree, _total, _mod_str)
+        @function session_log_make_roll_entry(sender, character, skill, degree, total, mod_str)
+        @description Build a roll entry struct for session_log_append.
+
+  L473  session_log_make_chat_entry(_sender, _text, _is_whisper, _whisper_to)
+        @function session_log_make_chat_entry(sender, text, is_whisper, whisper_to) @description
+        Build a chat entry struct for session_log_append.
+
+
+=== scripts/scr_dice/scr_dice.gml ===
+    216 lines, 9 functions
+
+  L10  get_step(_step)
+        @description Alternity Dice System Reads die step config from global.config.dice.steps PHB
+        scale: -d20 -d12 -d8 -d6 -d4 +d0 +d4 +d6 +d8 +d12 +d20 +2d20 +3d20 +4d20 @function
+        get_step(index) → step config struct { sides, count, bonus, name }
+
+  L19  situation_step_name(_step)
+        @function situation_step_name(step) → display string like "+d8" or "+2d20"
+
+  L22  roll_die(_sides)
+        @function roll_die(sides) → 1..sides, or 0 if sides <= 0
+
+  L25  roll_situation(_step)
+        @function roll_situation(step) → total situation die roll (handles multi-die: +2d20 etc.)
+
+  L35  alternity_check(_score_ord, _score_good, _score_amz, _situation_step)
+        @function alternity_check(score_ord, score_good, score_amz, situation_step) @description THE
+        core dice check. d20 control + situation die. Lower is better.
+
+  L53  alternity_action_check(_ac_ord, _ac_good, _ac_amz, _situation_step)
+        @function alternity_action_check(ac_ord, ac_good, ac_amz, situation_step) @description
+        Action check — failures become MARGINAL (degree 0)
+
+  L89  parse_dice_expression(_str)
+
+  L169  real_or_zero(_s)
+        @function real_or_zero(str) @description Safe string→real that returns 0 on failure instead
+        of throwing.
+
+  L179  gm_run_dice_expression(_expr)
+        @function gm_run_dice_expression(expr) @description Parse + roll a free-form dice
+        expression. On success, store the result struct on obj_game.gm_dice_last_result, push a
+        chat-style entry into the party stream, and broadcast to the session as a chat line so all
+        players see "[GM rolls 1d20-4x3]: 12, 7, 18".
+
+
+=== scripts/scr_draw_tabs/scr_draw_tabs.gml ===
+    2101 lines, 17 functions
+
+  L10  draw_tab_character(_lx, _ly, _lw, _lh)
+        @description Tab drawing functions extracted from Draw_64.gml Each function draws one tab's
+        content and returns the updated _ly position. These run in obj_game context (GML scripts do
+        this automatically), so hero, btn, c_* colors, and all state variables are accessible
+        directly. @function draw_tab_character(_lx, _ly, _lw, _lh) @description TAB 0: CHARACTER —
+        stats + skills, layout adapts to tabs orientation. Vertical tabs => stats horizontal across
+        the top, skills below in single column. Horizontal tabs => stats vertical column on the
+        left, skills in second column on the right.
+
+  L210  draw_tab_equipment(_lx, _ly, _lw, _lh)
+        @function draw_tab_equipment(_lx, _ly, _lw, _lh) @description TAB 1: EQUIPMENT — interactive
+        weapons/armor/gear management Full-featured: verbose/compact display, PL filter, add panel
+        toggle, inspect highlight, custom weapon/gear creation, category grouping for weapons.
+
+  L492  draw_tab_combat(_lx, _ly, _lw, _lh)
+        @function draw_tab_combat(_lx, _ly, _lw, _lh) @description TAB 2: COMBAT
+
+  L803  draw_tab_psionics(_lx, _ly, _lw, _lh)
+        @function draw_tab_psionics(_lx, _ly, _lw, _lh) @description TAB 3: PSIONICS
+
+  L922  draw_tab_perks_flaws(_lx, _ly, _lw, _lh)
+        @function draw_tab_perks_flaws(_lx, _ly, _lw, _lh) @description TAB 4: PERKS & FLAWS
+
+  L1040  draw_tab_cybertech(_lx, _ly, _lw, _lh)
+        @function draw_tab_cybertech(_lx, _ly, _lw, _lh) @description TAB 5: CYBERTECH
+
+  L1153  draw_tab_rolllog(_lx, _ly, _lw, _lh)
+        @function draw_tab_rolllog(_lx, _ly, _lw, _lh) @description TAB 6: ROLL LOG / PARTY STREAM
+        Offline: displays the local per-hero roll log file (strings). Multiplayer: displays the
+        in-memory rolllog_entries struct stream (rolls + chat). Handles both struct entries and
+        legacy string entries in the same array.
+
+  L1272  draw_tab_info(_lx, _ly, _lw, _lh)
+        @function draw_tab_info(_lx, _ly, _lw, _lh) @description TAB 7: INFO/REFERENCE
+
+  L1295  draw_tab_grid(_lx, _ly, _lw, _lh)
+        @function draw_tab_grid(_lx, _ly, _lw, _lh) @description TAB 8: GRID/CYBERDECK — programs,
+        computer selection, and custom program builder
+
+  L1462  _gm_get_best_awareness_score(_stat)
+        @function _gm_get_best_awareness_score(stat) @description Returns best awareness score
+        string: Perception > Intuition > broad > untrained
+
+  L1489  draw_gm_party(_lx, _ly, _lw, _lh)
+        @function draw_gm_party(lx, ly, lw, lh) @description GM TAB 0: Draws party roster with HP,
+        senses, resolve, res mods, and management buttons
+
+  L1585  draw_gm_npcs(_lx, _ly, _lw, _lh)
+        @function draw_gm_npcs(lx, ly, lw, lh) @description GM TAB 1: Draws NPC list grouped by
+        faction with edit/move/remove controls
+
+  L1665  draw_gm_encounter(_lx, _ly, _lw, _lh)
+        @function draw_gm_encounter(lx, ly, lw, lh) @description GM TAB 2: Draws encounter tracker
+        with initiative bar, phase columns, and party/NPC status rows
+
+  L1752  draw_gm_campaign(_lx, _ly, _lw, _lh)
+        @function draw_gm_campaign(lx, ly, lw, lh) @description GM TAB 3: Draws campaign roster with
+        scan/import/export and load-to-party/NPC buttons
+
+  L1825  draw_tab_aura(_lx, _ly, _lw, _lh)
+        @function draw_tab_aura(lx, ly, lw, lh) @description TAB 9: AURA/LORE — identity fields,
+        temperament/motivation pills, personality, and lifepath
+
+  L1982  draw_gm_sessionlog(_lx, _ly, _lw, _lh)
+        @function draw_gm_sessionlog(lx, ly, lw, lh) @description GM TAB 4: Persistent session-wide
+        history of every roll and chat. Top: scrollable list of entries (newest first, color-coded
+        by degree). Bottom: chat input that types out to all players (Enter to send). Buttons: Clear
+        (wipes the persistent file), Save Now (forces flush).
+
+  L2096  draw_gm_resources(_lx, _ly, _lw, _lh)
+        @function draw_gm_resources(lx, ly, lw, lh) @description GM TAB 5: Draws scrollable GM
+        customization guide for JSON data files
+
+
+=== scripts/scr_network/scr_network.gml ===
+    541 lines, 29 functions
+
+  L66  net_full_reset()
+        @function net_full_reset() @description Single source of truth for clearing ALL multiplayer
+        state. Tear down socket, clear pending actions, reset state machine, clear inputs.
+
+  L90  net_init(_host, _port)
+        @function net_init(host, port) @description Open a TCP socket and queue a non-blocking
+        connect attempt. Tears down any existing socket first. Sets handshake_state = "connecting".
+        The actual completion is signaled by the network_type_non_blocking_connect async event,
+        which transitions state to "connected" or "error".
+
+  L121  net_on_connect_complete(_succeeded)
+        @function net_on_connect_complete(succeeded) @description Called from the Async Networking
+        event when the non-blocking connect attempt finishes. Promotes "connecting" -> "connected"
+        or "error".
+
+  L138  net_flush_pending_action()
+        @function net_flush_pending_action() @description If we have a pending action and the socket
+        is connected, send it now and clear the pending slot. Called after net_on_connect_complete.
+
+  L154  net_check_timeout()
+        @function net_check_timeout() @description Called from the Step event. If we've been
+        "connecting" for too long, transition to "error" with a timeout message.
+
+  L169  net_disconnect()
+        @function net_disconnect() @description Politely close the socket and reset session state.
+        Used for "leave session" — distinct from net_full_reset which also wipes input fields.
+
+  L184  net_is_connected()
+
+  L188  net_is_host()
+
+  L192  net_get_session_code()
+
+  L196  net_get_players()
+
+  L208  net_send(_msg_type, _payload, _to = "")
+        @function net_send(msg_type, payload, [to]) @description Wraps payload in the standard
+        envelope and sends it as a newline-delimited JSON line over the TCP socket. Optional _to
+        argument targets a single recipient (used by whispers); relay routes by player name.
+
+  L236  net_recv_from_buffer(_buf, _size)
+        @function net_recv_from_buffer(buf, size) @description Called from the Async Networking
+        event with the incoming buffer. Appends bytes to the rolling recv buffer, then splits on
+        newlines and parses any complete JSON messages. Returns an array of parsed structs.
+
+  L275  net_host_session(_player_name)
+
+  L281  net_join_session(_code, _player_name)
+
+  L288  net_leave_session()
+
+  L298  net_send_roll(_roll_result, _char_name)
+        @function net_send_roll(roll_result, char_name) @description Broadcast a completed roll to
+        the session.
+
+  L321  net_send_character(_stat)
+        @function net_send_character(stat) @description Broadcast a full statblock export to the
+        session.
+
+  L330  net_request_character(_char_name)
+        @function net_request_character(char_name) @description Ask the host (or peers) for a named
+        character's full data.
+
+  L339  net_request_character_from(_target_player)
+        @function net_request_character_from(target_player) @description Ask a specific player (by
+        name) to send back their current character. Used by the GM "+Camp" button so a player
+        joining the session can be auto-rostered.
+
+  L347  net_push_character_to(_target_player, _stat)
+        @function net_push_character_to(target_player, stat) @description Send a full character
+        export targeted at a single player so the GM can push a pre-built character into a player's
+        slot.
+
+  L360  net_send_chat(_text)
+        @function net_send_chat(text) @description Send a plain chat line into the party stream.
+
+  L370  net_send_whisper(_target_name, _text)
+        @function net_send_whisper(target_name, text) @description Send a private chat line targeted
+        at one player by name. Special target "gm" routes to the session host. Relay forwards only
+        to the matching recipient (and silently echoes to GMs for moderation).
+
+  L383  net_send_status(_text)
+        @function net_send_status(text) @description Host-only broadcast of a GM status message.
+
+  L394  net_send_token_link(_char_name, _token_id)
+        @function net_send_token_link(char_name, token_id) @description Link a character to a map
+        token.
+
+  L401  net_send_roll_at_token(_roll_result, _char_name, _token_id)
+        @function net_send_roll_at_token(roll_result, char_name, token_id) @description Send a roll
+        result tagged with a token id for the map bridge.
+
+  L419  net_heartbeat_tick()
+        @function net_heartbeat_tick() @description Send a no-op heartbeat message if 30 seconds
+        have elapsed.
+
+  L436  log_remote_roll(_msg)
+        @function log_remote_roll(msg) @description Turn a received ROLL_RESULT message into a
+        struct entry and prepend it to obj_game.rolllog_entries.
+
+  L464  log_remote_chat(_msg)
+        @function log_remote_chat(msg) @description Turn a received CHAT message into a struct entry
+        and prepend it to obj_game.rolllog_entries. Whispers are marked with a [whisper] prefix so
+        the receiver can see who it was meant for.
+
+  L507  log_remote_character(_msg)
+        @function log_remote_character(msg) @description Receive a CHARACTER_SYNC message — apply
+        via import logic. If the sender flagged the message as `pushed: true` and we're not the
+        host, the character is loaded as our active hero (GM is pushing a character to a specific
+        player). Otherwise it lands in global.npcs as a roster entry.
+
+
+=== scripts/scr_skill_costs/scr_skill_costs.gml ===
+    361 lines, 27 functions
+
+  L12  get_profession_skill_list(_prof)
+        @description Skill Cost System — PHB Two-Tier Model  Per Alternity PHB (p.34-36, 62): Two
+        categories: PROFESSION (your code listed) or OTHER (not listed) Broad skill: Profession = 3
+        pts, Other = 4 pts Specialty rank N (upgrading from N-1): base + (N-1) Profession base = 1: 
+        rank 1→1, rank 2→2, rank 3→3  (total: 1, 3, 6) Other base = 2:       rank 1→2, rank 2→3,
+        rank 3→4  (total: 2, 5, 9) @function get_profession_skill_list(profession) @description
+        Returns array of broad skill names that have this profession's code
+
+  L20  is_profession_skill(_prof, _broad_name)
+        @function is_profession_skill(profession, broad_name) → bool
+
+  L30  is_profession_skill_hero(_stat, _broad_name)
+        @function is_profession_skill_hero(statblock, broad_name) → bool @description Checks both
+        primary and secondary (diplomat) profession
+
+  L41  get_broad_cost_for_hero(_stat, _broad_name)
+        @function get_broad_cost_for_hero(statblock, broad_name)
+
+  L46  get_spec_base_for_hero(_stat, _broad_name)
+        @function get_spec_base_for_hero(statblock, broad_name)
+
+  L52  get_spec_rank_cost(_base, _current_rank)
+        @function get_spec_rank_cost(base, current_rank) @description Cost to upgrade FROM
+        current_rank TO current_rank+1
+
+  L60  get_spec_total_cost(_base, _rank)
+        @function get_spec_total_cost(base, rank) @description Total points spent on a specialty at
+        given rank Sum of (base + i) for i = 0 to rank-1 = rank * base + rank*(rank-1)/2
+
+  L66  get_single_skill_cost_hero(_stat, _sk)
+        @function get_single_skill_cost_hero(statblock, skill)
+
+  L75  get_total_skill_cost_hero(_stat)
+        @function get_total_skill_cost_hero(statblock)
+
+  L83  get_starting_skill_points(_prof)
+        @function get_starting_skill_points(profession)
+
+  L98  get_perks_cost(_stat)
+        @function get_perks_cost(statblock) → total skill points spent on perks
+
+  L118  get_flaws_benefit(_stat)
+        @function get_flaws_benefit(statblock) → total skill points gained from flaws
+
+  L130  get_adjusted_skill_points(_stat)
+        @function get_adjusted_skill_points(statblock) → starting points adjusted for perks/flaws
+
+  L136  find_fx(_stat, _name, _type, _active_only)
+        @function find_fx(statblock, name, type, active_only) → fx entry or undefined @description
+        ONE generic FX lookup. All hero_has_* and get_hero_fx are thin wrappers.
+
+  L151  has_fx(_stat, _name, _type, _active_only)
+        @function has_fx(stat, name, [type], [active_only]) @description Unified FX check. Returns
+        true if hero has matching FX entry. type: "perk"/"flaw"/"cybertech"/"" (empty = any type).
+        Default "". active_only: true = skip inactive FX. Default true.
+
+  L158  add_perk_to_hero(_stat, _name)
+        @function add_perk(statblock, perk_name) → true if added/upgraded
+
+  L196  remove_perk_from_hero(_stat, _name)
+        @function remove_perk(statblock, perk_name)
+
+  L203  toggle_flaw_on_hero(_stat, _name)
+        @function toggle_flaw(statblock, flaw_name)
+
+  L216  get_cyber_tolerance(_stat)
+        @function get_cyber_tolerance(statblock) @description Returns max cyber tolerance. CON +
+        mechalus bonus + perk bonus.
+
+  L229  get_cyber_used(_stat)
+        @function get_cyber_used(statblock) @description Returns total cyber size installed (reads
+        from fx array)
+
+  L243  add_cybertech_to_hero(_stat, _name, _quality)
+        @function add_cybertech_to_hero(statblock, name, quality) @description Adds cyberware via fx
+        array. Auto-adds prereqs. Returns true if added.
+
+  L266  remove_cybertech_from_hero(_stat, _name)
+        @function remove_cybertech_from_hero(statblock, name) @description Removes cyberware from fx
+        array. Won't remove if it's a prereq for something else.
+
+  L286  get_ability_score_for_skill(_stat, _ability)
+
+  L297  recalc_skill_scores(_stat)
+
+  L316  increase_skill_rank(_stat, _idx)
+
+  L328  decrease_skill_rank(_stat, _idx)
+
+  L348  add_broad_skill_to_hero(_stat, _broad_name)
+
+
+=== scripts/scr_tab_handlers/scr_tab_handlers.gml ===
+    865 lines, 20 functions
+
+  L12  _gm_list_handler(_list, _prefix, _selVar, _editSource, _moveFunc, _removeFunc, _moveMsg, _removeMsg)
+        @description Per-tab input handlers extracted from Step_0.gml. All functions run in obj_game
+        context — they access instance variables directly. Includes both player tab handlers and GM
+        tab handlers. @function _gm_list_handler(list, prefix, sel_var, edit_source, move_func,
+        remove_func, move_msg, remove_msg) @description Shared handler for GM party/NPC character
+        list operations (select, edit, move, remove).
+
+  L43  _toggle_inspect(_idx, _type)
+        @function _toggle_inspect(index, type_str) @description Toggles equipment inspect panel. If
+        already inspecting this item, close; else open.
+
+  L50  _gm_import_and_add(_addFunc, _factionName, _statusPrefix)
+        @function _gm_import_and_add(add_func, faction, status_prefix) @description Shared
+        import-from-file logic for GM party/NPC tabs.
+
+  L62  handle_gm_party()
+        @function handle_gm_party()
+
+  L85  handle_gm_npcs()
+        @function handle_gm_npcs()
+
+  L130  _for_all_combatants(_func)
+        @function _for_all_combatants(func) @description Runs func(stat) on every party member and
+        NPC.
+
+  L136  handle_gm_encounter()
+        @function handle_gm_encounter()
+
+  L159  handle_gm_sessionlog()
+        @function handle_gm_sessionlog() @description Sessionlog tab input — Clear/Save buttons,
+        scroll, chat input. The chat input is processed at the top of Step_0.gml so keystrokes
+        register every frame regardless of click state; this handler covers the buttons.
+
+  L182  _gm_sessionlog_send_chat()
+        @function _gm_sessionlog_send_chat() @description Shared send logic — parses /name and /gm
+        whisper prefixes, sends over the relay if connected, mirrors locally to the rolllog stream,
+        and always appends to the persistent session log.
+
+  L214  handle_gm_campaign()
+        @function handle_gm_campaign() @description Campaign sub-tab input — roster scroll, scan
+        directory, import, export, and load-to-party/NPCs.
+
+  L267  _toggle_pill_list(_loreData, _fieldKey, _btnPrefix, _options, _maxPicks, _maxLabel)
+        @function _toggle_pill_list(lore_data, field_key, btn_prefix, options, max_picks, max_label)
+        @description Shared toggle logic for lore pill buttons (temperament, motivations).
+
+  L285  handle_tab_aura()
+        @function handle_tab_aura() @description Aura/Lore tab input — trait selection, field
+        editing. Voss is read-only.
+
+  L337  handle_tab_equipment()
+        @function handle_tab_equipment() @description Equipment tab input — weapon/armor/gear
+        sub-tabs, add/remove/inspect items, PL filter, custom creation.
+
+  L452  handle_tab_combat()
+        @function handle_tab_combat() @description Combat tab input — initiative, phase placement,
+        weapon attacks/damage, punch/kick, defensive skills, feat checks.
+
+  L559  handle_tab_psionics()
+        @function handle_tab_psionics() @description Psionics tab input — wound/cant-fail toggles,
+        broad and specialty psionic skill rolls.
+
+  L584  handle_tab_perks_flaws()
+        @function handle_tab_perks_flaws() @description Perks/Flaws tab input — sub-tab switch,
+        remove/toggle installed perks/flaws, add from database.
+
+  L604  handle_tab_cybertech()
+        @function handle_tab_cybertech() @description Cybertech tab input — toggle/remove installed
+        implants, expand/add from database at quality tiers.
+
+  L638  handle_tab_rolllog()
+        @function handle_tab_rolllog() @description Roll Log tab input — scroll, copy, and (when
+        connected) chat send.
+
+  L693  handle_tab_character()
+        @function handle_tab_character() @description Character/Skills tab input — skill list
+        click/+/-, perk/flaw radio toggles, scroll, skill browser, untrained feat rolls.
+
+  L767  handle_tab_grid()
+        @function handle_tab_grid() @description Grid tab input — programs/computer/builder
+        sub-tabs, install/remove programs, select computer+processor, custom builds.
+
+
+=== scripts/scr_ui_helpers/scr_ui_helpers.gml ===
+    1183 lines, 40 functions
+
+  L14  apply_color_profile(_mode)
+        @description UI Helper Functions Eliminates redundant patterns across Step_0 and Draw_64. 
+        FUNCTION HIERARCHY: btn_clicked(key)          - Check if a named button was clicked this
+        frame log_roll(name, result)    - Log a roll to display, file, and roll log array
+        log_info(text)            - Log an info message to the roll log (no roll)
+        apply_cant_fail(roll)     - Apply can't-fail mode (failure → marginal) draw_checkbox(x, y,
+        checked, label, key) - Draw a checkbox, register button, return y advance draw_stat_row(x,
+        y, label, value, res_mod, key_prefix, index) - Draw ability with +/- buttons @function
+        apply_color_profile(mode) @description Applies a colorblind palette from config. Overwrites
+        the game's active colors.
+
+  L29  btn_clicked(_key)
+        @function btn_clicked(key) → bool @description Check if a named button rect was clicked.
+        Replaces 73 inline checks.
+
+  L46  format_health_message(_label, _old_val, _new_val, _char_name, _by_gm, _target_name)
+        @function format_health_message(label, old_val, new_val, char_name, by_gm, target_name)
+        @description Build the natural-language message for a health change. Stun damage : "Calvin
+        is stunned for 3 points." Stun heal   : "Calvin's stun fades by 2 points." Wound dmg   :
+        "Calvin takes 4 wound damage." Wound heal  : "Calvin heals 2 wound damage." Mortal dmg  :
+        "Calvin takes 1 mortal damage." Mortal heal : "Calvin heals 1 mortal damage." GM-assigned :
+        "(GM assigned 4 wound damage to Calvin.)"
+
+  L75  log_health_change(_label, _old_val, _new_val, _by_gm = false, _target_name = "")
+        @function log_health_change(label, old_val, new_val, [by_gm], [target_name]) @description
+        Log a health change with natural-language phrasing into all the usual destinations: roll_log
+        (sidebar history), rolllog_entries (Roll Log tab party stream), session_log_entries
+        (persistent disk-backed Sessionlog), AND broadcasts as a chat line to the multiplayer
+        session if connected. When _by_gm is true, the message uses the "(GM assigned X to Y)"
+        format. _target_name is the character receiving the change — only meaningful in GM mode.
+
+  L136  open_text_modal(_label, _target_struct, _target_key, _max_len, _after)
+        @function open_text_modal(label, target_struct, target_key, max_len, after) @description
+        Open the in-game inline text editor on a target struct field. Real-time saves: every
+        keystroke writes through to target_struct[target_key]. Replaces get_string() — no OS dialog,
+        no fullscreen black screen. Press Escape or click Cancel to close. Click Save (or Enter) to
+        commit + run after().
+
+  L155  close_text_modal(_commit)
+        @function close_text_modal(commit) @description Close the modal. If commit, fire the after
+        callback (real-time saves already happened). If not, ALSO restore the original value.
+
+  L172  log_roll(_name, _result)
+        @function log_roll(name, result) @description Unified roll logging. Replaces 17 copy-pasted
+        blocks.
+
+  L237  log_info(_text)
+        @function log_info(text) @description Log an info message (no dice roll)
+
+  L246  apply_cant_fail(_roll)
+        @function apply_cant_fail(roll)
+
+  L264  build_weapon_export_array(_stat)
+        @function build_weapon_export_array(statblock) → array of v4 weapon arrays @description
+        Builds export-ready weapon arrays from statblock. Used by all save/export functions.
+
+  L305  build_skill_request(_stat, _broad, _spec, _extra_pen)
+        @function build_skill_request(stat, broad, spec, extra_pen) @description Build a roll
+        request for a skill check
+
+  L342  build_feat_request(_stat, _ab_key, _ab_name, _extra_pen)
+        @function build_feat_request(stat, ab_key, ab_name, extra_pen) PHB Table P18: Feat checks
+        use FULL ability score (not half) with +d4 base die
+
+  L353  build_attack_request(_stat, _wep, _base_pen)
+        @function build_attack_request(stat, weapon, base_pen)
+
+  L372  build_initiative_request(_stat)
+        @function build_initiative_request(stat)
+
+  L397  apply_fx_modifiers(_stat, _req)
+        @function apply_fx_modifiers(statblock, request) @description THE UNIFIED MODIFIER ENGINE.
+        One loop, all FX types. Reads hero.fx array, looks up each entry in global.fx_database,
+        matches keywords against roll tags, applies modifiers. Handles: perks, flaws, cybertech,
+        racial, environmental, items — all identical.  ADDING A NEW MODIFIER (no code changes
+        needed): 1. Add an entry to fx_database.json with name, type, keywords, modifier 2. Done.
+        apply_fx_modifiers() will match it on every relevant roll. 3. GMs: create homebrew_fx.json
+        in same format, system merges at startup.  QUALITY-SCALED: FX with quality_scale:
+        {"O":-1,"G":-2,"A":-3} and quality != "" FIXED: most perks/flaws with modifier: -1 or +1
+        Reads ALL modifiers from hero.fx + global.fx_database. One loop, all types. Perks, flaws,
+        cybertech, racial, environmental, items — all handled identically.
+
+  L472  resolve_roll(_stat, _keyword_str, _extra_pen)
+        @function meta_roll(stat, request) → roll result @function resolve_roll(stat, keyword_str,
+        extra_pen) @description Resolves a keyword string into a roll request struct. The unified
+        entry point for ALL rolls. Accepts natural-language keywords: "Perception"                  
+        → skill request (specialty) "Awareness"                     → skill request (broad) "STR
+        feat"                      → feat request (full ability score) "Initiative"                 
+        → action check request "9mm charge pistol attack"      → weapon attack request "Rifle"      
+        → resolves via keyword_tree to spec skill Returns a request struct ready for meta_roll() /
+        prepare_roll().
+
+  L535  keyword_roll(_stat, _keyword_str, _extra_pen)
+        @function keyword_roll(stat, keyword_str, extra_pen) @description One-liner convenience:
+        resolve a keyword and roll instantly.
+
+  L551  prepare_roll(_stat, _req)
+        @description THE single roll function. All checks flow through here. 1. Apply perk/flaw
+        modifiers 2. Apply wound penalties 3. Clamp situation die 4. Roll dice 5. Apply cant-fail 6.
+        Log result 7. Track hit (for attacks) @function prepare_roll(stat, request) @description
+        Phase 1: Compute all automatic modifiers and set the situation die. Stores result in
+        obj_game.staged_roll. Player can adjust before executing. Call this when a skill/quick
+        button is clicked. Sets the adjuster to the computed value.
+
+  L587  execute_staged_roll()
+        @function execute_staged_roll() @description Phase 2: Execute the staged roll with current
+        situation_step. If player adjusted the die, the delta is logged as "Player Mod".
+
+  L628  meta_roll(_stat, _req)
+        @function meta_roll(stat, request) @description Combined prepare+execute for instant rolls
+        (backwards compatible). Use prepare_roll + execute_staged_roll for the staged workflow.
+
+  L648  quick_roll_skill(_stat, _req)
+        @function quick_roll_skill(stat, request) @description Quick roll: applies auto-mods ON TOP
+        of the player's current situation_step. The player sets their base die (GM says "roll at -1
+        bonus" → player sets -d4). Auto-mods (training, FX, wounds) adjust from there. Result:
+        player's choice + automatic adjustments = final die.
+
+  L682  _execute_instant(_req, _stat, _sit)
+        @function _execute_instant(request, stat, final_sit_step) @description Instantly rolls dice
+        at the given situation step, logs, tracks hits.
+
+  L701  do_hit_damage_roll()
+
+  L733  get_roll_keywords(_req)
+        @function get_roll_keywords(request) @description Generates keyword tags for a roll request.
+        Reads categories from global.keyword_tree.
+
+  L770  roll_has_tag(_tags, _tag)
+        @function roll_has_tag(tags_array, tag) Uses GML 2024 built-in array_contains — wrapper kept
+        for readability
+
+  L780  dropdown(_key, _label, _options, _max_vis, _on_change)
+        @function dropdown(key, label, options, max_vis, on_change) @description Creates a dropdown
+        struct that manages its own state.
+
+  L834  dropdown_group_click(_dds)
+        @function dropdown_group_click(dropdowns)
+
+  L848  dropdown_group_draw_lists(_dds)
+        @function dropdown_group_draw_lists(dropdowns)
+
+  L858  draw_section_header(_x, _y, _title, _rightText, _rightColor)
+        @function draw_section_header(x, y, title, right_text, right_color) @description Draws
+        "TITLE" in c_header, optional right-side text in given color. Returns nothing.
+
+  L869  draw_checkbox_inline(_x, _y, _checked, _label, _btnKey)
+        @function draw_checkbox_inline(x, y, checked, label, btn_key) @description Draws a 14x14
+        checkbox with label. Registers btn rect. Returns nothing.
+
+  L883  draw_combat_options_row(_x, _y, _lh, _woundKey, _cantfailKey)
+        @function draw_combat_options_row(x, y, lh, wound_key, cantfail_key) @description Draws the
+        wound-penalty + cant-fail checkboxes used by combat & psionics tabs. Returns new _ly.
+
+  L892  draw_encounter_char_row(_lx, _ly, _lh, _charStat, _labelColor, _isParty)
+        @function draw_encounter_char_row(lx, ly, lh, charStat, labelColor, isParty) @description
+        Draws one encounter row (AC, phase, actions, res mods, status). Returns new _ly.
+
+  L928  draw_scrollable_info_blocks(_lx, _ly, _lw, _lh, _blocks, _totalHeight, _scrollVarName)
+        @function draw_scrollable_info_blocks(lx, ly, lw, lh, blocks, total_h, scroll_var_name)
+        @description Draws scrollable info blocks (used by Info tab and GM Resources). Returns _ly.
+
+  L956  info_add_line(_blocks, _label, _desc, _col, _width)
+        @function info_add_line(blocks, label, desc, col, width) @description Adds a content line to
+        info blocks array. Returns height added.
+
+  L974  info_add_section(_blocks, _title, _lh)
+        @function info_add_section(blocks, title, lh) @description Adds a section header to info
+        blocks array. Returns height added.
+
+  L981  build_gm_resource_blocks(_blocks, _lh, _width)
+        @function build_gm_resource_blocks(blocks, lh, width) @description Populates info blocks
+        with GM resource/customization content. Returns total height.
+
+  L1042  build_player_info_blocks(_blocks, _lh, _width)
+        @function build_player_info_blocks(blocks, lh, width) @description Populates info blocks
+        with player help content. Returns total height.
+
+  L1139  draw_inspectable_row(_lx, _ly, _lw, _lh, _text, _inspectIdx, _inspectType, _inspKeyPrefix, _btnInfo)
+        @function draw_inspectable_row(lx, ly, lw, lh, text, inspectIdx, inspectType, inspKeyPrefix,
+        btnInfo) @description Draws a row with inspect highlight, hover, and optional remove button.
+        btnInfo = undefined for no button, or [key, label, color] for a button. Returns new _ly.
+
+  L1158  draw_expandable_catalog_item(_lx, _ly, _lw, _lh, _name, _globalIdx, _owned, _expandedVar, _nameKeyPrefix, _extraText, _ownedTag)
+        @function draw_expandable_catalog_item(lx, ly, lw, lh, name, globalIdx, owned, expandedVar,
+        nameKeyPrefix, extraText, ownedTag) @description Draws an expandable catalog item with
+        arrow, owned tag, and hover. Returns new _ly (just the name row).
+
+  L1173  draw_combat_skill_row(_cols, _ly, _lh, _name, _skillName, _scoreOrd, _scoreGood, _scoreAmz, _training, _trainingColor, _totalPenalty, _btnKey, _btnLabel)
+        @function draw_combat_skill_row(columns, ly, lh, name, skillName, scoreOrd, scoreGood,
+        scoreAmz, training, trainingColor, totalPenalty, btnKey, btnLabel) @description Draws a
+        single combat-style skill row with score, training, sit die, and optional roll button.
+        Returns new _ly.
+
+
+=== objects/obj_game/Create_0.gml ===
+    318 lines, 0 functions
+
+    [Object event: Create_0] (no top-level functions)
+
+=== objects/obj_game/Step_0.gml ===
+    803 lines, 0 functions
+
+    [Object event: Step_0] (no top-level functions)
+
+=== objects/obj_game/Draw_64.gml ===
+    1076 lines, 0 functions
+
+    [Object event: Draw_64] (no top-level functions)
+
+=== objects/obj_game/Other_68.gml ===
+    79 lines, 0 functions
+
+    [Object event: Other_68] (no top-level functions)

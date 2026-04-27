@@ -1,0 +1,136 @@
+================================================================================
+MULTIPLAYER_GUIDE.txt
+DiceyMcDiceFaces — Charma for Alternity
+Tester-facing multiplayer guide (v0.57.0)
+================================================================================
+
+WHAT IS MULTIPLAYER
+--------------------------------------------------------------------------------
+Multiplayer in DiceyMcDiceFaces is an Among Us style session system. One person
+hosts a room and gets a 6-character code. Everyone else joins using that code.
+All players stay connected through a small relay server, so there is no port
+forwarding, no public IP, no router configuration — if you can browse the web,
+you can play.
+
+The host is automatically the GM. Everyone else is a player.
+
+HOSTING A SESSION
+--------------------------------------------------------------------------------
+1. Start the app.
+2. On the welcome screen, click "Host Session".
+3. Type your name and click Confirm.
+4. You will see a 6-character code (for example "KALIMA").
+5. Share the code with your players — text it, speak it, scrawl it in crayon.
+6. You are now the GM. Your character is flagged as the host.
+
+JOINING A SESSION
+--------------------------------------------------------------------------------
+1. Start the app.
+2. On the welcome screen, click "Join Session".
+3. Type the 6-character code exactly as the host gave it.
+4. Type your name.
+5. Click Confirm.
+6. If the code is valid, you are in. The sidebar will show the session code
+   and the connected player list.
+
+IF JOIN FAILS
+  - Double-check the code for typos (0 vs O, 1 vs I).
+  - Make sure the host is still connected.
+  - Wait a few seconds and try again — the relay may be waking up.
+
+WHAT SYNCS
+--------------------------------------------------------------------------------
+When you are in a session, these things are automatically broadcast:
+
+  ROLLS      — every skill check, attack, feat, and quick roll goes to the
+               party stream for everyone to see.
+  CHARACTERS — when the host saves a character, it broadcasts a full statblock
+               to all players. They see it in their NPC list, tagged with the
+               host's name as "shared from".
+  CHAT       — plain text messages from the Roll Log tab chat box.
+  GM STATUS  — the host can send announcements that appear in everyone's
+               status area.
+
+Private things that do NOT sync:
+  - Your own unsaved edits (until you save, they stay local).
+  - Right-panel UI state, window size, accessibility settings, portraits.
+  - Other players' character sheets — you see them in NPCs, not live.
+
+THE PARTY STREAM
+--------------------------------------------------------------------------------
+When you are connected, the Roll Log tab becomes the PARTY STREAM. It shows:
+  - Local rolls (yours) — plain
+  - Remote rolls (other players) — tinted with a "[remote]" tag
+  - Chat lines — in bright amazing-colored text with the sender's name
+  - Both are in the same feed, newest first
+
+Each entry has a Copy button that copies a text summary to your clipboard.
+
+At the bottom of the Party Stream is a chat input box. Click inside, type your
+message, press Enter or click Send. Your chat line appears in everyone's
+stream within a second.
+
+When you disconnect or leave the session, the Roll Log tab goes back to its
+normal offline mode showing your per-character roll log file.
+
+TAB SWITCHING TIP
+--------------------------------------------------------------------------------
+You can hover your mouse over the tab bar and use the mouse wheel to cycle
+through tabs without clicking. Down = next tab, up = previous tab when the
+tabs are vertical. Scroll direction is inverted when the tabs are horizontal.
+
+TROUBLESHOOTING
+--------------------------------------------------------------------------------
+"Join failed: unknown"
+  The code is invalid, the session was closed, or the relay is down.
+
+"Disconnected from session"
+  Your TCP connection was dropped. This happens if:
+    - The host disconnected (sessions die with the host)
+    - Your internet hiccuped
+    - The relay restarted (rare on Railway, more common on truly free hosts)
+
+The app sends a heartbeat every 30 seconds to keep the connection alive. If
+your session feels dead, everyone should leave and rejoin with a new code.
+
+"Host sent a character but I don't see it"
+  Switch to GM mode and check the NPCs tab. Shared characters appear there,
+  tagged with a "shared from <host-name>" note.
+
+"The chat box ignores my keyboard"
+  Click directly inside the chat box. If it has a blinking cursor, it is
+  focused. Otherwise your keys go to other handlers.
+
+"I can hear the cat"
+  That is normal. The cat is always the GM.
+
+SETUP: THE RELAY SERVER
+--------------------------------------------------------------------------------
+Before anyone can host or join, there must be a running relay server. The
+default configuration points to a placeholder URL and will fail until updated.
+
+Steps (one-time, by the developer):
+  1. Sign up for a free Glitch.com account (or Replit, or Fly.io).
+  2. Paste relay_server/server.js from this repo into a new Glitch project.
+  3. Glitch gives you a URL like "nice-penguin-1234.glitch.me".
+  4. Open scripts/scr_network/scr_network.gml.
+  5. Change NET_DEFAULT_RELAY_HOST to your Glitch URL.
+  6. Rebuild the game.
+  7. Everyone who uses the game must use the same build with the updated URL.
+
+For the full deployment walkthrough, see relay_server/README.md.
+
+The default relay URL is in scr_network.gml at the top of the file. Look for
+the line:
+  #macro NET_DEFAULT_RELAY_HOST "REPLACE_WITH_YOUR_RELAY_URL.glitch.me"
+
+PRIVACY AND SAFETY
+--------------------------------------------------------------------------------
+- The relay sees every message. Do not put secrets in chat.
+- The relay does not persist anything beyond the active session.
+- When the host disconnects, the session is destroyed.
+- Room codes are 6 characters — plenty random for casual play, but not
+  cryptographically secure. Do not use this for anything private.
+
+END OF DOCUMENT
+================================================================================

@@ -1,0 +1,161 @@
+{
+  "_description": "Master race reference: thorough but compact lore + mechanical effects per species. Loaded as a read-only reference doc by the chargen wizard and the GM Resources tab. The runtime data path remains species.json + fx_database.json (type=racial entries).",
+  "_version": 1,
+  "_schema_note": "Each race entry mirrors the species_index from enum SPECIES in scr_chargen.gml. trait fx_name strings join into fx_database.json racial entries.",
+  "races": [
+    {
+      "id": "human",
+      "species_index": 0,
+      "name": "Human",
+      "homeworld": "Earth (Sol)",
+      "physical": "1.5-2.0m tall, 50-100kg, omnivorous, average lifespan 80-120 standard years",
+      "lore": "The most numerous and adaptable species in the Stellar Ring. Humans colonized hundreds of worlds, founded the great trading houses, and dominate galactic commerce through sheer numbers and willingness to take risks. They lack the physical specializations of other races but compensate with versatility, ambition, and a knack for surviving conditions that would kill more delicate species.",
+      "ability_mods": [0,0,0,0,0,0],
+      "ability_summary": "Balanced — no penalties, no bonuses",
+      "starting_broads": ["Athletics","Vehicle Operation","Stamina","Knowledge","Awareness","Interaction"],
+      "perks_summary": [
+        "Versatile Human: +5 bonus skill points at chargen, may exceed normal broad skill cap by 1",
+        "Adaptable Learner: descriptive — humans learn fast and adapt to alien environments"
+      ],
+      "flaws_summary": [],
+      "skill_changes": "Standard six broad skills, no replacements",
+      "mechanical_overview": "Humans are the 'easy mode' starting choice — no penalties anywhere, +5 bonus skill points lets you splurge on extra specialties or a second broad skill. Best for new players or anyone who wants flexibility over specialization.",
+      "traits": [
+        { "fx_name": "Versatile Human",  "always_on": true, "summary": "+5 bonus skill points" },
+        { "fx_name": "Adaptable Learner", "always_on": true, "summary": "Descriptive learning bonus" }
+      ]
+    },
+    {
+      "id": "fraal",
+      "species_index": 1,
+      "name": "Fraal",
+      "homeworld": "Unknown (the 'wandering ones')",
+      "physical": "Tall and willowy (1.8-2.1m), pale grey skin, hairless, oversized eyes, frail build, lifespan 200+ years",
+      "lore": "Ancient nomadic species native to no known world. Fraal arrived in human space hundreds of years ago in massive generation ships. They are the masters of psionics in the Stellar Ring — every Fraal has at least latent psionic talent, and most train it actively. Their society is communal, soft-spoken, and obsessed with knowledge. Most younger races find them eerie.",
+      "ability_mods": [-2,0,-2,1,1,0],
+      "ability_summary": "-2 STR, -2 CON, +1 INT, +1 WIL — frail but mentally strong",
+      "starting_broads": ["Athletics","Vehicle Operation","Stamina","Knowledge","Telepathy","Resolve"],
+      "perks_summary": [
+        "Fraal Psionic Affinity: -1 step on ALL psionic skill checks",
+        "Fraal Mental Fortitude: -1 step on Mental Resolve vs psionic intrusion, fear, and mental influence",
+        "Fraal Low-Light Vision: clear sight in dim conditions"
+      ],
+      "flaws_summary": [],
+      "skill_changes": "Telepathy replaces Awareness as a starting broad. Resolve replaces Interaction.",
+      "mechanical_overview": "Fraal are the natural Mindwalker species — psionic affinity stacks with Mindwalker profession to make them devastating with telepathy and biokinesis. Frail body (-2 STR/-2 CON) makes melee combat suicidal; play to their mental strengths. Excellent at investigation and any roll requiring willpower or insight.",
+      "traits": [
+        { "fx_name": "Fraal Psionic Affinity",  "always_on": true, "summary": "-1 step on all psionic checks" },
+        { "fx_name": "Fraal Mental Fortitude",  "always_on": true, "summary": "-1 step on Mental Resolve" },
+        { "fx_name": "Fraal Low-Light Vision",  "always_on": true, "summary": "No dim-light penalty" }
+      ]
+    },
+    {
+      "id": "weren",
+      "species_index": 2,
+      "name": "Weren",
+      "homeworld": "Kurg (icy outer-rim world)",
+      "physical": "Massive (2.4-2.8m, 200+kg), thick fur, retractable claws, four hearts, lifespan ~60 years",
+      "lore": "Brutal arctic predators uplifted by ancient Fraal contact. Weren clans live by codes of honor, debt, and respect for strength. Their society values direct action, blood-debts, and family above all. Weren who leave Kurg often serve as mercenaries, bodyguards, or shock troops — their physical presence alone tends to end most disagreements.",
+      "ability_mods": [2,-1,1,-1,0,0],
+      "ability_summary": "+2 STR, -1 DEX, +1 CON, -1 INT — physically dominant, slow-thinking",
+      "starting_broads": ["Unarmed Attack","Vehicle Operation","Stamina","Knowledge","Awareness","Interaction"],
+      "perks_summary": [
+        "Weren Powerful Build: -1 step on STR-based athletic and unarmed checks",
+        "Weren Tough Hide: -1 step on Stamina vs environmental damage; LI damage reduction",
+        "Weren Natural Claws: unarmed attacks deal d4+1w (wound) instead of d4s (stun)"
+      ],
+      "flaws_summary": [
+        "Weren Tech Awkwardness: +1 step penalty on Computer Science and fine-manipulation"
+      ],
+      "skill_changes": "Unarmed Attack replaces Athletics. Their default melee is brutal and clawed, not gymnastic.",
+      "mechanical_overview": "Weren are the canonical Combat Spec race. Massive STR + claws + tough hide makes them tank-grade frontliners. Their tech penalty makes Tech Op a poor profession choice, and the -1 INT cuts into skill capacity. Best paired with simple, direct careers — Soldier, Bodyguard, Bounty Hunter, Mercenary.",
+      "traits": [
+        { "fx_name": "Weren Powerful Build",   "always_on": true, "summary": "-1 step on STR athletics + unarmed" },
+        { "fx_name": "Weren Tough Hide",       "always_on": true, "summary": "Damage reduction + Stamina bonus" },
+        { "fx_name": "Weren Natural Claws",    "always_on": true, "summary": "Unarmed = d4+1w wound damage" },
+        { "fx_name": "Weren Tech Awkwardness", "always_on": true, "summary": "+1 step penalty on Computer Science" }
+      ]
+    },
+    {
+      "id": "sesheyan",
+      "species_index": 3,
+      "name": "Sesheyan",
+      "homeworld": "Sheya (jungle world, perpetual twilight)",
+      "physical": "Slender humanoid (1.4-1.7m), leathery skin, four eyes (two large for night vision), membranous wings, prehensile tail, lifespan ~70 years",
+      "lore": "Forest-dwelling pacifists from a perpetually twilit jungle world. Their multiple eyes evolved for the dim canopy, making bright sunlight painful. Sesheyans are deeply spiritual, communicate via complex sound + sight + scent combinations, and view violence as a last resort. Most Sesheyans encountered off-world serve as scouts, messengers, or zero-G specialists.",
+      "ability_mods": [0,1,0,0,0,-1],
+      "ability_summary": "+1 DEX, -1 PER — agile but socially insular",
+      "starting_broads": ["Melee Weapons","Acrobatics","Stamina","Knowledge","Awareness","Interaction"],
+      "perks_summary": [
+        "Sesheyan Wings: flight in atmospheres, -1 step on flight maneuver checks",
+        "Sesheyan Infrared Vision: see heat signatures, -1 step on perception in dark/dim",
+        "Sesheyan Zero-G Adaptation: -1 step on zero-G ops (CONDITIONAL — requires Vehicle Op: Zero-G rank 1+)"
+      ],
+      "flaws_summary": [
+        "Sesheyan Light Sensitivity: +1 step penalty on perception in bright light"
+      ],
+      "skill_changes": "Melee Weapons + Acrobatics replace Athletics + Vehicle Operation. Sesheyans navigate by climbing, gliding, and jungle-fighting rather than running and driving.",
+      "mechanical_overview": "Sesheyans excel as scouts, infiltrators, and zero-G operators. The flight ability is enormous in both ground combat (vertical mobility) and starship boarding actions. Light Sensitivity is a real penalty in most space-station/urban environments — bring tinted goggles. The Zero-G Adaptation trait is the only conditional racial trait in the game; full integration is deferred to a future phase.",
+      "traits": [
+        { "fx_name": "Sesheyan Wings",            "always_on": true,  "summary": "Atmospheric flight" },
+        { "fx_name": "Sesheyan Infrared Vision",  "always_on": true,  "summary": "Darkvision/heat sense" },
+        { "fx_name": "Sesheyan Light Sensitivity","always_on": true,  "summary": "Bright light penalty" },
+        { "fx_name": "Sesheyan Zero-G Adaptation","always_on": false, "summary": "CONDITIONAL: needs Zero-G specialty rank 1+" }
+      ]
+    },
+    {
+      "id": "tsa",
+      "species_index": 4,
+      "name": "T'sa",
+      "homeworld": "T'sa Cluster (small star cluster of warm worlds)",
+      "physical": "Lizard-like bipedal reptiles (1.4-1.7m), scaled hide, forked tongue, cold-blooded, lifespan ~50 years",
+      "lore": "Highly curious reptilian species native to a cluster of warm, tropical worlds. T'sa are insatiable inventors, tinkerers, and explorers — their society values innovation and the free exchange of ideas. Their cold-blooded biology limits them in cold environments but their lightning reflexes and unusual tri-focal vision make them exceptional pilots, mechanics, and engineers.",
+      "ability_mods": [-1,1,0,1,-1,0],
+      "ability_summary": "-1 STR, +1 DEX, +1 INT, -1 WIL — quick and clever, fragile and impulsive",
+      "starting_broads": ["Athletics","Manipulation","Stamina","Knowledge","Awareness","Interaction"],
+      "perks_summary": [
+        "T'sa Quick Reflexes: -1 step on Initiative and DEX-based acrobatic checks",
+        "T'sa Multitasking: extra free action per round (descriptive — GM discretion)",
+        "T'sa Curiosity: -1 step on Investigate and Knowledge for unfamiliar phenomena"
+      ],
+      "flaws_summary": [
+        "T'sa Cold Vulnerability: +1 step penalty on all rolls in sub-freezing environments"
+      ],
+      "skill_changes": "Manipulation replaces Vehicle Operation. T'sa fingers are made for fine work, not steering.",
+      "mechanical_overview": "T'sa are the natural Tech Op species. +1 INT means more skill points, +1 DEX helps with everything from piloting to surgery, and Quick Reflexes makes them devastating in initiative. Avoid cold environments at all cost. Best careers: Engineer, Technician, Pilot, Researcher, Cyber Doc.",
+      "traits": [
+        { "fx_name": "T'sa Quick Reflexes",    "always_on": true, "summary": "-1 step Initiative + acrobatics" },
+        { "fx_name": "T'sa Multitasking",      "always_on": true, "summary": "Extra free action" },
+        { "fx_name": "T'sa Cold Vulnerability","always_on": true, "summary": "+1 step penalty in cold" },
+        { "fx_name": "T'sa Curiosity",         "always_on": true, "summary": "-1 step Investigate/Knowledge" }
+      ]
+    },
+    {
+      "id": "mechalus",
+      "species_index": 5,
+      "name": "Mechalus",
+      "homeworld": "Aleer (high-tech industrial world)",
+      "physical": "Humanoid biological-mechanical hybrid (1.7-2.0m), cybernetic limbs and neural implants from birth, lifespan ~150 years (with maintenance)",
+      "lore": "An ancient species that voluntarily merged biology with cybertech generations ago. Modern Mechalus are born with built-in computer interfaces and grow additional cybertech as they mature. Their society is rigidly logical, deeply protocol-driven, and obsessed with information networks. Mechalus serve throughout the Stellar Ring as data analysts, hackers, programmers, and grid pilots.",
+      "ability_mods": [0,0,0,1,0,-1],
+      "ability_summary": "+1 INT, -1 PER — analytical but socially detached",
+      "starting_broads": ["Athletics","Vehicle Operation","Stamina","Knowledge","Awareness","Interaction"],
+      "perks_summary": [
+        "Mechalus Datalink: -1 step on Computer Science and gridcasting; built-in computer interface",
+        "Mechalus Cyber Tolerance: +5 cybertech tolerance over baseline (THE big one — Mechalus can install dramatically more cybertech than other species)",
+        "Mechalus Inorganic Resilience: -2 steps on Stamina vs poisons, diseases, biological toxins"
+      ],
+      "flaws_summary": [
+        "Mechalus Repair Required: cannot heal naturally; needs Cybertech repair instead of First Aid"
+      ],
+      "skill_changes": "Standard six broad skills. Their advantage is HOW they learn (datalink shortcuts) rather than WHAT they start with.",
+      "mechanical_overview": "Mechalus get more for cybertech than ANY other species — their tolerance bonus means they can stack 5 extra installation slots without the penalties that wreck other races. The Datalink gives them a permanent edge on Computer Science and gridcasting, and inorganic biology trivializes most poison/disease threats. Trade-off: they need a Tech Op to keep them running. Excellent Tech Op or Free Agent (Hacker) build.",
+      "traits": [
+        { "fx_name": "Mechalus Datalink",            "always_on": true, "summary": "-1 step Computer Science + gridcasting" },
+        { "fx_name": "Mechalus Cyber Tolerance",     "always_on": true, "summary": "+5 cybertech tolerance" },
+        { "fx_name": "Mechalus Inorganic Resilience","always_on": true, "summary": "-2 steps vs biological toxins" },
+        { "fx_name": "Mechalus Repair Required",     "always_on": true, "summary": "Heals via Cybertech repair, not First Aid" }
+      ]
+    }
+  ]
+}

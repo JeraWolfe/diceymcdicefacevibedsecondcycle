@@ -1,0 +1,459 @@
+{
+  "stage": "PRE",
+  "generated_at": "2026-04-09T03:30:48.870Z",
+  "scripts": [
+    {
+      "path": "scripts/scr_alternity_statblock/scr_alternity_statblock.gml",
+      "lines": 1577,
+      "bytes": 64524,
+      "function_count": 66
+    },
+    {
+      "path": "scripts/scr_chargen/scr_chargen.gml",
+      "lines": 958,
+      "bytes": 40055,
+      "function_count": 27
+    },
+    {
+      "path": "scripts/scr_data_loader/scr_data_loader.gml",
+      "lines": 495,
+      "bytes": 20621,
+      "function_count": 21
+    },
+    {
+      "path": "scripts/scr_dice/scr_dice.gml",
+      "lines": 216,
+      "bytes": 8334,
+      "function_count": 9
+    },
+    {
+      "path": "scripts/scr_draw_tabs/scr_draw_tabs.gml",
+      "lines": 2180,
+      "bytes": 101363,
+      "function_count": 17
+    },
+    {
+      "path": "scripts/scr_network/scr_network.gml",
+      "lines": 541,
+      "bytes": 22414,
+      "function_count": 29
+    },
+    {
+      "path": "scripts/scr_skill_costs/scr_skill_costs.gml",
+      "lines": 404,
+      "bytes": 15694,
+      "function_count": 29
+    },
+    {
+      "path": "scripts/scr_tab_handlers/scr_tab_handlers.gml",
+      "lines": 914,
+      "bytes": 41045,
+      "function_count": 20
+    },
+    {
+      "path": "scripts/scr_ui_helpers/scr_ui_helpers.gml",
+      "lines": 1183,
+      "bytes": 61400,
+      "function_count": 40
+    }
+  ],
+  "object_events": [
+    {
+      "path": "objects/obj_game/Create_0.gml",
+      "event": "Create_0",
+      "lines": 331,
+      "bytes": 14162
+    },
+    {
+      "path": "objects/obj_game/Step_0.gml",
+      "event": "Step_0",
+      "lines": 881,
+      "bytes": 38260
+    },
+    {
+      "path": "objects/obj_game/Draw_64.gml",
+      "event": "Draw_64",
+      "lines": 1079,
+      "bytes": 52251
+    },
+    {
+      "path": "objects/obj_game/Other_68.gml",
+      "event": "Other_68",
+      "lines": 79,
+      "bytes": 3469
+    }
+  ],
+  "datafiles": [
+    {
+      "path": "datafiles/careers.json",
+      "bytes": 29070,
+      "lines": 1619,
+      "schema": "object",
+      "entry_count": 5,
+      "top_keys": [
+        "Tech Op",
+        "Mindwalker",
+        "Combat Spec",
+        "Diplomat",
+        "Free Agent"
+      ]
+    },
+    {
+      "path": "datafiles/changelog.json",
+      "bytes": 350988,
+      "lines": 3959,
+      "schema": "object",
+      "entry_count": 136,
+      "top_keys": [
+        "entries"
+      ]
+    },
+    {
+      "path": "datafiles/config.json",
+      "bytes": 3730,
+      "lines": 170,
+      "schema": "object",
+      "entry_count": 7,
+      "top_keys": [
+        "roll_animation_frames",
+        "max_log_entries",
+        "colors",
+        "color_profiles",
+        "accessibility",
+        "dice",
+        "layout"
+      ]
+    },
+    {
+      "path": "datafiles/equipment.json",
+      "bytes": 16212,
+      "lines": 722,
+      "schema": "object",
+      "entry_count": 3,
+      "top_keys": [
+        "weapons",
+        "armor",
+        "gear"
+      ]
+    },
+    {
+      "path": "datafiles/fx_database.json",
+      "bytes": 41291,
+      "lines": 1512,
+      "schema": "object",
+      "entry_count": 1,
+      "top_keys": [
+        "fx"
+      ]
+    },
+    {
+      "path": "datafiles/keyword_tree.json",
+      "bytes": 19197,
+      "lines": 1031,
+      "schema": "object",
+      "entry_count": 4,
+      "top_keys": [
+        "weapon_skills",
+        "broads",
+        "skills",
+        "abilities"
+      ]
+    },
+    {
+      "path": "datafiles/names.json",
+      "bytes": 14719,
+      "lines": 174,
+      "schema": "object",
+      "entry_count": 7,
+      "top_keys": [
+        "human",
+        "fraal",
+        "weren",
+        "sesheyan",
+        "tsa",
+        "mechalus",
+        "fallback"
+      ]
+    },
+    {
+      "path": "datafiles/npc_templates.json",
+      "bytes": 8069,
+      "lines": 223,
+      "schema": "object",
+      "entry_count": 1,
+      "top_keys": [
+        "templates"
+      ]
+    },
+    {
+      "path": "datafiles/professions.json",
+      "bytes": 3586,
+      "lines": 156,
+      "schema": "object",
+      "entry_count": 1,
+      "top_keys": [
+        "professions"
+      ]
+    },
+    {
+      "path": "datafiles/programs.json",
+      "bytes": 11428,
+      "lines": 416,
+      "schema": "object",
+      "entry_count": 3,
+      "top_keys": [
+        "programs",
+        "computers",
+        "processor_quality"
+      ]
+    },
+    {
+      "path": "datafiles/skills.json",
+      "bytes": 5775,
+      "lines": 310,
+      "schema": "object",
+      "entry_count": 1,
+      "top_keys": [
+        "skills"
+      ]
+    },
+    {
+      "path": "datafiles/species.json",
+      "bytes": 2573,
+      "lines": 125,
+      "schema": "object",
+      "entry_count": 1,
+      "top_keys": [
+        "species"
+      ]
+    },
+    {
+      "path": "datafiles/voss.json",
+      "bytes": 6133,
+      "lines": 80,
+      "schema": "object",
+      "entry_count": 20,
+      "top_keys": [
+        "name",
+        "species",
+        "profession",
+        "career",
+        "STR",
+        "DEX",
+        "CON",
+        "INT",
+        "WIL",
+        "PER",
+        "stun_damage",
+        "wound_damage",
+        "mortal_damage",
+        "skills",
+        "weapons",
+        "armor",
+        "gear",
+        "background",
+        "fx",
+        "deck"
+      ]
+    },
+    {
+      "path": "datafiles/reference/Master-Sidebar.json",
+      "bytes": 373127,
+      "lines": 3438,
+      "schema": "object",
+      "entry_count": 489,
+      "top_keys": [
+        "entries"
+      ]
+    },
+    {
+      "path": "datafiles/tables/combat_tables.json",
+      "bytes": 4940,
+      "lines": 189,
+      "schema": "object",
+      "entry_count": 8,
+      "top_keys": [
+        "armor_operation",
+        "situation_die_modifiers",
+        "movement_rates",
+        "range_modifiers",
+        "autofire_modes",
+        "actions_per_round",
+        "damage_summary",
+        "impact_damage"
+      ]
+    },
+    {
+      "path": "datafiles/tables/gm_tables.json",
+      "bytes": 7850,
+      "lines": 329,
+      "schema": "object",
+      "entry_count": 11,
+      "top_keys": [
+        "psionic_energy",
+        "resistance_modifiers",
+        "cykosis",
+        "npc_attitudes",
+        "survival_modifiers",
+        "starting_skill_points",
+        "complex_skill_checks",
+        "thrown_accuracy",
+        "travel_rates",
+        "strength_damage_bonus",
+        "cyber_tolerance"
+      ]
+    },
+    {
+      "path": "datafiles/tables/skill_rank_benefits.json",
+      "bytes": 16315,
+      "lines": 597,
+      "schema": "object",
+      "entry_count": 20,
+      "top_keys": [
+        "Melee Weapons",
+        "Knowledge",
+        "Unarmed Attack",
+        "Telepathy",
+        "Heavy Weapons",
+        "Medical Science",
+        "Telekinesis",
+        "Acrobatics",
+        "Technical Science",
+        "ESP",
+        "Awareness",
+        "Modern Ranged Weapons",
+        "Resolve",
+        "Biokinesis",
+        "Stealth",
+        "Interaction",
+        "Vehicle Operation",
+        "Leadership",
+        "Athletics",
+        "Stamina"
+      ]
+    }
+  ],
+  "state_machines": [
+    {
+      "name": "portrait_dropdown_open",
+      "initial": "false",
+      "line": 12,
+      "comment": ""
+    },
+    {
+      "name": "changelog_open",
+      "initial": "true",
+      "line": 41,
+      "comment": "start visible on first welcome screen visit"
+    },
+    {
+      "name": "accessibility_open",
+      "initial": "false",
+      "line": 51,
+      "comment": "populated after hero loads"
+    },
+    {
+      "name": "gm_add_faction_open",
+      "initial": "false",
+      "line": 190,
+      "comment": "faction name input mode"
+    },
+    {
+      "name": "text_modal_open",
+      "initial": "false",
+      "line": 234,
+      "comment": ""
+    },
+    {
+      "name": "net_host_popup_open",
+      "initial": "false",
+      "line": 263,
+      "comment": ""
+    },
+    {
+      "name": "net_join_popup_open",
+      "initial": "false",
+      "line": 264,
+      "comment": ""
+    },
+    {
+      "name": "browser_open",
+      "initial": "false",
+      "line": 279,
+      "comment": ""
+    },
+    {
+      "name": "chargen_open",
+      "initial": "false",
+      "line": 284,
+      "comment": ""
+    }
+  ],
+  "tab_system": {
+    "player_tabs": {
+      "0": "Character",
+      "1": "Equipment",
+      "2": "Combat",
+      "3": "Psionics",
+      "4": "Perks/Flaws",
+      "5": "Cybertech",
+      "6": "Roll Log",
+      "7": "Info",
+      "8": "Grid",
+      "9": "Aura/Lore"
+    },
+    "gm_tabs": {
+      "0": "Party",
+      "1": "NPCs",
+      "2": "Encounter",
+      "3": "Campaign",
+      "4": "Sessionlog",
+      "5": "Resources"
+    }
+  },
+  "build_version": {
+    "latest": "0.61.0",
+    "title": "Race System Expansion + 3-Screen Chargen Wizard + INT-Aware Skill Capacity",
+    "date": "2026-04-07",
+    "total_entries": 136
+  },
+  "multiplayer": {
+    "relay_host": "centerbeam.proxy.rlwy.net",
+    "relay_port": 23003,
+    "protocol_version": 1,
+    "message_types": [
+      "CREATE",
+      "CREATED",
+      "JOIN_REQ",
+      "JOIN_OK",
+      "JOIN_FAIL",
+      "PLAYER_LIST",
+      "ROLL_RESULT",
+      "CHARACTER_SYNC",
+      "CHAR_REQUEST",
+      "CHAT",
+      "GM_STATUS",
+      "HEARTBEAT",
+      "MAP_TOKEN_MOVE",
+      "MAP_TOKEN_ADD",
+      "MAP_TOKEN_REMOVE",
+      "MAP_STATE_REQUEST",
+      "MAP_STATE_FULL",
+      "CHAR_TOKEN_LINK",
+      "ROLL_AT_TOKEN"
+    ],
+    "server": "relay_server/server.js (Node.js TCP)"
+  },
+  "persistence": {
+    "working_directory": "%LOCALAPPDATA%/diceymcdicefacevibed/",
+    "files_written_to_working_dir": [
+      "characters/<sanitized_name>.json",
+      "characters/<sanitized_name>_rolllog.log",
+      "recent_characters.json",
+      "campaign.json",
+      "session_log.json",
+      "changelog.json (cache, can be stale)"
+    ],
+    "bundled_datafiles": "embedded via .yyp IncludedFiles, accessible via relative paths"
+  }
+}

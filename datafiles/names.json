@@ -1,0 +1,173 @@
+{
+  "_description": "Race-keyed name pools. Each race has 100 first + 100 last names sourced from Alternity PHB conventions (where lore exists) and thematically appropriate generators.",
+  "_version": 2,
+  "human": {
+    "first": [
+      "Kael","Voss","Mira","Tarn","Asha","Dex","Ryn","Nova","Jace","Seren",
+      "Bolt","Kira","Zeke","Lux","Cade","Nyx","Thane","Brix","Orla","Dace",
+      "Vex","Pax","Ren","Zara","Tarek","Lyra","Sable","Kord","Ember","Quinn",
+      "Zephyr","Astra","Marcus","Elena","Hiroshi","Aaliyah","Diego","Petra","Anders","Yuki",
+      "Cassius","Naomi","Rashid","Ingrid","Tobias","Esme","Wren","Jovan","Sasha","Dmitri",
+      "Imani","Lukas","Anya","Theo","Kenji","Olivia","Magnus","Zara","Soren","Mei",
+      "Damien","Nadia","Felix","Iris","Rhys","Tara","Owen","Selene","Kieran","Maya",
+      "Roan","Ines","Hugo","Vera","Erik","Nia","Atlas","Sage","Cyrus","Lila",
+      "Vincent","Nora","Emil","Cora","Bastian","Eden","Wyatt","Hazel","Ezra","Mira",
+      "Caleb","Linnea","Adrian","Sienna","Knox","Ophelia","Alaric","Briar","Casper","Selene"
+    ],
+    "last": [
+      "Cross","Varn","Drake","Koss","Hale","Storm","Veil","Caine","Forge","Thorn",
+      "Black","Swift","Cole","Steele","Marsh","Flint","Ward","Pierce","Locke","Ash",
+      "Graves","Stone","Duval","Reeve","Morrow","Stark","Vale","Crest","Wolfe","Husk",
+      "Anders","Bishop","Carrow","Donovan","Eklund","Fontaine","Garrick","Holloway","Iversen","Jaeger",
+      "Kovac","Lindgren","Marrow","Nilsen","Oduya","Park","Quartermain","Reyes","Sato","Tanaka",
+      "Underhill","Voronov","Whitlock","Xavier","Yu","Zinoviev","Brand","Castellan","Driscoll","Engel",
+      "Falk","Glass","Hawkins","Ivers","Jansen","Krause","Lazar","Maddox","Novak","Ortega",
+      "Pellegrino","Quill","Rask","Solis","Tindall","Ulrich","Vasquez","Wexler","Yates","Zaragoza",
+      "Burke","Carter","Dunham","Ellis","Faraday","Greer","Hendricks","Ito","Jin","Klein",
+      "Lange","Moss","Nash","Orr","Penn","Ruiz","Sterne","Tate","Voss","Wraith"
+    ]
+  },
+  "fraal": {
+    "first": [
+      "Aelyn","Therael","Sylvath","Yndra","Vaelius","Lethari","Ionath","Saeren","Elyndra","Vorthel",
+      "Kaelinor","Isarath","Thelyn","Azaryn","Vaeryl","Solenn","Pelyrian","Caedrin","Mirath","Lyrandel",
+      "Elsynne","Aerith","Velandel","Tyralin","Nethari","Ophyrn","Quelinor","Riliath","Sephoryn","Tyranel",
+      "Ulvaril","Velythar","Wyralin","Xanith","Ynaril","Zelyrath","Aevandel","Belmiri","Caelorn","Daeshynn",
+      "Eraviel","Faelinor","Gelsyrn","Hyrandel","Ielyrath","Jalvern","Kalith","Lemoryn","Mythael","Naerith",
+      "Olethryn","Phelandel","Quaerith","Rhoselin","Sythari","Talindor","Ulriath","Vaelaryn","Wendaryl","Xelyrn",
+      "Yssaryl","Zenarith","Aetharis","Belyron","Cyralin","Drathael","Elmoryn","Falendrith","Ghelinor","Heralyn",
+      "Iselith","Jovryn","Kaeshara","Liranthil","Mythoreth","Nyralin","Olyvarn","Pelandryn","Qyralinor","Roselith",
+      "Syvenryn","Thelmara","Ulvanith","Velmaryn","Wynthael","Xeryl","Ynessari","Zaeryndel","Avenraith","Belyrith",
+      "Caethranis","Delvarin","Esyrlinn","Fyralenn","Galadwyn","Hythariel","Iselvar","Jalendryn","Kelmyrra","Lothariel"
+    ],
+    "last": [
+      "Ael'thara","Vor'inel","Sylv'aren","Lyn'dath","Mor'velith","Ith'andros","Vael'serin","Thel'orin","Sael'andil","Ny'voryn",
+      "Lor'velith","Cae'thari","Mir'aleth","Pel'isar","Quel'aryn","Ryn'dovel","Syl'oranth","Tyl'iaren","Ul'vendel","Vae'morath",
+      "Wyn'dareth","Xel'iandor","Yn'serith","Zen'avaril","Ael'morin","Bel'tharis","Cyl'arith","Dre'valien","Eth'oryn","Fal'aresh",
+      "Gar'velith","Hyn'tarem","Iso'lurin","Jal'verith","Kael'storin","Lyl'arieth","Myr'aleth","Nyr'isareth","Ol'venar","Phe'aldor",
+      "Quy'rendor","Rhe'lothar","Syn'velith","Thar'oryn","Ul'mereth","Var'illoren","Wel'serith","Xan'ovareth","Yel'aroth","Zol'mereth",
+      "Ar'velinor","Bel'aroth","Cor'aliel","Del'isareth","Es'venath","Far'oryndel","Glen'ariel","Hel'morath","Ist'velith","Jor'aleth",
+      "Kyr'andor","Lyn'ovath","Mer'aldor","Nor'isareth","Ova'lithar","Phen'olen","Quor'eth","Rys'enoreth","Sel'arith","Tor'venar",
+      "Uel'morath","Vyl'inor","Wol'aroth","Xen'isari","Yor'venath","Zal'aren","Bren'oryn","Crel'avaril","Dral'iseth","Ein'verith",
+      "Fyr'olen","Glor'emath","Hel'darin","Ist'oryn","Jeth'avaril","Kel'storeth","Lor'iandil","Myr'evar","Nael'thari","Olv'inareth",
+      "Per'eltheim","Quor'isar","Ryl'verath","Sov'oryndor","Tael'inareth","Ulm'ovareth","Vel'arieth","Wyn'isareth","Xal'orinor","Zel'voryn"
+    ]
+  },
+  "weren": {
+    "first": [
+      "Brog","Krathar","Throk","Murth","Grask","Vorth","Gnarrak","Drog","Krell","Hragg",
+      "Thrall","Vrek","Mograth","Karok","Bregor","Stomvar","Throgar","Grunhar","Korak","Drassk",
+      "Vrokal","Hragnar","Mergrath","Thurok","Brakkor","Krommul","Slogarth","Vrothar","Hadrok","Mukrath",
+      "Trogar","Grommash","Hrak","Skarn","Vrethor","Mokar","Brunthar","Krazgul","Drathok","Grumal",
+      "Volgrath","Threkkar","Mokur","Bragnar","Krumvar","Vorgan","Hrolak","Skogur","Thurgan","Mokrash",
+      "Brongor","Vrekkar","Drumbar","Hramul","Krannok","Skarrog","Thordak","Vromnar","Brakor","Grunsh",
+      "Hrogal","Murthok","Skraggar","Threkkin","Volgrog","Drukshar","Brommok","Krathmir","Hrunshar","Vorbask",
+      "Skogath","Mokvor","Throkmar","Brunkar","Drogarth","Hrunmok","Krendar","Skorrath","Vragnul","Throbal",
+      "Mokrethar","Grumvash","Hragarn","Krathokin","Skarnvog","Threkarn","Vrothmar","Brakvar","Drennar","Hrumvol",
+      "Krennar","Mukbol","Skraghar","Throgmar","Vrekgul","Brammok","Drogvar","Hrolkin","Krumshok","Skarmug"
+    ],
+    "last": [
+      "Boneshield","Stormtusk","Ironclaw","Bloodmane","Skullsplitter","Mountainback","Wartfist","Cliffhowl","Drumheart","Fangrend",
+      "Hammerhand","Pelthide","Quakefoot","Rockbreaker","Stonebellow","Tuskborn","Vargcrest","Wargscar","Bonebreaker","Stormhowl",
+      "Ironhide","Bloodtusk","Skullcrest","Mountainfist","Wartmaw","Cliffrend","Drumthud","Fangclaw","Hammerthorn","Pelthowl",
+      "Quakebellow","Rockfang","Stoneskull","Tuskmane","Vargshield","Wargborn","Bonefang","Stormhide","Ironbreaker","Bloodclaw",
+      "Skullmane","Mountainjaw","Wartshield","Cliffhide","Drumstomp","Fangbreaker","Hammertusk","Pelthorn","Quakehowl","Rockheart",
+      "Stonefang","Tuskclaw","Vargmaul","Wargrend","Bonethud","Stormfist","Ironmaw","Bloodbreaker","Skullhide","Mountainhowl",
+      "Wartstomp","Cliffmane","Drumtusk","Fanghide","Hammerheart","Pelthorn","Quakefist","Rockmane","Stoneborn","Tuskhide",
+      "Vargfang","Wargstomp","Boneshear","Stormrend","Ironheart","Bloodjaw","Skullshield","Mountainscar","Wartborn","Cliffmaw",
+      "Drumshield","Fangstomp","Hammerhowl","Peltbreaker","Quakeborn","Rockshield","Stonecrest","Tuskthorn","Varghide","Wargheart",
+      "Bonecrest","Stormjaw","Ironscar","Bloodfist","Skullthud","Mountainmane","Wartrend","Cliffborn","Drumhowl","Fangshield"
+    ]
+  },
+  "sesheyan": {
+    "first": [
+      "Sszael","Vrishth","Khessik","Tssara","Vssreth","Khethal","Sszrith","Vrael","Tssyl","Khaess",
+      "Sssreth","Vrithal","Khorisz","Tssvall","Vssreth","Khaerith","Sszhal","Vraen","Tssorel","Khaviss",
+      "Vsskar","Sszliv","Khaeral","Tsserith","Vrintar","Khissvarn","Sszorath","Vraeth","Tssalin","Khessoreth",
+      "Vssarith","Sszelath","Khithal","Tssoreth","Vraenith","Sszorel","Khaerith","Tsselath","Vssorath","Khinval",
+      "Sszuvar","Vrenarith","Khessari","Tssorel","Vssalin","Sszhalir","Khassiel","Tssvarith","Vraeshalin","Khentral",
+      "Sszorath","Vrethari","Khinvath","Tssolith","Vssorel","Sszelan","Khirath","Tssvilan","Vraendal","Khessolen",
+      "Sszanith","Vrolan","Khessith","Tssorinith","Vssalith","Sszorel","Khentar","Tsselith","Vraenor","Khissval",
+      "Sszorath","Vsenith","Khithval","Tssarinor","Vraenith","Sszelan","Khessoreth","Tssvarith","Vsanth","Khinrath",
+      "Sszerath","Vrolinith","Khessorath","Tssorelith","Vssorath","Sszelvath","Khorath","Tssvilanth","Vraenorath","Khessovath",
+      "Sszovath","Vssrelath","Khinrath","Tssoreloth","Vraenithal","Sszethaval","Khessavorath","Tssolinth","Vssarinath","Khennaroth"
+    ],
+    "last": [
+      "Nightwing","Shadewing","Voidglide","Starless","Twilightspan","Deepshade","Blackplume","Soundless","Hollowglide","Mistwing",
+      "Duskplume","Quietsoar","Smokewing","Ashglide","Nightplume","Shadowveil","Blackspan","Voidcaller","Starshade","Twilightsoar",
+      "Deeptalon","Hushwing","Hollowplume","Mistglide","Duskcaller","Quietspan","Smoketalon","Ashplume","Nightglide","Shadowsoar",
+      "Blackveil","Voidwing","Starwing","Twilightplume","Deepwing","Hushplume","Hollowveil","Mistsoar","Dustspan","Quietwing",
+      "Smokesoar","Ashtalon","Nightveil","Shadowplume","Blackwing","Voidsoar","Starveil","Twilightveil","Deepsoar","Hushveil",
+      "Hollowtalon","Misttalon","Duskglide","Quietveil","Smokesoar","Ashveil","Nightcaller","Shadowtalon","Blackcaller","Voidplume",
+      "Stargide","Twilightcaller","Deepveil","Hushtalon","Hollowsoar","Mistplume","Dusktalon","Quietsoar","Smokeveil","Ashwing",
+      "Nightspan","Shadowwing","Blackplume","Voidveil","Starsoar","Twilightspan","Deepcaller","Hushglide","Hollowspan","Mistveil",
+      "Dustwing","Quietsoar","Smokeplume","Ashsoar","Nightglide","Shadowcaller","Blackspan","Voidsoar","Starcaller","Twilightveil",
+      "Deepplume","Hushspan","Hollowcaller","Mistcaller","Duskveil","Quietsoar","Smokespan","Ashcaller","Nightsoar","Shadowveil"
+    ]
+  },
+  "tsa": {
+    "first": [
+      "Sssik","Tk'rrik","Hssak","Vssik","Tch'rrak","Hkk'ssith","Tssir","Vrr'ssik","Hsska","Sk'rrith",
+      "Vesska","Tch'orrik","Hsserit","Skrr'rik","Vssorin","Sssoth","Hkkar","Vrrith","Sktt'aris","Tssoran",
+      "Vsska","Hktrik","Sssik","Vrr'olith","Tssvar","Hsskirin","Sktt'orik","Vssir","Tk'rrith","Hsskor",
+      "Sssvar","Tch'rrik","Hssatik","Vssorik","Tch'sskor","Hsskil","Tssirath","Vrr'ssor","Sk'rrik","Hsskor",
+      "Vsserin","Tch'rrith","Hssorik","Sktt'sik","Vssvar","Sssith","Hkkir","Vrrolik","Sktt'orik","Tssor",
+      "Vssolith","Hktriksir","Sssorin","Vrr'rik","Tssirin","Hsskor","Sktt'orin","Vssirin","Tch'rrith","Hsskar",
+      "Sssor","Tch'sik","Hssorin","Vssorath","Tch'rrol","Hsskolin","Tssorath","Vrr'orik","Sk'rrithor","Hsskirath",
+      "Vrr'sik","Tch'orrol","Hssikrath","Sktt'oril","Vssalin","Sssorath","Hkkorin","Vrr'rikol","Sktt'olin","Tssolin",
+      "Vsskar","Hktrikor","Sssolik","Vrr'olor","Tssoral","Hsskorin","Sktt'aril","Vssolin","Tch'rrolith","Hsskolith",
+      "Sssorel","Tch'olin","Hssorath","Vssoreth","Tch'rrolin","Hsskoral","Tssoreth","Vrr'orith","Sk'rrithor","Hsskorel"
+    ],
+    "last": [
+      "Quickscale","Brightclaw","Swifttail","Sandrunner","Sharptooth","Glasseye","Spinecrest","Brightsnout","Quickfang","Sandshade",
+      "Sharpscale","Brighttail","Quickrun","Sandfire","Spineback","Brightspine","Quicksand","Sandtail","Sharpscale","Brightclaw",
+      "Glassrunner","Spineclaw","Quickeye","Sandscale","Sharpsnout","Brightspine","Glasstail","Sandcrest","Quickback","Sharprunner",
+      "Brightclaw","Glasssnout","Spinetail","Quickshade","Sandfire","Sharpcrest","Brightsnout","Glasscrest","Spinerunner","Quickscale",
+      "Sandtooth","Sharpscale","Brightback","Glassclaw","Spinesnout","Quickcrest","Sandtail","Sharpfang","Brightrunner","Glasseye",
+      "Spineback","Quicksnout","Sandscale","Sharptooth","Brightcrest","Glasstail","Spineshade","Quickshade","Sandfang","Sharpclaw",
+      "Brighteye","Glassscale","Spinerunner","Quickback","Sandsnout","Sharprunner","Brightshade","Glassfang","Spinecrest","Quickfang",
+      "Sandcrest","Sharpscale","Brighttail","Glassrunner","Spinetail","Quickrunner","Sandeye","Sharptail","Brightclaw","Glasscrest",
+      "Spineclaw","Quickeye","Sandshade","Sharpback","Brightsnout","Glassscale","Spinescale","Quickcrest","Sandrunner","Sharprunner",
+      "Brightback","Glassclaw","Spinesnout","Quickfang","Sandscale","Sharpcrest","Brighttooth","Glassrunner","Spineshade","Quicktail"
+    ]
+  },
+  "mechalus": {
+    "first": [
+      "Unit-7","Cipher","Vector","Quantum","Boolean","Lattice","Codec","Pulse","Helix","Binary",
+      "Datum","Echo-9","Flux","Glyph","Hertz","Iter","Jolt","Kernel","Logic","Mesh",
+      "Node","Octet","Phase","Quark","Relay","Stack","Token","Uplink","Vortex","Wavelet",
+      "Xenon","Yotta","Zenith","Axiom","Beacon","Cypher","Datalink","Echelon","Format","Gauge",
+      "Halt","Index","Junction","Kilo","Loop","Mode","Nadir","Orbit","Pixel","Quill",
+      "Rune","Sync","Trace","Umbra","Vector","Wattage","Xeno","Yield","Zero","Apex",
+      "Beta","Cosmos","Delta","Encoder","Flicker","Galen","Helix","Iota","Jovian","Krypton",
+      "Lumen","Module","Nova","Onyx","Photon","Quill","Reaver","Schema","Tesla","Util",
+      "Vector","Watt","Xeon","Yon","Zinc","Argo","Bionic","Crypto","Diode","Electra",
+      "Forge","Gridwalker","Hex","Inflect","Jadex","Kelvin","Lyric","Mainframe","Nimbus","Optic"
+    ],
+    "last": [
+      "Mainframe","Subroutine","Coreflow","Lattice","Memcell","Crystalweb","Datacircle","Resonator","Substrate","Conduit",
+      "Filament","Bytestream","Schemata","Crystalline","Protocol","Synapse","Transistor","Algorithm","Chiprider","Gridwalker",
+      "Datacaster","Cyberweave","Holoframe","Photonic","Quantumlink","Recursive","Servomotor","Telemetric","Uplink","Vectorshield",
+      "Wavelink","Xenocore","Yottabit","Zeroform","Axiomweave","Bitstream","Coreweb","Datasphere","Echonet","Flexcore",
+      "Gigaframe","Hexcore","Indexer","Jouleflux","Kilowire","Logicore","Mainframe","Nodecast","Optifiber","Pulsecore",
+      "Quartzweb","Resoframe","Synthcore","Trifold","Underweave","Voidlink","Wireframe","Xtalpath","Ymlcore","Zinccore",
+      "Arcwire","Botcore","Chipframe","Datacore","Edgecore","Fiberweave","Gridcore","Hexframe","Indexcore","Jaderon",
+      "Krylink","Logicframe","Mainline","Networker","Optoframe","Pulsewave","Quartzlink","Recursor","Synthlink","Tracewire",
+      "Ultraframe","Vectorform","Webframe","Xenoframe","Ytterbiumlink","Zeroframe","Algocore","Bitframe","Cryolink","Datawire",
+      "Echoweave","Flowcore","Gridframe","Helixframe","Iteratorlink","Joulewire","Kineticform","Lightframe","Modullink","Nimbuscore"
+    ]
+  },
+  "fallback": {
+    "first": [
+      "Kael","Voss","Mira","Tarn","Asha","Dex","Ryn","Nova","Jace","Seren",
+      "Bolt","Kira","Zeke","Lux","Cade","Nyx","Thane","Brix","Orla","Dace",
+      "Vex","Pax","Ren","Zara","Tarek","Lyra","Sable","Kord","Ember","Quinn",
+      "Zephyr","Astra"
+    ],
+    "last": [
+      "Cross","Varn","Drake","Koss","Hale","Storm","Veil","Caine","Forge","Thorn",
+      "Black","Swift","Cole","Steele","Marsh","Flint","Ward","Pierce","Locke","Ash",
+      "Graves","Stone","Duval","Reeve","Morrow","Stark","Vale","Crest","Wolfe","Husk"
+    ]
+  }
+}

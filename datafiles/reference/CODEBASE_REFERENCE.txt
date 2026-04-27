@@ -1,0 +1,978 @@
+================================================================================
+CODEBASE REFERENCE — DiceyMcDiceFaces: Charma for Alternity
+================================================================================
+Generated: 2026-04-05
+Total source: 8,100+ lines across 11 files (8 scripts + 3 events)
+Engine: GameMaker 2024.14.4.222 | Resolution: scales to display | Input: mouse-only
+Architecture: single object (obj_game) + 8 scripts, JSON-driven data pipeline
+
+For a new maintainer: read this file first. It tells you where everything lives,
+what every function does, and how data flows from a mouse click to a dice result.
+
+Book abbreviations used throughout: PHB = Player's Handbook, GMG = Gamemaster Guide
+(both Alternity, TSR, 1998). Table references use PHB notation (e.g., "Table P26").
+
+
+================================================================================
+=== FILE: scr_dice.gml (60 lines) ===
+================================================================================
+PURPOSE: Core dice engine. Implements the Alternity d20 + situation die system.
+         Lower roll = better. Bonus dice subtract, penalty dice add.
+         (PHB pp.13, 49: Situation Die Steps Scale and full chart)
+DEPENDENCIES:
+  Reads: global.config.dice.steps (array of step config structs from config.json)
+  Writes: nothing (pure functions, returns result structs)
+
+MACROS:
+  SIT_STEP_MIN  = 0   (maximum bonus: -d20)
+  SIT_STEP_BASE = 5   (neutral: +d0, no situation die)
+  SIT_STEP_MAX  = 13  (maximum penalty: +4d20)
+
+FUNCTIONS:
+   1. get_step(index) — line 10 — Returns step config struct {sides, count, bonus, name} clamped to valid range
+   2. situation_die_sides(step) — line 17 — Returns die sides for a step (0/4/6/8/12/20)
+   3. situation_step_is_bonus(step) — line 18 — Returns true if this step subtracts from d20 (bonus)
+   4. situation_step_name(step) — line 22 — Returns display string like "+d8" or "-d4" or "+2d20"
+   5. roll_die(sides) — line 25 — Returns irandom_range(1,sides), or 0 if sides<=0
+   6. roll_situation(step) — line 28 — Rolls situation die (handles multi-die like +2d20)
+   7. alternity_check(score_ord, score_good, score_amz, situation_step) — line 38 — THE core check (PHB p.49). Rolls d20 + situation die, compares to thresholds. Returns result struct with degree -1(crit fail) to 3(amazing), degree_name, total, control/situation rolls
+   8. alternity_action_check(ac_ord, ac_good, ac_amz, situation_step) — line 56 — Action check variant (PHB p.38, Table P7): failures become MARGINAL (degree 0) instead of failure
+
+HOW IT CONNECTS:
+  Called by meta_roll() and _execute_instant() in scr_ui_helpers. Never called
+  directly from UI code. The situation_step integer is the ONLY input that
+  controls difficulty — all modifiers (training, FX, wounds) are converted
+  to step offsets before reaching this function.
+
+
+================================================================================
+=== FILE: scr_ui_helpers.gml (713 lines) ===
+================================================================================
+PURPOSE: The "brain" of the game. Contains the unified roll pipeline (meta_roll),
+         button system (btn_clicked), dropdown system, keyword/tag matching for
+         FX modifiers, and all roll request builders.
+DEPENDENCIES:
+  Reads: obj_game.btn (button rects), obj_game.hero, obj_game.staged_roll,
+         obj_game.situation_step, global.keyword_tree, global.fx_database,
+         global.ability_keys/names/full
+  Writes: obj_game.last_roll, obj_game.roll_log, obj_game.staged_roll,
+          obj_game.situation_step, obj_game.last_combat_weapon/degree,
+          obj_game.rolllog_dirty
+  Calls: alternity_check/action_check (scr_dice), append_roll_log_file,
+         find_skill (scr_chargen), get_ability_score_for_skill (scr_skill_costs),
+         get_wound_penalty (scr_alternity_statblock), get_fx_data (scr_alternity_statblock)
+
+FUNCTIONS — Core UI:
+   1. apply_color_profile(mode) — line 17 — Applies a colorblind palette from config. Rewrites active colors.
+   2. btn_clicked(key) — line 32 — Check if named button was clicked this frame. THE button check pattern.
+   3. log_roll(name, result) — line 42 — Unified roll logging: display log, file, roll_log array. ALWAYS use this for rolls.
+   4. log_info(text) — line 69 — Log an info message (no dice roll) to roll log
+   5. make_damage_result(parsed_damage) — line 77 — Converts parse_and_roll_damage() output to standard roll result struct
+   6. apply_cant_fail(roll) — line 86 — If cant_fail_mode on and roll failed, upgrade to MARGINAL
+   7. track_hit(weapon, degree) — line 93 — Saves last attack for damage follow-up button
+
+FUNCTIONS — Shared Helpers:
+   8. annotate_training(request) — line 106 — Adds training penalty annotation to modifiers array
+   9. build_weapon_export_array(statblock) — line 115 — Builds export-ready weapon arrays for save/export
+
+FUNCTIONS — Roll Request Builders:
+  10. build_skill_request(stat, broad, spec, extra_pen) — line 156 — Build request for skill check. Handles trained/broad/untrained resolution.
+  11. build_feat_request(stat, ab_key, ab_name, extra_pen) — line 193 — Build request for feat check (full ability score + d4 base)
+  12. build_attack_request(stat, weapon, base_pen) — line 204 — Build request for weapon attack. Resolves best skill via keyword_tree.
+  13. build_initiative_request(stat) — line 223 — Build request for action check (initiative)
+  14. _build_best_awareness_request(stat) — line 487 — Builds request for best Awareness skill: Perception > Intuition > broad > untrained
+
+FUNCTIONS — FX Modifier Engine:
+  15. apply_fx_modifiers(statblock, request) — line 248 — THE UNIFIED MODIFIER ENGINE. Loops hero.fx, looks up global.fx_database, matches keywords against roll tags. Handles: fixed modifiers, quality_scale (different modifier per quality), keyword_tiers (different keywords per quality tier). This is where perks/flaws/cybertech/racial/environmental mods all apply. (Data sourced from PHB Table P26 p.104, Table P27 p.108, Table P53 p.241)
+  16. get_roll_keywords(request) — line 596 — Generates keyword tags for a roll. Tags include: ability, roll_type, training, broad_skill, spec_skill, category tags from keyword_tree.
+  17. roll_has_tag(tags_array, tag) — line 633 — Wrapper for array_contains (readability)
+
+FUNCTIONS — Roll Execution Pipeline:
+  18. resolve_roll(stat, keyword_str, extra_pen) — line 323 — Resolves natural-language keyword into a roll request. Handles: "STR feat", "Initiative", "weapon attack", specialty names, broad names, weapon_skill keywords, bare ability names.
+  19. keyword_roll(stat, keyword_str, extra_pen) — line 386 — One-liner: resolve keyword + roll instantly.
+  20. prepare_roll(stat, request) — line 402 — Phase 1 of staged roll: compute all auto-modifiers, set situation die to computed value. Stores in obj_game.staged_roll. Player can adjust before executing.
+  21. execute_staged_roll() — line 434 — Phase 2: Execute staged roll at current situation_step. Logs player delta if they adjusted the die. Returns result.
+  22. meta_roll(stat, request) — line 474 — Combined prepare+execute for instant rolls (backwards compatible).
+  23. _apply_auto_mods(stat, request) — line 501 — Applies all automatic modifiers (training, FX, wounds) to a request.
+  24. quick_roll_skill(stat, request) — line 514 — Quick roll: auto-mods ON TOP of player's current situation_step setting. Used by right-panel quick roll buttons.
+  25. _execute_instant(request, stat, final_sit_step) — line 542 — Rolls dice at given step, logs, tracks hits. Used by quick_roll_skill.
+  26. do_hit_damage_roll() — line 559 — Rolls damage for last successful attack hit.
+  27. get_wound_pen_if_enabled() — line 571 — Returns wound penalty if toggle is on.
+
+FUNCTIONS — Dropdown System:
+  28. dropdown(key, label, options, max_vis, on_change) — line 643 — Creates self-contained dropdown struct with .draw(), .draw_list(), .click(), .value(), .set_options() methods.
+  29. dropdown_group_click(dropdowns) — line 697 — Handles click for a group of dropdowns (closes others when one opens)
+  30. dropdown_group_draw_lists(dropdowns) — line 711 — Draws open dropdown lists for a group
+
+HOW IT CONNECTS:
+  This is the central hub. Step_0 calls btn_clicked() for all input. All tab
+  handlers and right panel buttons call build_*_request() + meta_roll() or
+  prepare_roll(). Draw_64 calls dropdown draw methods. Every roll in the game
+  flows through meta_roll() or the staged prepare/execute pipeline.
+
+
+================================================================================
+=== FILE: scr_alternity_statblock.gml (~1,920 lines) ===
+================================================================================
+PURPOSE: Character data model. Creates, modifies, imports, exports, and renders
+         statblocks. Also contains portrait system, damage rolling, persistent
+         roll logs, and UI drawing helpers (ui_btn, draw_durability_circles).
+DEPENDENCIES:
+  Reads: global.skill_tree, global.professions, global.species_data,
+         global.fx_database, global.fx_lookup, global.keyword_tree,
+         global.programs, global.program_lookup, global.processor_quality,
+         global.portrait_sprite, global.portrait_path
+  Writes: hero statblock fields, global.portrait_sprite/path
+  Calls: find_skill (scr_chargen), get_ability_score_for_skill (scr_skill_costs),
+         recalc_skill_scores (scr_skill_costs), add_broad_skill_to_hero (scr_skill_costs)
+
+ENUMS:
+  PROFESSION { COMBAT_SPEC, DIPLOMAT, FREE_AGENT, TECH_OP, MINDWALKER }
+  DAMAGE_TYPE { LI, HI, EN }
+
+FUNCTIONS — Data Conversion:
+   1. get_skill_tree() — line 24 — Returns global.skill_tree
+   2. damage_type_to_string(dt) — line 29 — Enum to "LI"/"HI"/"En"
+   3. string_to_damage_type(s) — line 33 — String to DAMAGE_TYPE enum
+   4. careers_to_export(career_array) — line 40 — Converts career array for JSON export (enum -> string)
+   5. careers_from_import(career_array) — line 57 — Converts imported career array (string -> enum)
+
+FUNCTIONS — Skill Lookup:
+   6. get_broad_skill_scores(stat, broad_name) — line 92 — Returns broad skill's scores as struct {idx, ordinary, good, amazing, ability}
+   7. add_specialty_rank0(stat, broad_name, spec_name) — line 105 — Adds rank-0 specialty under existing broad. Returns bool.
+   8. build_browser_list(statblock) — line 136 — Builds flat list for skill browser overlay. Returns array of {type, broad, specialty, ability, owned}.
+
+FUNCTIONS — Statblock CRUD:
+   9. create_statblock(name, profession, career) — line 180 — Creates blank character struct with all fields initialized. THE constructor. (PHB p.21: Complete Hero Creation Process)
+  10. set_ability(stat, ability_name, score) — line 237 — Sets ability score + auto-calc untrained & resistance mod (PHB p.33, Table P2)
+  11. calculate_action_check(stat) — line 256 — Calculates action check from (DEX+INT)/2 + profession bonus (PHB p.38, Table P7)
+  12. calculate_durability(stat) — line 273 — Calculates stun/wound/mortal from CON + profession mod (PHB pp.40-41)
+  13. add_skill(stat, ability, broad, spec, rank, ord, good, amz) — line 291 — Low-level skill add
+  14. add_weapon(stat, name, skill_kw, dmg_o, dmg_g, dmg_a, range, type) — line 306 — Add weapon to statblock
+  15. set_armor(stat, name, li, hi, en) — line 321 — Set armor values
+  16. remove_weapon(stat, idx) — line 328 — Remove weapon by index
+  17. remove_gear(stat, idx) — line 332 — Remove gear by index
+  18. add_weapon_from_db(stat, entry) — line 336 — Add weapon from equipment database entry
+  19. set_armor_from_db(stat, entry) — line 341 — Set armor from equipment database entry
+  20. hero_has_weapon(stat, name) — line 345 — Check if hero owns weapon by name
+  21. format_mod(val) — line 352 — Returns "+N" or "-N" string
+  22. create_sample_soldier() — line 356 — Creates Sergeant Voss template. Hardcoded reference character.
+  23. update_hero(statblock) — line 778 — MASTER UPDATE. Recalculates ALL derived values (abilities, action check, durability, skill scores, portrait). MUST be called after any character modification.
+
+FUNCTIONS — Import/Export:
+  24. statblock_export(stat) — line 472 — Export to JSON via save dialog. Returns bool.
+  25. statblock_import() — line 538 — Import from JSON via open dialog. Returns statblock or undefined.
+  26. statblock_import_data(data) — line 555 — Builds statblock from parsed JSON. Handles v2/v3/v4 formats.
+
+FUNCTIONS — Durability & Combat:
+  27. draw_durability_circles(x, y, label, current, max, color, text_color) — line 707 — Draws clickable durability circles. Returns new value or -1 if no click.
+  28. get_wound_penalty(stat) — line 818 — Returns situation die step penalty from wounds (PHB p.55, Stun Recovery). Mortal: +1/box. Wound: +1 at half, +2 at full.
+  29. get_skill_use_penalty(stat, skill_idx) — line 836 — Returns 0 (specialty), 1 (broad), or 2 (untrained)
+  30. get_untrained_score(stat, ability) — line 845 — Returns ability/2 for untrained checks
+
+FUNCTIONS — Data Lookups:
+  31. get_fx_data(name) — line 747 — Looks up FX definition from global.fx_database by name. O(1) via fx_lookup.
+  32. get_program_data(name) — line 755 — Looks up program definition from global.programs by name. O(1) via program_lookup.
+  33. get_deck_slots(stat) — line 763 — Returns {used, total} slot counts for hero's cyberdeck.
+
+FUNCTIONS — Persistent Roll Log:
+  34. append_roll_log_file(stat, roll) — line 893 — Appends roll to {name}_rolllog.log file
+  35. load_roll_log_tail(stat, count) — line 931 — Loads last N lines from roll log file
+  36. get_roll_log_path(stat) — line 961 — Returns path to character's roll log file
+
+FUNCTIONS — Damage Rolling:
+  37. parse_and_roll_damage(dmg_string) — line 974 — Parses "d6+1w" and rolls it. Returns {roll, modifier, total, die_sides, type_char, type_name, text}. (Damage codes from PHB Tables P38-P40 pp.173-184)
+  38. get_difficulty_descriptor(step) — line 1032 — Returns PHB difficulty label for a situation step (PHB p.63, Table P16)
+  39. get_range_penalty(range_cat) — line 1050 — Returns 0/1/2 for short/medium/long range (PHB p.68, Table P20)
+  40. find_best_skill_for_weapon(stat, weapon) — line 1055 — Finds hero's best applicable skill for a weapon via keyword_tree. Returns {idx, score_ord/good/amz, use_type, penalty, skill_name}.
+  41. save_voss_template() — line 851 — Saves Sergeant Voss to characters/voss.json
+
+FUNCTIONS — Portrait System:
+  42. get_portrait_filename(stat) — line 1103 — Returns expected portrait path for species+profession
+  43. try_load_sprite(path) — line 1122 — Loads sprite from path, returns sprite ID or -1
+  44. load_portrait_for_hero(stat) — line 1132 — Loads portrait: custom first, then default species+prof
+  45. load_custom_portrait_dialog(stat) — line 1164 — Opens file dialog, copies image to portraits/, saves path
+  46. draw_portrait(x, y, w, h, border_color) — line 1196 — Draws portrait or placeholder silhouette
+  47. scan_portrait_directory() — line 1235 — Scans portraits/ for existing images. Returns [{name, path}].
+
+FUNCTIONS — Visual Effects (for coded portrait generation):
+  48. draw_glow(x, y, radius, color, layers) — line 1267 — Layered glow effect using transparent circles
+  49. draw_particles(x, y, w, h, count, color, smin, smax) — line 1278 — Scatter particles for atmosphere
+  50. draw_energy_lines(cx, cy, count, rmin, rmax, color) — line 1292 — Crackling energy line effects
+  51. draw_armor_plates(x, y, w, h, color, highlight) — line 1312 — Layered armor plating with edge highlights
+  52. draw_weapon_silhouette(cx, cy, type, color) — line 1330 — Weapon silhouette from line segments (0=rifle,1=pistol,2=blade,3=fist,4=psi)
+  53. generate_all_coded_portraits() — line 1373 — Generates 30 procedural sci-fi portrait PNGs
+
+FUNCTIONS — UI Drawing Helpers:
+  54. draw_inspect_highlight(x, y, w, h, active) — line 1696 — Draws highlighted selection box for equipment inspect
+  55. ui_btn(key, x1, y1, x2, y2, text, base_color, hover_color) — line 1707 — THE meta button: registers click rect + draws button in one call. Used everywhere.
+  56. mouse_in(x1, y1, x2, y2) — line 1723 — Returns true if mouse GUI position is inside rectangle
+  57. draw_circuit_border(x, y, w, h, col) — line 1729 — Sci-fi circuit-trace border for Grid tab
+
+FUNCTIONS — Party Management (GM mode):  (GMG pp.49-50, 97-100: Supporting Cast)
+  58. add_to_party(stat) — Adds statblock to global.party (dedupes by name)
+  59. remove_from_party(idx) — Removes party member by index
+  60. add_to_npcs(stat, faction) — Adds statblock to global.npcs with faction tag
+  61. remove_from_npcs(idx) — Removes NPC by index
+  62. move_npc_to_party(idx) — Moves NPC to party list
+  63. move_party_to_npcs(idx, faction) — Moves party member to NPC list
+  64. switch_active_character(idx) — Sets hero = global.party[idx], calls update_hero
+  65. get_npcs_by_faction(faction) — Returns [{idx, stat}] for NPCs in faction
+  66. export_campaign_full() — Saves all party + NPC chars + campaign.json
+  67. import_player_to_party(path) — Loads character from file, adds to party + roster
+  68. import_to_npcs(path, faction) — Loads character as NPC with faction
+
+HOW IT CONNECTS:
+  This is the data layer. create_statblock() is the constructor. update_hero()
+  is the mandatory refresh. Every tab handler reads hero.* fields. Import/export
+  handles file I/O. ui_btn() and draw_durability_circles() are shared drawing
+  primitives used by Draw_64 and scr_draw_tabs. Party functions are used by
+  Step_0 in GM mode for multi-character management.
+
+
+================================================================================
+=== FILE: scr_skill_costs.gml (373 lines) ===
+================================================================================
+PURPOSE: Skill economy system. PHB two-tier cost model (Profession vs Other),
+         rank escalation, perk/flaw cost tracking, FX management (add/remove/toggle
+         perks, flaws, cybertech), ability score helpers, skill manipulation.
+         (PHB p.63, Table P18: skill cost tiers; PHB p.35, Table P5: starting points)
+DEPENDENCIES:
+  Reads: global.professions, global.skill_tree, global.fx_database, global.fx_lookup
+  Writes: statblock.skills, statblock.fx
+  Calls: get_fx_data (scr_alternity_statblock), find_skill (scr_chargen)
+
+FUNCTIONS — Cost Calculations:
+   1. get_profession_skill_list(profession) — line 12 — Returns array of broad skill names for a profession
+   2. is_profession_skill(profession, broad_name) — line 20 — Check if skill is in profession's list
+   3. is_profession_skill_hero(stat, broad_name) — line 28 — Check BOTH primary and secondary (diplomat) profession
+   4. get_broad_cost_for_hero(stat, broad_name) — line 41 — Returns 3 (profession) or 4 (other)
+   5. get_spec_base_for_hero(stat, broad_name) — line 46 — Returns 1 (profession) or 2 (other)
+   6. get_spec_rank_cost(base, current_rank) — line 52 — Cost to upgrade FROM rank TO rank+1
+   7. get_spec_total_cost(base, rank) — line 60 — Total points spent on specialty at rank
+   8. get_single_skill_cost_hero(stat, skill) — line 66 — Cost of one skill entry
+   9. get_total_skill_cost_hero(stat) — line 75 — Total skill points spent
+  10. get_starting_skill_points(profession) — line 83 — Starting skill points for profession
+  11. get_category_tag_hero(stat, broad_name) — line 90 — Returns "P" (profession) or "-" (other)
+
+FUNCTIONS — Legacy Wrappers:
+  12. get_skill_category(prof, broad_name) — line 96 — Returns "signature" or "other"
+  13. get_broad_cost_per_rank(prof, broad_name) — line 100 — 3 or 4
+  14. get_spec_cost_per_rank(prof, broad_name) — line 104 — 1 or 2
+  15. get_category_short_hero(stat, broad_name) — line 108 — Wrapper for get_category_tag_hero
+
+FUNCTIONS — Perk/Flaw Costs:
+  16. get_perks_cost(stat) — line 115 — Total skill points spent on perks (quality-scaled)
+  17. get_flaws_benefit(stat) — line 135 — Total skill points gained from flaws
+  18. get_adjusted_skill_points(stat) — line 148 — Starting pts - perks + flaws
+
+FUNCTIONS — FX Management (generic):
+  19. find_fx(stat, name, type, active_only) — line 153 — ONE generic FX lookup. All hero_has_* are thin wrappers.
+  20. hero_has_perk(stat, name) — line 164 — Check for active perk
+  21. hero_has_perk_any(stat, name) — line 165 — Check for perk regardless of active state
+  22. hero_has_flaw(stat, name) — line 166 — Check for active flaw
+  23. hero_has_flaw_any(stat, name) — line 167 — Check for flaw regardless
+  24. hero_has_fx(stat, name) — line 168 — Check for any active FX
+  25. get_hero_fx(stat, name) — line 169 — Get FX entry by name (any type, any state)
+  26. hero_has_cybertech(stat, name) — line 170 — Check for cybertech
+  27. add_perk_to_hero(stat, name) — line 173 — Add perk (or upgrade quality tier O->G->A)
+  28. remove_perk_from_hero(stat, name) — line 211 — Remove perk by name
+  29. toggle_flaw_on_hero(stat, name) — line 218 — Toggle flaw: add if missing, remove if present
+
+FUNCTIONS — Cybertech:
+  30. get_cyber_tolerance(stat) — line 231 — Max tolerance: CON + mechalus bonus + Cyber Tolerance perk (PHB p.241, Table P53)
+  31. get_cyber_used(stat) — line 243 — Total cyber size installed (sizes from PHB Table P53)
+  32. add_cybertech_to_hero(stat, name, quality) — line 258 — Add cyberware. Auto-adds prereqs. Checks tolerance.
+  33. remove_cybertech_from_hero(stat, name) — line 281 — Remove cyberware. Blocks if it is a prereq.
+
+FUNCTIONS — Ability & Skill Manipulation:
+  34. get_ability_score_for_skill(stat, ability) — line 301 — Switch-based ability score lookup
+  35. recalc_skill_scores(stat) — line 312 — Recalculates all skill scores from ability scores + ranks
+  36. increase_skill_rank(stat, idx) — line 331 — Increase specialty rank (max 3). Returns cost.
+  37. decrease_skill_rank(stat, idx) — line 343 — Decrease rank or remove skill. Removing a broad removes all its specialties.
+  38. add_broad_skill_to_hero(stat, broad_name) — line 363 — Add a new broad skill (looks up ability from skill_tree)
+
+HOW IT CONNECTS:
+  Called by tab handlers (Character tab +/- buttons), chargen (career application),
+  skill browser (add/remove), and combat tab (for cost display). The
+  is_profession_skill_hero() function enables Diplomat dual-class by checking
+  both professions for best cost tier.
+
+
+================================================================================
+=== FILE: scr_chargen.gml (315 lines) ===
+================================================================================
+PURPOSE: Character generation, species/profession utilities, career application,
+         skill lookup, random name generation.
+         (PHB p.21: creation process; p.30, Table P1: profession reqs; p.34, Table P3: species limits)
+DEPENDENCIES:
+  Reads: global.species_data, global.professions, global.career_data,
+         global.names, global.ability_keys
+  Writes: statblock fields
+  Calls: create_statblock, set_ability, calculate_action_check,
+         calculate_durability (scr_alternity_statblock),
+         add_broad_skill_to_hero, increase_skill_rank (scr_skill_costs)
+
+ENUM:
+  SPECIES { HUMAN, FRAAL, WERENT, SESHEYAN, TSA, MECHALUS, COUNT }
+
+FUNCTIONS — Species/Profession Utilities:
+   1. get_species_name(sp) — line 5 — Enum to display name
+   2. get_profession_name(prof) — line 9 — Enum to display name
+   3. parse_species_name(name) — line 16 — String to SPECIES enum
+   4. parse_profession_name(name) — line 21 — String to PROFESSION enum
+   5. get_species_mods(sp) — line 27 — Returns [STR,DEX,CON,INT,WIL,PER] modifier array
+   6. get_species_starting_broads(sp) — line 31 — Returns array of free broad skills for species
+   7. get_profession_requirements(prof) — line 35 — Returns {ab1, ab1_min, ab2, ab2_min} for profession
+   8. roll_ability() — line 48 — Rolls 2d6+2 for a single ability
+
+FUNCTIONS — Career Access:
+   9. get_careers_for_profession(prof) — line 54 — Returns array of career structs
+  10. get_career_names_for_profession(prof) — line 59 — Returns array of career name strings
+  11. apply_career_to_statblock(stat, career, additive) — line 68 — Applies career skills + equipment. additive=true keeps existing (for Diplomat secondary).
+
+FUNCTIONS — Character Generation:
+  12. generate_random_character(species, prof, career, sec_prof, sec_career) — line 122 — Full chargen. 60-point system (PHB p.21) with species mods (Table P3 p.34), profession requirements (Table P1 p.30), career skills/gear. Pass -1 for random on any choice. Handles Diplomat dual-class (PHB p.32).
+  13. generate_random_name() — line 228 — Random first+last from names.json
+
+FUNCTIONS — Skill Helpers:
+  14. get_specialties_for_broad(broad_name) — line 234 — Returns specialty array from skill_tree
+  15. find_skill(stat, broad_name, spec_name) — line 241 — THE skill finder. Returns index or -1. Used everywhere.
+  16. shuffle_array(arr) — line 247 — Fisher-Yates shuffle (in-place)
+  17. generate_quick_npc(template_index) — line 262 — Generates NPC from GMG templates (GMG pp.97-100). Looks up global.npc_templates, creates statblock with template abilities/skills/gear, assigns random name.
+
+HOW IT CONNECTS:
+  Called from Step_0 chargen popup (generate button), Create_0 (dropdown init),
+  scr_alternity_statblock (create_sample_soldier), and Step_0 GM mode Quick NPC
+  button. find_skill() is the most frequently called function across the entire
+  codebase.
+
+
+================================================================================
+=== FILE: scr_data_loader.gml (~387 lines) ===
+================================================================================
+PURPOSE: JSON pipeline. Loads all game data at startup. Manages recent characters,
+         character save/load, changelog.
+DEPENDENCIES:
+  Reads: JSON files from datafiles/ (included with build) and save directory
+  Writes: global.config, global.professions, global.skill_tree, global.species_data,
+          global.career_data, global.names, global.fx_database, global.fx_lookup,
+          global.keyword_tree, global.equipment_weapons/armor/gear,
+          global.programs, global.computers, global.processor_quality,
+          global.program_lookup, global.skill_rank_benefits, global.combat_tables,
+          global.gm_tables, global.ability_keys/names/full, global.changelog,
+          global.recent_characters, global.settings_library_name
+  Calls: careers_from_import (scr_alternity_statblock), statblock_import_data (scr_alternity_statblock)
+
+JSON FILES LOADED (datafiles/ — included with build, read-only):
+  config.json           — UI colors, dice steps (PHB p.13), layout, misc settings
+  professions.json      — 5 professions (PHB pp.30-33, Tables P1/P4/P5): names, requirements, bonuses, skill lists
+  skills.json           — Skill tree: 33+ broad skills with specialties (PHB pp.63-66, Tables P18/P19)
+  species.json          — 6 playable species (PHB pp.21-31, Table P3): mods, starting skills, traits
+  careers.json          — 27 career packages by profession (PHB pp.128-130, Tables P28/P29)
+  names.json            — 960 name combinations for random gen
+  fx_database.json      — Unified FX: perks (PHB Table P26 p.104), flaws (Table P27 p.108), cybertech (Table P53 p.241)
+  keyword_tree.json     — Master keyword-to-ability-to-category mapping (derived from PHB skill list)
+  equipment.json        — Weapons (PHB Tables P38-P40 pp.173-184), armor (Table P41 p.189), gear (Table P33 pp.135-137)
+  programs.json         — Grid programs (PHB Table P37 p.162) and computers (Table P35 p.153)
+  npc_templates.json    — 14 GMG NPC templates (GMG pp.97-100)
+  tables/*.json         — PHB reference tables (skill_rank_benefits, combat_tables, gm_tables)
+
+USER-WRITABLE FILES:
+  Sandbox save area (%AppData%/Local/diceymcdicefacevibed/):
+    changelog.json          — Development changelog (load_or_create)
+    recent_characters.json  — Recent character list
+    campaign.json           — Campaign roster and references
+  Game directory (working_directory + "characters/", stored in global.save_path):
+    characters/*.json       — Saved character files
+    characters/*_rolllog.log — Persistent roll logs
+
+FUNCTIONS — JSON I/O:
+   1. read_json(path) — line 37 — Read + parse JSON file. Returns struct or undefined.
+   2. write_json(path, data) — line 46 — Stringify + write JSON to file.
+   3. load_or_create(path, default_func) — line 52 — Load JSON or generate default + save.
+
+FUNCTIONS — Color Helpers:
+   4. hex_char_val(ch) — line 66 — Single hex char to int
+   5. hex2_to_int(s) — line 74 — Two hex chars to int
+   6. parse_hex_color(hex) — line 79 — "#rrggbb" to GML color
+   7. color_to_hex(c) — line 88 — GML color to "#rrggbb"
+   8. ability_name_to_index(name) — line 99 — "STR" to 0..5
+
+FUNCTIONS — Master Init:
+   9. init_all_data() — line 108 — THE startup function. Loads all JSON, builds lookup tables, sets global constants. Called once from Create_0.
+
+FUNCTIONS — Recent Characters:
+  10. get_default_recent() — line 181 — Empty recent list default
+  11. add_recent_character(name, path) — line 187 — Adds to recent list (dedupes, caps at 10, saves)
+
+FUNCTIONS — Character Persistence:
+  12. save_hero_and_track(stat) — line 207 — Saves hero to characters/ dir + tracks in recents
+  13. load_character_from_path(path) — line 253 — Loads character from file path. Returns statblock or undefined.
+
+FUNCTIONS — Campaign Persistence:
+  14. save_campaign() — Saves campaign.json (roster, party refs, NPC refs with factions)
+  15. load_campaign() — Loads campaign.json, rebuilds global.party and global.npcs from saved refs
+  16. scan_characters_directory() — Scans characters/ folder, returns array of {name, path} for all .json files
+  17. roster_add_ref(path) — Adds a character file path to global.roster (dedupes)
+
+FUNCTIONS — Changelog:
+  18. get_timestamp_string() — Returns "YYYY-M-D H:MM" string
+  19. get_default_changelog() — Empty changelog shell
+
+HOW IT CONNECTS:
+  init_all_data() is the FIRST function called (from Create_0). It populates
+  every global.* variable that every other script depends on. save_hero_and_track
+  is called from Step_0 on tab switch (auto-save), export, and exit.
+  save_campaign/load_campaign manage the GM-mode campaign state across sessions.
+
+
+================================================================================
+=== FILE: scr_draw_tabs.gml (~2,090 lines) ===
+================================================================================
+PURPOSE: Rendering for all 10 player tabs + 5 GM tabs. Each function draws one tab's
+         content into the left panel area. Purely visual — registers button rects via
+         btn/ui_btn but processes no input (that's scr_tab_handlers + Step_0).
+DEPENDENCIES:
+  Reads: hero.*, obj_game state vars (selected_skill, scroll_offset, equip_*,
+         combat_*, etc.), global.equipment_weapons/armor/gear, global.fx_database,
+         global.programs, global.computers, global.species_data, global.professions
+  Writes: btn.* (button rectangles for click detection)
+  Calls: get_* and find_* from all other scripts for display data
+
+FUNCTIONS:
+   1. draw_tab_character(lx, ly, lw, lh) — line 8 — TAB 0: Skills list with +/- buttons, skill costs (PHB Table P18 p.63), category tags, perk/flaw radio toggles, collapsible untrained section
+   2. draw_tab_equipment(lx, ly, lw, lh) — line 102 — TAB 1: Three sub-views (weapons/armor/gear), verbose/compact toggle, PL filter (PHB p.132, Table P32), add panel with expandable entries, custom creation, inspect highlight
+   3. draw_tab_combat(lx, ly, lw, lh) — line 404 — TAB 2: Action phase tracker (PHB p.38, Table P7), wound/cant-fail/range toggles, weapon attacks (PHB Tables P38-P40) with skill resolution, damage die codes (clickable), unarmed combat, defensive skills, feat checks
+   4. draw_tab_psionics(lx, ly, lw, lh) — line 652 — TAB 3: Psionic disciplines (PHB p.229, Table P52: Telepathy/Telekinesis/ESP/Biokinesis) with broad + specialty skills, power descriptions
+   5. draw_tab_perks_flaws(lx, ly, lw, lh) — line 783 — TAB 4: Your perks/flaws from hero.fx (PHB Tables P26/P27), cost/refund display, available list from fx_database with add/upgrade/owned states
+   6. draw_tab_cybertech(lx, ly, lw, lh) — line 887 — TAB 5: Installed cyberware (PHB Table P53 p.241) with active toggles, tolerance display, categorized available list (neural/body/sensory/weapon/utility) with expand-for-quality selection
+   7. draw_tab_rolllog(lx, ly, lw, lh) — line 1007 — TAB 6: Last 100 rolls from persistent file, color-coded by degree, scrollable, per-entry copy button
+   8. draw_tab_info(lx, ly, lw, lh) — line 1077 — TAB 7: Scrollable reference: dice codes, degrees of success, damage codes, wound penalties, skill costs, species reference (PHB pp.21-31), profession reference (PHB pp.30-33)
+   9. draw_tab_grid(lx, ly, lw, lh) — TAB 8: Cyberdeck/Grid (PHB Table P35 p.153, Table P37 p.162). Three sub-views (programs/computer/builder), deck summary, slot management, program quality selection, custom program builder
+  10. draw_tab_aura(lx, ly, lw, lh) — TAB 9: Aura/Lore tab. Character identity and PHB Step 8 attributes. Draws hero.lore fields (height, weight, hair, gender, moral_attitude, temperament, motivations, personality, lifepath). Clickable pill buttons for temperament/motivations, edit buttons for freeform fields. Read-only for Sergeant Voss.
+
+FUNCTIONS — GM Tab Helpers:
+  10. _gm_get_skill_score(stat, broad, spec) — Returns "O/G/A" score string for a skill
+  11. _gm_get_best_awareness_score(stat) — Best awareness: Perception > Intuition > broad > untrained
+  12. _gm_get_psi_summary(stat) — Psionic disciplines summary
+  13. _gm_get_enhanced_senses(stat) — Sense-enhancing FX and species traits
+  14. _enc_draw_char_row(lx,ly,lw,lh,stat,is_party,color) — Reusable encounter character row
+
+FUNCTIONS — GM Tab Renderers:
+  15. draw_gm_party(lx, ly, lw, lh) — GM TAB 0: Party with senses, resolve, res mods, psionics, enhanced senses
+  16. draw_gm_npcs(lx, ly, lw, lh) — GM TAB 1: NPCs by faction with edit/move/remove
+  17. draw_gm_encounter(lx, ly, lw, lh) — GM TAB 2: Initiative bar, AC/phase/actions/res mods/durability per char
+  19. draw_gm_campaign(lx, ly, lw, lh) — GM TAB 3: Campaign roster with scan/import/export
+  20. draw_gm_resources(lx, ly, lw, lh) — GM TAB 4: Scrollable GM customization guide — how to edit equipment, skills, FX, templates, species JSON files
+
+HOW IT CONNECTS:
+  Player tabs called from Draw_64 based on current_tab. GM tabs called when
+  gm_mode && gm_state=="gm" based on gm_tab. Each function receives panel
+  coordinates and returns updated _ly. They register button rects that
+  scr_tab_handlers checks on the next frame.
+
+
+================================================================================
+=== FILE: scr_tab_handlers.gml (~780 lines) ===
+================================================================================
+PURPOSE: Input handling for each player tab + 5 GM tabs. Processes button clicks
+         registered by scr_draw_tabs. Modifies hero data and triggers update_hero/save.
+DEPENDENCIES:
+  Reads: obj_game.hero, obj_game.btn, obj_game.equip_*, obj_game.combat_*,
+         global.equipment_*, global.fx_database, global.programs, global.computers
+  Writes: obj_game state vars, hero.* fields
+  Calls: btn_clicked (scr_ui_helpers), meta_roll/build_*_request (scr_ui_helpers),
+         update_hero (scr_alternity_statblock), find_skill (scr_chargen),
+         increase/decrease_skill_rank (scr_skill_costs), add/remove perk/flaw/cyber (scr_skill_costs)
+
+FUNCTIONS:
+   1. toggle_inspect(idx, type) — line 6 — Toggle equipment inspect highlight on/off
+   2. handle_tab_equipment() — line 15 — TAB 1: Sub-tab switching, add panel toggle, PL adjustment, weapon add/remove/inspect/custom, armor equip/inspect, gear add/remove/inspect/custom
+   3. handle_tab_combat() — line 138 — TAB 2: Initiative roll + phase tracker, round reset, phase clicks, wound/cant-fail/range toggles, weapon attack rolls, damage rolls (individual tier + all), hit damage follow-up, unarmed combat, defensive skill rolls, feat checks
+   4. handle_tab_psionics() — line 205 — TAB 3: Wound/cant-fail toggles, psionic skill rolls for all FX disciplines
+   5. handle_tab_perks_flaws() — line 228 — TAB 4: Sub-tab switching, remove perk/flaw, add from fx_database list
+   6. handle_tab_cybertech() — line 246 — TAB 5: Toggle active/inactive, remove installed, expand/add from database with quality selection
+   7. handle_tab_rolllog() — line 276 — TAB 6: Scroll up/down, copy individual entries to clipboard
+   8. handle_tab_character() — line 294 — TAB 0: Skill list click (select/+/-), perk/flaw radio toggles, scroll, skill browser open, collapsible untrained section with feat roll buttons
+   9. handle_tab_grid() — TAB 8: Sub-tab switching, add toggle, program remove/add at quality, computer selection with quality buttons, custom program builder
+  10. handle_tab_aura() — TAB 9: Aura/Lore tab input. Temperament pill toggle (pick 2-3 from 25), motivations pill toggle (pick 1-2 from 16), edit buttons for freeform text fields (height, weight, hair, gender, moral_attitude, personality, lifepath). Read-only guard for Voss.
+
+FUNCTIONS — GM Tab Handlers:
+  11. handle_gm_party() — GM TAB 0: Select, edit (enters player char edit), import, new char, save all, move to NPCs, remove
+  12. handle_gm_npcs() — GM TAB 1: Select, edit, move to party, remove, quick NPC gen into faction, import, add faction
+  13. handle_gm_encounter() — GM TAB 2: Roll All Init (action checks for all party+NPCs), New Round (reset actions), Clear Init
+  14. handle_gm_campaign() — GM TAB 3: Scan directory, import file, export all, load roster entries into party or NPCs
+
+HOW IT CONNECTS:
+  Player tab handlers called from Step_0 based on current_tab.
+  GM tab handlers called from Step_0 when gm_mode && gm_state=="gm" based on gm_tab.
+  When hero data changes, handlers call update_hero() and set hero_dirty=true.
+
+
+================================================================================
+=== FILE: Create_0.gml (~238 lines) ===
+================================================================================
+PURPOSE: Initialization event. Sets up ALL game state. Runs once at game start.
+
+LOGICAL SECTIONS:
+  Lines 1-6: Disable default surface drawing, call init_all_data()
+  Lines 7-21: Portrait system init, generate coded portraits if missing, regenerate Voss template, create blank hero statblock
+  Lines 22-29: Pre-load last character path, set game_state to "welcome"
+  Lines 30-44: Accessibility settings (colorblind mode, staged roll system init)
+  Lines 46-58: Tab/skill state variables (current_tab, selected_skill, scroll_offset, etc.)
+  Lines 60-107: All tab-specific state: equipment (view, expanded, adding, verbose, inspect, PL), grid (view, expanded, adding), cybertech (expanded), roll log (entries, scroll, dirty), action phase tracker, combat state (selected, range, wound penalty, cant-fail)
+  Lines 108-126: Colors from config.json (gradient, panel, border, text, degree colors)
+  Lines 127-175: Window mode (fullscreen/windowed/half), GUI sizing, layout calculations (panel positions, max visible skills)
+  Lines 176-188: Status message, dirty flag, browser state, chargen popup init
+  Lines 189-217: Chargen dropdown system: build option lists from loaded data, set up callbacks (profession change rebuilds career list), create 5 dropdown structs
+  Lines 218-238: Button rect struct, apply saved colorblind mode, GM state variables (gm_tab, gm_state, gm_edit_source, global.npcs, global.roster, global.factions), load_campaign() call to restore GM session
+
+
+================================================================================
+=== FILE: Step_0.gml (~391 lines) ===
+================================================================================
+PURPOSE: All input processing. Mouse-driven. Routes clicks to appropriate
+         handlers based on game_state, gm_state, and current_tab/gm_tab.
+         Restructured flow: right panel buttons process first (all modes),
+         then GM mode (gm_state="gm"), then player mode (gm_state="edit" or normal).
+
+LOGICAL SECTIONS:
+  Lines 1-11: Click/wheel detection, global EXIT button (saves + game_end)
+  Lines 12-23: Status timer countdown, roll animation timer
+  Lines 25-163: WELCOME SCREEN — accessibility popup (window mode, color modes, custom palette), continue/new/load/voss buttons, recent character list, changelog toggle, GM mode toggle
+  Lines 165-188: CHARGEN POPUP — dropdown group click handling, generate button (calls generate_random_character), close button
+  Lines 189-237: SKILL BROWSER — mouse wheel scroll, remove buttons (broad + specialty), add skill clicks, close button
+  Lines 238-291: RIGHT PANEL (all modes) — quick roll buttons (awareness/mental resolve/physical resolve/initiative), situation die adjuster (</>/ Reset), ROLL button (staged or selected skill), character buttons (new/menu), portrait (browse/preset dropdown), file operations (export/import/save/load data)
+  Lines 292-340: GM MODE (gm_state="gm") — GM tab clicks, mouse wheel scroll, delegation to handle_gm_* tab handlers, "Back to GM" button from edit mode
+  Lines 341-391: PLAYER MODE — mouse wheel (skill scroll, rolllog scroll, info scroll), tab layout toggle, tab clicks (with auto-save on switch), ability +/- buttons, durability resets, delegation to handle_tab_* handlers
+
+KEY PATTERNS:
+  - Every click check uses btn_clicked(key) from scr_ui_helpers
+  - Roll results flow through meta_roll() or prepare_roll()+execute_staged_roll()
+  - After any hero modification: update_hero(hero); hero_dirty = true;
+  - Player tab handlers: if (current_tab == N) handle_tab_*();
+  - GM tab handlers: if (gm_tab == N) handle_gm_*();
+
+
+================================================================================
+=== FILE: Draw_64.gml (~870 lines) ===
+================================================================================
+PURPOSE: All rendering. Draw GUI event. Draws gradient background, welcome screen,
+         main sheet (identity, abilities, durability, tabs), right panel (portrait,
+         quick rolls, dice roller, roll history, file buttons), overlays (skill
+         browser, chargen popup, tooltips). Main content area uses if/else split:
+         GM tools screen (when gm_mode && gm_state="gm") vs player character sheet.
+
+LOGICAL SECTIONS:
+  Lines 1-36: Gradient background with wave swoop effect
+  Lines 37-287: WELCOME SCREEN — title, navigation buttons (continue/new/load/settings/GM toggle), recent characters panel, scrollable changelog panel, accessibility popup (window mode, color vision presets, custom color editor with palette picker)
+  Lines 288-368: TAB LAYOUT — horizontal (top) or vertical (side) tabs with toggle button. GM mode adds right-side GM tab strip (5 GM tabs).
+  Lines 369-478: LEFT PANEL HEADER (player mode) — content panel background, identity line (name/species/profession/career), ability scores with +/- buttons and hover tooltips, point total (60pt), action check display, wound penalty display, durability circles (stun/wound/mortal with clickable circles and reset buttons)
+  Lines 479-503: TAB CONTENT DISPATCH — if GM tools: delegates to draw_gm_* functions based on gm_tab. Else: delegates to draw_tab_* functions based on current_tab (10 player tabs).
+  Lines 504-782: RIGHT PANEL — character buttons (new/menu), portrait with diplomat dual-portrait inset, portrait presets dropdown, quick roll buttons, DICE ROLLER (staged roll info or selected skill, situation die adjuster with bonus/penalty display, ROLL button, result display with control/situation/total breakdown, degree of success, modifier list), roll history (last 8 with modifier display), file buttons (export/import/save/load data), cost legend, EXIT button, status message
+  Lines 789-816: SKILL BROWSER OVERLAY — dark backdrop, skill list (broads/specialties/add entries), add/remove buttons, flash confirmation
+  Lines 818-846: CHARGEN POPUP OVERLAY — dark backdrop, species/profession/career dropdowns, diplomat secondary fields, GENERATE button
+  Lines 848-870: TOOLTIP OVERLAY — drawn absolute last for z-order
+
+KEY PATTERNS:
+  - btn struct is rebuilt every frame by ui_btn() calls and manual variable_struct_set
+  - draw_tab_* functions return updated _ly position
+  - Overlays (browser, chargen) use draw_set_alpha for dark backdrops
+  - All text positioning uses _lx/_ly/_lw/_lh coordinate system
+
+
+================================================================================
+ARCHITECTURE OVERVIEW
+================================================================================
+
+    +------------------+
+    |   Create_0.gml   |  Runs once: init_all_data() -> set up all state
+    +------------------+
+             |
+             v
+    +------------------+         +--------------------+
+    |   Step_0.gml     | ------> | scr_tab_handlers   |
+    | (all input)      |         | (per-tab input)    |
+    +------------------+         +--------------------+
+             |                            |
+             |  btn_clicked()             |  modify hero.*, call update_hero()
+             |  meta_roll()               |
+             v                            v
+    +------------------+         +--------------------+
+    | scr_ui_helpers   |         | scr_skill_costs    |
+    | (roll pipeline,  |         | (cost math, FX     |
+    |  btn system,     |         |  management)       |
+    |  dropdowns,      |         +--------------------+
+    |  keyword/FX)     |                  |
+    +------------------+                  v
+             |                   +--------------------+
+             |  alternity_check  | scr_chargen        |
+             v                   | (generation,       |
+    +------------------+         |  find_skill,       |
+    |   scr_dice       |         |  career apply)     |
+    | (d20 + sit die)  |         +--------------------+
+    +------------------+
+                                 +--------------------+
+    +------------------+         | scr_data_loader    |
+    |   Draw_64.gml    | ------> | (JSON I/O,         |
+    | (all rendering)  |         |  init_all_data,    |
+    +------------------+         |  save/load)        |
+             |                   +--------------------+
+             v
+    +--------------------+       +--------------------+
+    | scr_draw_tabs      |       |scr_alternity_      |
+    | (15 tab renderers) |       | statblock          |
+    +--------------------+       | (data model,       |
+                                 |  update_hero,      |
+                                 |  import/export,    |
+                                 |  portraits, UI)    |
+                                 +--------------------+
+
+Data flow is one-directional per frame:
+  Frame N Draw_64: registers button rects in btn struct
+  Frame N+1 Step_0: checks btn_clicked() against those rects
+  Frame N+1 Step_0: modifies hero data, calls update_hero()
+  Frame N+1 Draw_64: renders updated state, registers new rects
+
+
+================================================================================
+DATA FLOW: How a roll goes from click to result
+================================================================================
+
+Example: Player clicks a skill on the Character tab, then clicks ROLL.
+
+1. STAGE (Step_0 line 317-326):
+   - btn_clicked("roll") fires
+   - No staged_roll exists, so prepare_roll() is called:
+     a. build_skill_request(hero, broad, spec, 0)
+        - Finds skill index, reads scores, determines training penalty
+        - Returns request struct {roll_type, name, score_ord/good/amz, base_penalty, training, broad_skill, spec_skill, ability}
+     b. prepare_roll(hero, request):
+        - Calls annotate_training() — adds "Broad+1" or "Untrained+1" to modifiers
+        - Calls apply_fx_modifiers() — THE modifier engine:
+          i.   get_roll_keywords(request) — generates tags: ["str", "skill", "trained", "athletics", "climb", "physical"]
+          ii.  Loops hero.fx array — for each active FX:
+               - Looks up global.fx_database via get_fx_data()
+               - Resolves keywords+modifier based on: keyword_tiers > quality_scale > fixed
+               - Checks if ANY FX keyword matches ANY roll tag
+               - If match: adds modifier to base_penalty, annotates in modifiers[]
+        - Adds wound penalty if enabled
+        - Computes final step: clamp(SIT_STEP_BASE + base_penalty)
+        - Stores in obj_game.staged_roll, sets situation_step to computed value
+
+2. PLAYER ADJUSTMENT (optional):
+   - Player can click </> to adjust situation_step
+   - The delta between their adjustment and computed is tracked
+
+3. EXECUTE (Step_0 line 317-326, after animation timer):
+   - execute_staged_roll():
+     a. Calculates player_delta = current situation_step - computed_step
+     b. If delta != 0, annotates "Player Mod+N" in modifiers
+     c. Calls alternity_check(score_ord, score_good, score_amz, final_step):
+        - Rolls d20 (control die)
+        - Rolls situation die (get_step -> roll_situation)
+        - total = max(1, control +/- situation)
+        - Determines degree: crit fail if d20=20, else compare to score/thresholds
+        - Returns {control_roll, situation_roll, total, degree, degree_name, is_critical_failure}
+     d. apply_cant_fail() — if cant_fail_mode on, failure becomes MARGINAL
+     e. log_roll(name, result):
+        - Sets obj_game.last_roll for display
+        - Inserts into roll_log array (capped at max_log_entries)
+        - Calls append_roll_log_file() — writes to persistent {name}_rolllog.log
+        - Sets rolllog_dirty = true
+     f. For attacks: track_hit() saves weapon+degree for damage follow-up
+     g. Clears staged_roll
+
+4. DISPLAY (Draw_64 right panel):
+   - last_roll is rendered: control die, situation die, total, degree (color-coded)
+   - Modifiers are listed below result
+   - roll_log shows recent history
+
+QUICK ROLLS (right panel buttons like Awareness):
+  Skip staging. Call quick_roll_skill(hero, request):
+  - Start from player's current situation_step (not base)
+  - Apply auto-mods ON TOP of player's setting
+  - Roll instantly via _execute_instant()
+  This means: player sets the die, auto-mods adjust from there.
+
+
+================================================================================
+FX SYSTEM: How modifiers are matched and applied
+================================================================================
+
+The FX system is DATA-DRIVEN. No hardcoded modifier logic. Everything is in
+fx_database.json. To add a new modifier, add a JSON entry — no code changes.
+Source rules: PHB Table P26 pp.104-107 (Perks), Table P27 pp.108-111 (Flaws),
+Table P53 pp.241-245 (Cybertech). Modifiers expressed as situation die step offsets.
+
+HERO.FX ARRAY:
+  Each hero has an .fx array. Each entry: { name, type, quality, active }
+  Types: "perk", "flaw", "cybertech" (future: "racial", "environmental", "item")
+  Quality: "" (flat), "O" (Ordinary), "G" (Good), "A" (Amazing)
+  Active: true/false toggle (controlled by radio buttons on Character tab)
+
+GLOBAL.FX_DATABASE:
+  Array of full FX definitions loaded from fx_database.json.
+  Each entry has: name, type, cost, description, keywords[], modifier, and
+  optionally: quality_scale, keyword_tiers, prereqs, size, category.
+
+THREE MODIFIER RESOLUTION MODES (checked in this order):
+
+  1. KEYWORD_TIERS — Per-quality keyword gating:
+     Different quality tiers unlock different keyword sets AND modifiers.
+     JSON: "keyword_tiers": { "G": { "keywords": ["ranged","combat"], "modifier": -1 },
+                              "A": { "keywords": ["ranged","combat","awareness"], "modifier": -2 } }
+     At Ordinary quality: no keywords match. At Good: ranged/combat get -1.
+     At Amazing: ranged/combat/awareness all get -2.
+     Used for: cybertech that improves with quality (e.g., Optic Screen).
+
+  2. QUALITY_SCALE — Same keywords, different modifier per quality:
+     JSON: "keywords": ["awareness"], "quality_scale": { "O": -1, "G": -2, "A": -3 }
+     Keywords always match. Only the modifier value changes per quality tier.
+     Used for: perks/cybertech with graduated effects.
+
+  3. FIXED — Flat keywords + flat modifier:
+     JSON: "keywords": ["awareness","perception"], "modifier": -1
+     Always matches those keywords. Always applies that modifier.
+     Used for: most perks and flaws (e.g., Observant -1 to awareness checks).
+
+KEYWORD TAG GENERATION (get_roll_keywords):
+  Every roll request gets tagged automatically:
+  - Ability key: "str", "dex", "con", "int", "wil", "per"
+  - Roll type: "skill", "feat", "attack", "initiative"
+  - Training: "trained", "broad", "untrained", "feat"
+  - Broad skill name (lowercased): "awareness", "athletics", etc.
+  - Specialty name (lowercased): "perception", "rifle", etc.
+  - Category tags from keyword_tree.json: "combat", "ranged", "melee",
+    "psionic", "social", "tech", "physical", "vehicle", etc.
+  - Attack rolls always get "combat" tag.
+
+MATCHING:
+  apply_fx_modifiers() loops ALL active hero.fx entries. For each:
+  1. Skip if inactive
+  2. Look up full definition from global.fx_database
+  3. Resolve keywords + modifier via the 3-mode priority above
+  4. Check if ANY resolved keyword matches ANY roll tag
+  5. If match and modifier != 0: add to base_penalty, annotate in modifiers[]
+
+EXTENDING:
+  To add a new modifier (no code changes):
+  1. Add entry to fx_database.json: { name, type, keywords, modifier/quality_scale/keyword_tiers }
+  2. Done. apply_fx_modifiers() will auto-match it on every relevant roll.
+  Future hooks: environmental modifiers, GM hidden modifiers — just more FX entries.
+
+
+================================================================================
+DATASOUL: What the character data struct contains
+================================================================================
+
+create_statblock() returns a struct with these fields:
+
+IDENTITY:  (PHB p.21: Complete Hero Creation Process)
+  .name               string    — Character name
+  .profession          real     — PROFESSION enum (0-4) (PHB p.30, Table P1)
+  .career             string    — Career name (e.g., "Infantry Soldier") (PHB pp.128-130)
+  .species             real     — SPECIES enum (0-5) (PHB pp.21-31, Table P3 p.34)
+  .secondary_profession real    — PROFESSION enum or -1 (Diplomat dual-class only)
+  .portrait_path      string    — Custom portrait file path (relative)
+  .background         string    — Free-text background/bio
+
+ABILITIES (6 structs, identical shape):  (PHB p.34, Table P3: species limits)
+  .str / .dex / .con / .int_ / .wil / .per
+    .score             real     — Ability score (4-14 for humans)
+    .untrained         real     — score div 2 (for untrained checks, PHB p.63)
+    .res_mod           real     — Resistance modifier: (score div 2) - 5 (PHB p.33, Table P2)
+
+  NOTE: Intelligence is .int_ (not .int) because "int" is a GML keyword.
+
+ACTION CHECK:  (PHB p.38, Table P7: Actions Per Round)
+  .action_check
+    .marginal          real     — ordinary + 1 (displayed as "X+")
+    .ordinary          real     — (DEX + INT) / 2 + profession bonus
+    .good              real     — ordinary div 2
+    .amazing           real     — ordinary div 4
+  .actions_per_round   real     — Usually 2
+
+DURABILITY (3 tracks, identical shape):  (PHB pp.40-41: How to Record Durability)
+  .stun / .wound / .mortal
+    .max               real     — CON + profession durability mod (mortal = half)
+    .current           real     — Current remaining (damage = max - current)
+
+SKILLS (array of skill structs):  (PHB pp.63-66, Tables P18/P19)
+  .skills[i]
+    .ability           string   — "str"/"dex"/"con"/"int"/"wil"/"per"
+    .broad_skill       string   — Broad skill name (e.g., "Modern Ranged Weapons")
+    .specialty         string   — Specialty name or "" if broad-only
+    .rank              real     — 0-3 (broads always 1, specs 0-3)
+    .score_ordinary    real     — Computed: ability + rank adjustments
+    .score_good        real     — ordinary div 2
+    .score_amazing     real     — ordinary div 4
+
+  SAVE FORMAT: broad = ["Athletics", "STR", -1], spec = ["Rifle", "Modern Ranged Weapons", 2]
+
+WEAPONS (array of weapon structs):  (PHB Tables P38-P40 pp.173-184)
+  .weapons[i]
+    .name              string   — Weapon name
+    .skill_keyword     string   — Maps to keyword_tree.weapon_skills (e.g., "rifle", "pistol", "blade", "brawl")
+    .dmg_ordinary      string   — Damage code (e.g., "d6+1w")
+    .dmg_good          string   — Good hit damage
+    .dmg_amazing       string   — Amazing hit damage
+    .range_str         string   — Range (e.g., "8/16/60" or "Personal")
+    .damage_type       real     — DAMAGE_TYPE enum (LI/HI/EN)
+
+  SAVE FORMAT: [name, skill_keyword, dmg_o, dmg_g, dmg_a, range, type_string]
+
+ARMOR:  (PHB Table P41 p.189)
+  .armor
+    .name              string   — Armor name
+    .li / .hi / .en    string   — Absorption values (e.g., "d6-1", "d4+1", "d4-1")
+
+  SAVE FORMAT: [name, li, hi, en]
+
+GEAR:
+  .gear                array    — Array of gear name strings
+
+FX (Unified modifier system):  (PHB Table P26 p.104, Table P27 p.108, Table P53 p.241)
+  .fx                  array    — Array of FX entry structs
+  .fx[i]
+    .name              string   — Must match global.fx_database entry
+    .type              string   — "perk" / "flaw" / "cybertech"
+    .quality           string   — "" / "O" / "G" / "A"
+    .active            bool     — Toggle for active/inactive
+
+  Full FX data (keywords, modifiers, prereqs, size, cost) lives in
+  global.fx_database, NOT in the hero struct. Hero only stores the reference.
+
+LORE (PHB Step 8: Finishing Touches):
+  .lore
+    .height            string   — Character height (e.g., "6'1\"")
+    .weight            string   — Character weight (e.g., "185 lbs")
+    .hair              string   — Hair description
+    .gender            string   — Gender identity
+    .moral_attitude    string   — Moral alignment (e.g., "Principled", "Pragmatic")
+    .temperament       array    — Array of temperament tags (pick 2-3 from 25 options)
+    .motivations       array    — Array of motivation tags (pick 1-2 from 16 options)
+    .personality       string   — Free-text personality description
+    .lifepath          string   — Free-text life history / background
+
+CYBERDECK:  (PHB Table P35 p.153: computers; Table P37 p.162: programs)
+  .deck
+    .computer          string   — Computer name (e.g., "Data Slate")
+    .processor         string   — Processor quality ("M"/"O"/"G"/"A")
+    .programs          array    — Array of { name: string, quality: string }
+
+
+================================================================================
+QUICK REFERENCE: Common operations for maintainers
+================================================================================
+
+TO ADD A NEW PERK/FLAW/CYBERTECH:
+  1. Add entry to datafiles/fx_database.json
+  2. No code changes needed. apply_fx_modifiers() handles it.
+
+TO ADD A NEW WEAPON/ARMOR/GEAR:
+  1. Add entry to datafiles/equipment.json
+  2. No code changes needed. Equipment tab reads it automatically.
+
+TO ADD A NEW SKILL:
+  1. Add to datafiles/skills.json (under the appropriate broad skill)
+  2. If it needs special keyword categories, update datafiles/keyword_tree.json
+
+TO ADD A NEW SPECIES:
+  1. Add to datafiles/species.json
+  2. Update SPECIES enum in scr_chargen.gml (add before COUNT)
+
+TO ADD A NEW TAB:
+  1. Add draw_tab_xxx() in scr_draw_tabs.gml
+  2. Add handle_tab_xxx() in scr_tab_handlers.gml
+  3. Add dispatch in Draw_64 (line ~479) and Step_0 (line ~341)
+  4. Increment _num_tabs and add tab name in Draw_64 (line ~288)
+
+TO ADD A NEW CHANGELOG ENTRY:
+  1. Add to top of entries[] in datafiles/changelog.json
+
+TO MODIFY THE ROLL PIPELINE:
+  All checks flow through meta_roll() (line 474 of scr_ui_helpers.gml).
+  Hook into apply_fx_modifiers() for new modifier types.
+
+CRITICAL INVARIANT:
+  After ANY modification to hero data, call update_hero(hero).
+  Forgetting this causes stale derived values (skill scores, durability, portrait).
+
+================================================================================
+PHB & GMG PAGE REFERENCE INDEX
+================================================================================
+
+Where the rules live in the source books (Alternity, TSR, 1998):
+
+PLAYER'S HANDBOOK (PHB):
+  p.13        Situation Die Steps Scale (14-step bonus/penalty system)
+  p.21        Complete Hero Creation Process (the 10-step checklist)
+  pp.21-31    Species: Human(31), Fraal(23), Weren(29), Sesheyan(27), T'sa(28), Mechalus(25)
+  p.30        Table P1 — Profession Requirements (ability minimums)
+  pp.31-33    Profession benefits: Combat Spec(31), Diplomat(32), Free Agent(32), Tech Op(33), Mindwalker(33)
+  p.33        Table P2 — Resistance Modifiers (ability/2 - 5)
+  p.34        Table P3 — Ability Score Limits by Species
+  p.35        Table P4 — Free Broad Skills for Heroes (by species)
+  p.35        Table P5 — Hero Starting Skill Points (by profession)
+  p.38        Table P7 — Actions Per Round (action check → initiative phases)
+  p.40        Table P9 — Strength and Damage (melee damage bonus)
+  pp.40-41    How to Record Durability (stun/wound/mortal from CON)
+  p.46        Progress Levels sidebar (PL 0-8 technology tiers)
+  p.49        Full Situation Die Steps Chart (the definitive 14-step scale)
+  p.55        Stun Recovery / Armor absorption rules
+  p.63        Table P16 — Situation Die Modifiers for Skill Checks
+  pp.63-64    Table P18 — Skill List with Base Situation Dice (cost tiers)
+  pp.65-66    Tables P18/P19 — Full skill list by ability (STR/DEX/INT/WIL/PER)
+  p.68        Table P20 — Accuracy by Range (short/medium/long)
+  pp.104-107  Table P26 — Perks (22 perks with costs and effects)
+  pp.108-111  Table P27 — Flaws (20 flaws with benefits and effects)
+  pp.128-130  Tables P28/P29 — Achievement Levels and Benefits (careers)
+  p.132       Table P32 — Progress Levels (PL 0 through PL 8)
+  pp.135-137  Table P33 — Personal Equipment (7 categories)
+  p.153       Table P35 — Computers by Progress Level
+  p.162       Table P37 — Computer Programs
+  pp.173-174  Table P38 — Melee Weapons
+  pp.177-178  Table P39 — Ranged Weapons
+  pp.183-184  Table P40 — Heavy Weapons
+  p.189       Table P41 — Armor
+  p.229       Table P52 — Psionic Skills
+  pp.241-245  Table P53 — Cybernetic Gear (with sizes, prereqs, tolerance)
+
+GAMEMASTER GUIDE (GMG):
+  pp.49-50    Supporting Cast Action Checks & Teamwork
+  p.84        Acquiring New Perks / Getting Rid of Flaws
+  p.90        Nonprofessional Supporting Character Skills and Salaries
+  p.97        Supporting Character Templates (overview + design guidance)
+  pp.97-100   14 NPC Templates: Administrator(97), Bartender(97-98), Brawler(98),
+              Corporate Executive(98), Doctor(98-99), Laborer(99),
+              Military Officer(99), Law Enforcer(99), Reporter(99-100),
+              Scientist(100), Soldier(100), Spy(100) + more
+  p.255       Supporting Cast Statistical Form (annotated example)
+
+TABLES CROSS-REFERENCE (Table # → what it governs → where used in code):
+  P1  → Profession reqs       → scr_chargen: get_profession_requirements()
+  P2  → Resistance mods       → scr_alternity_statblock: set_ability()
+  P3  → Species ability limits → scr_chargen: generate_random_character()
+  P4  → Free broad skills     → scr_chargen: get_species_starting_broads()
+  P5  → Starting skill points → scr_skill_costs: get_starting_skill_points()
+  P7  → Actions per round     → scr_alternity_statblock: calculate_action_check()
+  P18 → Skill costs/list      → scr_skill_costs: get_broad_cost/get_spec_base
+  P20 → Range accuracy        → scr_alternity_statblock: get_range_penalty()
+  P26 → Perks                 → fx_database.json (type: "perk")
+  P27 → Flaws                 → fx_database.json (type: "flaw")
+  P32 → Progress levels       → Draw_64/Step_0: campaign_pl filter
+  P33 → Personal equipment    → equipment.json (gear section)
+  P35 → Computers             → programs.json (computers section)
+  P37 → Grid programs         → programs.json (programs section)
+  P38 → Melee weapons         → equipment.json (weapons, type: "melee")
+  P39 → Ranged weapons        → equipment.json (weapons, type: "ranged")
+  P40 → Heavy weapons         → equipment.json (weapons, type: "heavy")
+  P41 → Armor                 → equipment.json (armor section)
+  P52 → Psionic skills        → skills.json (psionic broad skills)
+  P53 → Cybertech             → fx_database.json (type: "cybertech")
+
+================================================================================
+END OF REFERENCE
+================================================================================

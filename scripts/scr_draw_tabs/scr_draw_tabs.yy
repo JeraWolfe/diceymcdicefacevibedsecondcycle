@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_draw_tabs",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_draw_tabs",
+  "parent":{
+    "name":"diceymcdicefacevibed22",
+    "path":"diceymcdicefacevibed22.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

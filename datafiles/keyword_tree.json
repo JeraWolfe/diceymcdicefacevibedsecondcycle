@@ -1,0 +1,1031 @@
+{
+  "weapon_skills":{
+    "smg":{
+      "broad":"Modern Ranged Weapons",
+      "spec":"SMG"
+    },
+    "bow":{
+      "broad":"Primitive Ranged Weapons",
+      "spec":"Bow"
+    },
+    "crossbow":{
+      "broad":"Primitive Ranged Weapons",
+      "spec":"Crossbow"
+    },
+    "sling":{
+      "broad":"Primitive Ranged Weapons",
+      "spec":"Sling"
+    },
+    "flintlock":{
+      "broad":"Primitive Ranged Weapons",
+      "spec":"Flintlock"
+    },
+    "blade":{
+      "broad":"Melee Weapons",
+      "spec":"Blade"
+    },
+    "bludgeon":{
+      "broad":"Melee Weapons",
+      "spec":"Bludgeon"
+    },
+    "brawl":{
+      "broad":"Unarmed Attack",
+      "spec":"Brawl"
+    },
+    "powered weapon":{
+      "broad":"Melee Weapons",
+      "spec":"Powered weapon"
+    },
+    "throw":{
+      "broad":"Athletics",
+      "spec":"Throw"
+    },
+    "power martial arts":{
+      "broad":"Unarmed Attack",
+      "spec":"Power martial arts"
+    },
+    "direct fire":{
+      "broad":"Heavy Weapons",
+      "spec":"Direct fire"
+    },
+    "indirect fire":{
+      "broad":"Heavy Weapons",
+      "spec":"Indirect fire"
+    },
+    "combat armor":{
+      "broad":"Heavy Weapons",
+      "spec":"Combat armor"
+    },
+    "powered armor":{
+      "broad":"Heavy Weapons",
+      "spec":"Powered armor"
+    },
+    "pistol":{
+      "broad":"Modern Ranged Weapons",
+      "spec":"Pistol"
+    },
+    "rifle":{
+      "broad":"Modern Ranged Weapons",
+      "spec":"Rifle"
+    }
+  },
+  "broads":{
+    "Vehicle Operation":{
+      "categories":[
+        "vehicle"
+      ],
+      "ability":"dex"
+    },
+    "Telekinesis":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil"
+    },
+    "ESP":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil"
+    },
+    "Biokinesis":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"con"
+    },
+    "Interaction":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per"
+    },
+    "Leadership":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per"
+    },
+    "Entertainment":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per"
+    },
+    "Deception":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per"
+    },
+    "Culture":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per"
+    },
+    "Navigation":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int"
+    },
+    "Awareness":{
+      "categories":[
+        "awareness"
+      ],
+      "ability":"wil"
+    },
+    "Investigate":{
+      "categories":[
+        "awareness",
+        "investigate"
+      ],
+      "ability":"wil"
+    },
+    "Athletics":{
+      "categories":[
+        "physical"
+      ],
+      "ability":"str"
+    },
+    "Stamina":{
+      "categories":[
+        "endurance"
+      ],
+      "ability":"con"
+    },
+    "Primitive Ranged Weapons":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"dex"
+    },
+    "Resolve":{
+      "categories":[
+        "resolve"
+      ],
+      "ability":"wil"
+    },
+    "System Operation":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int"
+    },
+    "Acrobatics":{
+      "categories":[
+        "acrobatics"
+      ],
+      "ability":"dex"
+    },
+    "Melee Weapons":{
+      "categories":[
+        "combat",
+        "melee"
+      ],
+      "ability":"str"
+    },
+    "Physical Science":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int"
+    },
+    "Manipulation":{
+      "categories":[
+        "manipulation"
+      ],
+      "ability":"dex"
+    },
+    "Life Science":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int"
+    },
+    "Stealth":{
+      "categories":[
+        "stealth"
+      ],
+      "ability":"dex"
+    },
+    "Business":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int"
+    },
+    "Demolitions":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int"
+    },
+    "Knowledge":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int"
+    },
+    "Law":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int"
+    },
+    "Unarmed Attack":{
+      "categories":[
+        "combat",
+        "melee"
+      ],
+      "ability":"str"
+    },
+    "Tactics":{
+      "categories":[
+        "combat",
+        "tactics"
+      ],
+      "ability":"int"
+    },
+    "Medical Science":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int"
+    },
+    "Heavy Weapons":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"str"
+    },
+    "Technical Science":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int"
+    },
+    "Modern Ranged Weapons":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"dex"
+    },
+    "Telepathy":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil"
+    }
+  },
+  "_description":"Master keyword tree auto-generated from skill tree. Maps skills to categories, weapons to skills, and abilities to full names.",
+  "_version":1.0,
+  "skills":{
+    "Climb":{
+      "categories":[
+        "physical"
+      ],
+      "ability":"str",
+      "broad":"Athletics"
+    },
+    "Jump":{
+      "categories":[
+        "physical"
+      ],
+      "ability":"str",
+      "broad":"Athletics"
+    },
+    "Throw":{
+      "categories":[
+        "physical"
+      ],
+      "ability":"str",
+      "broad":"Athletics"
+    },
+    "Blade":{
+      "categories":[
+        "combat",
+        "melee"
+      ],
+      "ability":"str",
+      "broad":"Melee Weapons"
+    },
+    "Powered weapon":{
+      "categories":[
+        "combat",
+        "melee"
+      ],
+      "ability":"str",
+      "broad":"Melee Weapons"
+    },
+    "Brawl":{
+      "categories":[
+        "combat",
+        "melee"
+      ],
+      "ability":"str",
+      "broad":"Unarmed Attack"
+    },
+    "Lockpick":{
+      "categories":[
+        "manipulation"
+      ],
+      "ability":"dex",
+      "broad":"Manipulation"
+    },
+    "Pickpocket":{
+      "categories":[
+        "manipulation"
+      ],
+      "ability":"dex",
+      "broad":"Manipulation"
+    },
+    "Power martial arts":{
+      "categories":[
+        "combat",
+        "melee"
+      ],
+      "ability":"str",
+      "broad":"Unarmed Attack"
+    },
+    "Bow":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"dex",
+      "broad":"Primitive Ranged Weapons"
+    },
+    "Crossbow":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"dex",
+      "broad":"Primitive Ranged Weapons"
+    },
+    "Corporate":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int",
+      "broad":"Business"
+    },
+    "Small business":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int",
+      "broad":"Business"
+    },
+    "Set explosives":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Demolitions"
+    },
+    "Disarm explosives":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Demolitions"
+    },
+    "Direct fire":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"str",
+      "broad":"Heavy Weapons"
+    },
+    "Streetwise":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int",
+      "broad":"Law"
+    },
+    "Indirect fire":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"str",
+      "broad":"Heavy Weapons"
+    },
+    "Biology":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Life Science"
+    },
+    "Botany":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Life Science"
+    },
+    "Genetics":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Life Science"
+    },
+    "Xenobiology":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Life Science"
+    },
+    "Zoology":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Life Science"
+    },
+    "Dodge":{
+      "categories":[
+        "acrobatics"
+      ],
+      "ability":"dex",
+      "broad":"Acrobatics"
+    },
+    "Drivespace astrogation":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Navigation"
+    },
+    "Surface navigation":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Navigation"
+    },
+    "System astrogation":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Navigation"
+    },
+    "Movie stunts":{
+      "categories":[
+        "acrobatics"
+      ],
+      "ability":"dex",
+      "broad":"Acrobatics"
+    },
+    "Astronomy":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Physical Science"
+    },
+    "Chemistry":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Physical Science"
+    },
+    "Zero-G training":{
+      "categories":[
+        "acrobatics"
+      ],
+      "ability":"dex",
+      "broad":"Acrobatics"
+    },
+    "Physics":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Physical Science"
+    },
+    "Planetology":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Physical Science"
+    },
+    "Communications":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"System Operation"
+    },
+    "Defense":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"System Operation"
+    },
+    "Pistol":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"dex",
+      "broad":"Modern Ranged Weapons"
+    },
+    "Engineering":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"System Operation"
+    },
+    "Sensors":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"System Operation"
+    },
+    "Rifle":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"dex",
+      "broad":"Modern Ranged Weapons"
+    },
+    "Weapons":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"System Operation"
+    },
+    "Infantry":{
+      "categories":[
+        "combat",
+        "tactics"
+      ],
+      "ability":"int",
+      "broad":"Tactics"
+    },
+    "SMG":{
+      "categories":[
+        "combat",
+        "ranged"
+      ],
+      "ability":"dex",
+      "broad":"Modern Ranged Weapons"
+    },
+    "Vehicle":{
+      "categories":[
+        "combat",
+        "tactics"
+      ],
+      "ability":"int",
+      "broad":"Tactics"
+    },
+    "Search":{
+      "categories":[
+        "awareness",
+        "investigate"
+      ],
+      "ability":"wil",
+      "broad":"Investigate"
+    },
+    "Track":{
+      "categories":[
+        "awareness",
+        "investigate"
+      ],
+      "ability":"wil",
+      "broad":"Investigate"
+    },
+    "Diplomacy":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Culture"
+    },
+    "Hide":{
+      "categories":[
+        "stealth"
+      ],
+      "ability":"dex",
+      "broad":"Stealth"
+    },
+    "Etiquette":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Culture"
+    },
+    "First encounter":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Culture"
+    },
+    "Sneak":{
+      "categories":[
+        "stealth"
+      ],
+      "ability":"dex",
+      "broad":"Stealth"
+    },
+    "Bluff":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Deception"
+    },
+    "Gamble":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Deception"
+    },
+    "Shadow":{
+      "categories":[
+        "stealth"
+      ],
+      "ability":"dex",
+      "broad":"Stealth"
+    },
+    "Act":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Entertainment"
+    },
+    "Dance":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Entertainment"
+    },
+    "Music":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Entertainment"
+    },
+    "Sing":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Entertainment"
+    },
+    "Land vehicle":{
+      "categories":[
+        "vehicle"
+      ],
+      "ability":"dex",
+      "broad":"Vehicle Operation"
+    },
+    "Air vehicle":{
+      "categories":[
+        "vehicle"
+      ],
+      "ability":"dex",
+      "broad":"Vehicle Operation"
+    },
+    "Space vehicle":{
+      "categories":[
+        "vehicle"
+      ],
+      "ability":"dex",
+      "broad":"Vehicle Operation"
+    },
+    "Water vehicle":{
+      "categories":[
+        "vehicle"
+      ],
+      "ability":"dex",
+      "broad":"Vehicle Operation"
+    },
+    "Endurance":{
+      "categories":[
+        "endurance"
+      ],
+      "ability":"con",
+      "broad":"Stamina"
+    },
+    "Resist pain":{
+      "categories":[
+        "endurance"
+      ],
+      "ability":"con",
+      "broad":"Stamina"
+    },
+    "Computer operation":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int",
+      "broad":"Knowledge"
+    },
+    "Deduce":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int",
+      "broad":"Knowledge"
+    },
+    "First aid":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int",
+      "broad":"Knowledge"
+    },
+    "Language":{
+      "categories":[
+        "knowledge"
+      ],
+      "ability":"int",
+      "broad":"Knowledge"
+    },
+    "Medical knowledge":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Medical Science"
+    },
+    "Surgery":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Medical Science"
+    },
+    "Xenomedicine":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Medical Science"
+    },
+    "Juryrig":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Technical Science"
+    },
+    "Repair":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Technical Science"
+    },
+    "Invention":{
+      "categories":[
+        "tech"
+      ],
+      "ability":"int",
+      "broad":"Technical Science"
+    },
+    "Intuition":{
+      "categories":[
+        "awareness"
+      ],
+      "ability":"wil",
+      "broad":"Awareness"
+    },
+    "Perception":{
+      "categories":[
+        "awareness"
+      ],
+      "ability":"wil",
+      "broad":"Awareness"
+    },
+    "Mental resolve":{
+      "categories":[
+        "resolve"
+      ],
+      "ability":"wil",
+      "broad":"Resolve"
+    },
+    "Physical resolve":{
+      "categories":[
+        "resolve"
+      ],
+      "ability":"wil",
+      "broad":"Resolve"
+    },
+    "Bargain":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Interaction"
+    },
+    "Charm":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Interaction"
+    },
+    "Intimidate":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Interaction"
+    },
+    "Seduce":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Interaction"
+    },
+    "Command":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Leadership"
+    },
+    "Inspire":{
+      "categories":[
+        "social"
+      ],
+      "ability":"per",
+      "broad":"Leadership"
+    },
+    "Contact":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"Telepathy"
+    },
+    "Mind blast":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"Telepathy"
+    },
+    "Mind reading":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"Telepathy"
+    },
+    "Mind shield":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"Telepathy"
+    },
+    "Illusion":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"Telepathy"
+    },
+    "Suggest":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"Telepathy"
+    },
+    "Levitate":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"Telekinesis"
+    },
+    "Telekinetic strike":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"Telekinesis"
+    },
+    "Kinetic shield":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"Telekinesis"
+    },
+    "Empathy":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"ESP"
+    },
+    "Clairaudience":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"ESP"
+    },
+    "Clairvoyance":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"ESP"
+    },
+    "Precognition":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"ESP"
+    },
+    "Psychometry":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"wil",
+      "broad":"ESP"
+    },
+    "Bioshift":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"con",
+      "broad":"Biokinesis"
+    },
+    "Body armor":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"con",
+      "broad":"Biokinesis"
+    },
+    "Heal":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"con",
+      "broad":"Biokinesis"
+    },
+    "Harm":{
+      "categories":[
+        "psionic"
+      ],
+      "ability":"con",
+      "broad":"Biokinesis"
+    }
+  },
+  "abilities":{
+    "wil":{
+      "full":"Will"
+    },
+    "per":{
+      "full":"Personality"
+    },
+    "str":{
+      "full":"Strength"
+    },
+    "dex":{
+      "full":"Dexterity"
+    },
+    "con":{
+      "full":"Constitution"
+    },
+    "int":{
+      "full":"Intelligence"
+    }
+  }
+}

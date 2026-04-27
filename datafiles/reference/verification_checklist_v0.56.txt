@@ -1,0 +1,1010 @@
+================================================================================
+  DiceyMcDiceFaces v0.56 — Post-Refactor Ship Test Verification Checklist
+  Tester: _______________  Date: _______________
+================================================================================
+
+INSTRUCTIONS: Open diceymcdicefacevibed.yyp in GameMaker 2024. Press F5.
+Test every item. Mark PASS or FAIL. Write notes in ACTUAL for any failure.
+This is the full post-refactor verification — every feature, every tab, every
+interaction. Nothing ships until this is green.
+
+================================================================================
+SECTION 1: WELCOME SCREEN
+================================================================================
+
+[ ] 1.01  Continue button loads last-played character.
+         EXPECTED: Character sheet appears with correct name, stats, skills.
+         ACTUAL: _______________
+
+[ ] 1.02  Continue button with no previous character (first launch / cleared).
+         EXPECTED: Graceful fallback — either opens chargen or shows message.
+         Does NOT crash.
+         ACTUAL: _______________
+
+[ ] 1.03  New button opens character generation screen.
+         EXPECTED: Chargen UI appears with species/profession selectors.
+         ACTUAL: _______________
+
+[ ] 1.04  Load button opens file dialog for importing a character JSON.
+         EXPECTED: OS file picker appears. Selecting a valid .json loads it.
+         ACTUAL: _______________
+
+[ ] 1.05  Load button — cancel the file dialog without selecting anything.
+         EXPECTED: Returns to welcome screen. No crash.
+         ACTUAL: _______________
+
+[ ] 1.06  Load button — select an invalid/corrupted file.
+         EXPECTED: Error handled gracefully. No crash.
+         ACTUAL: _______________
+
+[ ] 1.07  Recent characters list shows previously saved characters.
+         EXPECTED: Names visible. List is populated if characters/ has files.
+         ACTUAL: _______________
+
+[ ] 1.08  Click a character in the recent characters list.
+         EXPECTED: That character loads. Sheet displays correct data.
+         ACTUAL: _______________
+
+[ ] 1.09  Settings/Accessibility button is visible and clickable.
+         EXPECTED: Settings panel opens. Options are interactive.
+         ACTUAL: _______________
+
+[ ] 1.10  GM Mode toggle on welcome screen.
+         EXPECTED: Toggles gm_mode. Entering the app goes to GM tools screen.
+         ACTUAL: _______________
+
+[ ] 1.11  Exit button.
+         EXPECTED: Application closes cleanly. No hang, no crash.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 2: CHARACTER GENERATION
+================================================================================
+
+[ ] 2.01  Generate character — Combat Specialist profession.
+         EXPECTED: Character created. STR >= 9 and CON >= 9 (PHB Table P1).
+         Stats total 60. Combat stats weighted higher.
+         ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 2.02  Generate character — Diplomat profession (no secondary).
+         EXPECTED: INT >= 9 and WIL >= 9. Stats total 60.
+         ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 2.03  Generate character — Free Agent profession.
+         EXPECTED: DEX >= 9 and INT >= 9. Stats total 60.
+         ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 2.04  Generate character — Tech Op profession.
+         EXPECTED: INT >= 11 and DEX >= 9. Stats total 60.
+         ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 2.05  Generate character — Mindwalker profession.
+         EXPECTED: WIL >= 11 and PER >= 9. Stats total 60.
+         ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 2.06  Diplomat + Combat Spec secondary.
+         EXPECTED: STR >= 9, CON >= 9 (Combat Spec reqs) AND
+         INT >= 9, WIL >= 9 (Diplomat reqs). Stats total 60.
+         ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 2.07  Diplomat + Free Agent secondary.
+         EXPECTED: DEX >= 9, INT >= 9 (Free Agent reqs) AND
+         INT >= 9, WIL >= 9 (Diplomat reqs). Stats total 60.
+         ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 2.08  Diplomat + Tech Op secondary.
+         EXPECTED: INT >= 11, DEX >= 9 (Tech Op reqs) AND
+         INT >= 9, WIL >= 9 (Diplomat reqs). Stats total 60.
+         ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 2.09  Diplomat + Mindwalker secondary.
+         EXPECTED: WIL >= 11, PER >= 9 (Mindwalker reqs) AND
+         INT >= 9, WIL >= 9 (Diplomat reqs). Stats total 60.
+         ACTUAL: STR=___ DEX=___ CON=___ INT=___ WIL=___ PER=___
+
+[ ] 2.10  Generate 10 characters of each profession. Verify all meet reqs.
+         EXPECTED: 100% pass rate on stat requirements and 60-point budget.
+         ACTUAL: _______________
+
+[ ] 2.11  Species selection — Human.
+         EXPECTED: Character created with Human species traits.
+         ACTUAL: _______________
+
+[ ] 2.12  Species selection — Fraal.
+         EXPECTED: Character created with Fraal species traits.
+         ACTUAL: _______________
+
+[ ] 2.13  Species selection — Sesheyan.
+         EXPECTED: Character created with Sesheyan species traits.
+         ACTUAL: _______________
+
+[ ] 2.14  Species selection — T'sa.
+         EXPECTED: Character created with T'sa species traits.
+         ACTUAL: _______________
+
+[ ] 2.15  Species selection — Weren.
+         EXPECTED: Character created with Weren species traits.
+         ACTUAL: _______________
+
+[ ] 2.16  Species selection — Mechalus.
+         EXPECTED: Character created with Mechalus species traits.
+         ACTUAL: _______________
+
+[ ] 2.17  Career selection applies starting skills/equipment.
+         EXPECTED: Character has career-appropriate skills after generation.
+         ACTUAL: _______________
+
+[ ] 2.18  Verify weighted stat distribution — profession primary stats are
+         noticeably higher on average across 10+ generated characters.
+         EXPECTED: Primary stats consistently higher than non-primary stats.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 3: CHARACTER TAB (Tab 0)
+================================================================================
+
+[ ] 3.01  Click STR stat group button.
+         EXPECTED: Skill list filters to show only STR-based owned skills.
+         Button visually selected.
+         ACTUAL: _______________
+
+[ ] 3.02  Click DEX stat group button.
+         EXPECTED: Skill list filters to DEX-based owned skills.
+         ACTUAL: _______________
+
+[ ] 3.03  Click CON stat group button.
+         EXPECTED: Skill list filters to CON-based owned skills.
+         ACTUAL: _______________
+
+[ ] 3.04  Click INT stat group button.
+         EXPECTED: Skill list filters to INT-based owned skills.
+         ACTUAL: _______________
+
+[ ] 3.05  Click WIL stat group button.
+         EXPECTED: Skill list filters to WIL-based owned skills.
+         ACTUAL: _______________
+
+[ ] 3.06  Click PER stat group button.
+         EXPECTED: Skill list filters to PER-based owned skills.
+         ACTUAL: _______________
+
+[ ] 3.07  Stat "+" button on a stat group.
+         EXPECTED: Stat increases by 1. update_hero fires. Derived values
+         recalculate (action check, durability, skill scores).
+         ACTUAL: _______________
+
+[ ] 3.08  Stat "-" button on a stat group.
+         EXPECTED: Stat decreases by 1. update_hero fires. Derived values
+         recalculate.
+         ACTUAL: _______________
+
+[ ] 3.09  Skill list shows ONLY owned skills for the active stat group.
+         EXPECTED: No skills from other stat groups bleed through.
+         ACTUAL: _______________
+
+[ ] 3.10  Skill "+" button — rank 0 specialty.
+         EXPECTED: Rank goes to 1. Skill points decrease.
+         ACTUAL: _______________
+
+[ ] 3.11  Skill "+" button — rank 1 to 2 to 3 progression.
+         EXPECTED: Clean rank increase each click.
+         ACTUAL: _______________
+
+[ ] 3.12  Skill "+" button at rank 3 (cap).
+         EXPECTED: Nothing happens. Rank stays 3. No error in output.
+         ACTUAL: _______________
+
+[ ] 3.13  Skill "-" button — rank 3 to 2 to 1 to 0.
+         EXPECTED: Clean rank decrease each click.
+         ACTUAL: _______________
+
+[ ] 3.14  Skill "-" button at rank 0 (specialty).
+         EXPECTED: Specialty removed from owned list.
+         ACTUAL: _______________
+
+[ ] 3.15  Skill "-" button on a broad skill.
+         EXPECTED: Broad skill AND all its specialties removed immediately.
+         ACTUAL: _______________
+
+[ ] 3.16  Skill points display updates after every +/- click.
+         EXPECTED: "Pts: X/Y" reflects change immediately.
+         ACTUAL: _______________
+
+[ ] 3.17  Add/Browse button opens skill browser filtered by active stat.
+         EXPECTED: Browser shows skills for the currently selected stat group.
+         ACTUAL: _______________
+
+[ ] 3.18  Add/Browse — switch stat group inside the browser.
+         EXPECTED: Available skills list changes to match new stat group.
+         ACTUAL: _______________
+
+[ ] 3.19  Add/Browse — add a skill from the browser.
+         EXPECTED: Skill appears in owned list. Points update.
+         ACTUAL: _______________
+
+[ ] 3.20  Add/Browse — remove a skill (X button) from the browser.
+         EXPECTED: Skill removed. Points refunded. List refreshes.
+         ACTUAL: _______________
+
+[ ] 3.21  Add/Browse — skill points display visible in browser header.
+         EXPECTED: "Pts: X/Y" shown and matches main view.
+         ACTUAL: _______________
+
+[ ] 3.22  Active Perks & Flaws toggles visible on Character tab.
+         EXPECTED: Active FX listed. Toggles functional.
+         ACTUAL: _______________
+
+[ ] 3.23  Untrained check — select a stat, click roll for untrained skill.
+         EXPECTED: Roll uses single stat (no skill score). Result logged.
+         ACTUAL: _______________
+
+[ ] 3.24  Scroll up/down on skill list.
+         EXPECTED: Smooth scrolling. No visual glitches. Click targets
+         stay aligned after scrolling.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 4: EQUIPMENT TAB (Tab 1)
+================================================================================
+
+[ ] 4.01  Weapons sub-tab displays.
+         EXPECTED: Weapons sub-tab visible and selectable.
+         ACTUAL: _______________
+
+[ ] 4.02  Armor sub-tab displays.
+         EXPECTED: Armor sub-tab visible and selectable.
+         ACTUAL: _______________
+
+[ ] 4.03  Gear sub-tab displays.
+         EXPECTED: Gear sub-tab visible and selectable.
+         ACTUAL: _______________
+
+[ ] 4.04  PL filter — shows only items matching the displayed PL.
+         EXPECTED: PL 6 filter shows ONLY PL 6 items. Not PL 5, not PL 7.
+         Exact match.
+         ACTUAL: _______________
+
+[ ] 4.05  PL "<" button.
+         EXPECTED: Decreases displayed PL. Catalog updates to show items
+         at the new PL.
+         ACTUAL: _______________
+
+[ ] 4.06  PL ">" button.
+         EXPECTED: Increases displayed PL. Catalog updates.
+         ACTUAL: _______________
+
+[ ] 4.07  Add weapon from catalog — expand entry, click add.
+         EXPECTED: Weapon appears in owned inventory. Catalog refreshes.
+         ACTUAL: _______________
+
+[ ] 4.08  Remove weapon — click X button on owned weapon.
+         EXPECTED: Weapon removed from inventory.
+         ACTUAL: _______________
+
+[ ] 4.09  Add/set armor from catalog.
+         EXPECTED: Armor equipped. Stats reflected in durability/combat.
+         ACTUAL: _______________
+
+[ ] 4.10  Add gear from catalog.
+         EXPECTED: Gear item appears in owned inventory.
+         ACTUAL: _______________
+
+[ ] 4.11  Remove gear — click X button.
+         EXPECTED: Gear removed from inventory.
+         ACTUAL: _______________
+
+[ ] 4.12  Owned inventory shows ALL items regardless of current PL filter.
+         EXPECTED: Changing PL filter does NOT hide owned items. Only
+         the catalog/available items filter by PL.
+         ACTUAL: _______________
+
+[ ] 4.13  Inspect highlight on hover over equipment entries.
+         EXPECTED: Hovering highlights the row/entry visually.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 5: COMBAT TAB (Tab 2)
+================================================================================
+
+[ ] 5.01  Quick roll — Senses (Awareness).
+         EXPECTED: Roll fires. Result displayed. Logged to roll log.
+         ACTUAL: _______________
+
+[ ] 5.02  Quick roll — Mental Resolve.
+         EXPECTED: Roll fires. Result displayed. Logged.
+         ACTUAL: _______________
+
+[ ] 5.03  Quick roll — Physical Resolve (Stamina).
+         EXPECTED: Roll fires. Result displayed. Logged.
+         ACTUAL: _______________
+
+[ ] 5.04  Quick roll — Initiative.
+         EXPECTED: Roll fires. Phase result displayed. Logged.
+         ACTUAL: _______________
+
+[ ] 5.05  Weapon attack roll — respects situation die setting.
+         Set situation die to -1 (bonus). Roll weapon attack.
+         EXPECTED: Roll uses -d4 as base situation die.
+         Roll log shows "Player Set-1" modifier.
+         ACTUAL: _______________
+
+[ ] 5.06  Weapon attack roll — situation die at +2 (penalty).
+         EXPECTED: Roll uses +d8 equivalent. Auto-mods on top.
+         ACTUAL: _______________
+
+[ ] 5.07  Weapon attack roll — situation die at neutral (0).
+         EXPECTED: Only auto-mods (training, FX, wounds) affect the die.
+         ACTUAL: _______________
+
+[ ] 5.08  Damage roll — ordinary result.
+         EXPECTED: Correct damage for ordinary hit.
+         ACTUAL: _______________
+
+[ ] 5.09  Damage roll — good result.
+         EXPECTED: Correct damage for good hit.
+         ACTUAL: _______________
+
+[ ] 5.10  Damage roll — amazing result.
+         EXPECTED: Correct damage for amazing hit.
+         ACTUAL: _______________
+
+[ ] 5.11  Hit damage follow-up roll.
+         EXPECTED: Damage applied/tracked correctly after a hit.
+         ACTUAL: _______________
+
+[ ] 5.12  Punch roll.
+         EXPECTED: Unarmed attack roll fires. Uses LI/O damage. Logged.
+         ACTUAL: _______________
+
+[ ] 5.13  Kick roll.
+         EXPECTED: Unarmed attack roll fires. Uses LI/O damage. Logged.
+         ACTUAL: _______________
+
+[ ] 5.14  Punch/Kick with non-neutral situation die.
+         EXPECTED: Situation die respected on unarmed rolls.
+         ACTUAL: _______________
+
+[ ] 5.15  Dodge defensive roll.
+         EXPECTED: Roll fires with correct modifiers. Logged.
+         ACTUAL: _______________
+
+[ ] 5.16  Power Martial Arts defensive roll.
+         EXPECTED: Roll fires with correct modifiers. Logged.
+         ACTUAL: _______________
+
+[ ] 5.17  Feat check — STR.
+         EXPECTED: Strength feat roll fires. Result displayed. Logged.
+         ACTUAL: _______________
+
+[ ] 5.18  Feat check — DEX.
+         EXPECTED: Dexterity feat roll fires. Logged.
+         ACTUAL: _______________
+
+[ ] 5.19  Feat check — CON.
+         EXPECTED: Constitution feat roll fires. Logged.
+         ACTUAL: _______________
+
+[ ] 5.20  Feat check — INT.
+         EXPECTED: Intelligence feat roll fires. Logged.
+         ACTUAL: _______________
+
+[ ] 5.21  Feat check — WIL.
+         EXPECTED: Will feat roll fires. Logged.
+         ACTUAL: _______________
+
+[ ] 5.22  Feat check — PER.
+         EXPECTED: Personality feat roll fires. Logged.
+         ACTUAL: _______________
+
+[ ] 5.23  Feat checks with non-neutral situation die.
+         EXPECTED: All 6 feat checks respect the player's situation die.
+         ACTUAL: _______________
+
+[ ] 5.24  Wound penalty toggle — enable.
+         EXPECTED: Wound modifier applied to subsequent rolls. Visual
+         indicator shows wound penalty is active.
+         ACTUAL: _______________
+
+[ ] 5.25  Wound penalty toggle — disable.
+         EXPECTED: Wound modifier removed from rolls.
+         ACTUAL: _______________
+
+[ ] 5.26  Can't Fail toggle — enable.
+         EXPECTED: Can't Fail rule applied (minimum result = Ordinary).
+         ACTUAL: _______________
+
+[ ] 5.27  Can't Fail toggle — disable.
+         EXPECTED: Normal failure possible again.
+         ACTUAL: _______________
+
+[ ] 5.28  Range selector — Short range.
+         EXPECTED: Short range modifier applied to weapon rolls.
+         ACTUAL: _______________
+
+[ ] 5.29  Range selector — Medium range.
+         EXPECTED: Medium range modifier applied.
+         ACTUAL: _______________
+
+[ ] 5.30  Range selector — Long range.
+         EXPECTED: Long range modifier applied.
+         ACTUAL: _______________
+
+[ ] 5.31  Initiative roll with phase tracking.
+         EXPECTED: Initiative rolled. Phase number assigned. Phase
+         display updates.
+         ACTUAL: _______________
+
+[ ] 5.32  Action placement in phases.
+         EXPECTED: Actions can be assigned to specific phases.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 6: PSIONICS TAB (Tab 3)
+================================================================================
+
+[ ] 6.01  Broad psionic skill roll.
+         EXPECTED: Roll fires using broad psionic skill score. Logged.
+         ACTUAL: _______________
+
+[ ] 6.02  Specialty psionic skill roll.
+         EXPECTED: Roll fires using specialty psionic skill score. Logged.
+         ACTUAL: _______________
+
+[ ] 6.03  Psionic roll with non-neutral situation die.
+         EXPECTED: Situation die respected on psionic rolls.
+         ACTUAL: _______________
+
+[ ] 6.04  Wound penalty toggle on Psionics tab.
+         EXPECTED: Wound modifier applied to psionic rolls when enabled.
+         ACTUAL: _______________
+
+[ ] 6.05  Can't Fail toggle on Psionics tab.
+         EXPECTED: Can't Fail rule applied to psionic rolls when enabled.
+         ACTUAL: _______________
+
+[ ] 6.06  Psionics tab displays disciplines list correctly.
+         EXPECTED: Psionic skills grouped by discipline. No blank/empty
+         list. (Regression: was blank in pre-refactor builds.)
+         ACTUAL: _______________
+
+================================================================================
+SECTION 7: PERKS & FLAWS (Tab 4)
+================================================================================
+
+[ ] 7.01  Switch to Perks view.
+         EXPECTED: Available perks list displayed. "Your" section shows
+         owned perks.
+         ACTUAL: _______________
+
+[ ] 7.02  Switch to Flaws view.
+         EXPECTED: Available flaws list displayed. "Your" section shows
+         owned flaws.
+         ACTUAL: _______________
+
+[ ] 7.03  Add a perk from the available list.
+         EXPECTED: Perk appears in "Your Perks & Flaws" under perks.
+         Cost display updates.
+         ACTUAL: _______________
+
+[ ] 7.04  Add a flaw from the available list.
+         EXPECTED: Flaw appears in "Your Perks & Flaws" under flaws.
+         Refund display updates.
+         ACTUAL: _______________
+
+[ ] 7.05  Scroll through available perks list (mouse wheel).
+         EXPECTED: List scrolls smoothly. No overflow. No crash.
+         ACTUAL: _______________
+
+[ ] 7.06  Scroll to bottom of available perks list. Click last perk.
+         EXPECTED: Correct perk added (not an off-by-one from scroll).
+         ACTUAL: _______________
+
+[ ] 7.07  Scroll through available flaws list.
+         EXPECTED: List scrolls smoothly.
+         ACTUAL: _______________
+
+[ ] 7.08  Remove perk — click X button.
+         EXPECTED: Perk removed. Cost refunded. Display updates.
+         ACTUAL: _______________
+
+[ ] 7.09  Remove flaw — click X button.
+         EXPECTED: Flaw removed. Refund removed. Display updates.
+         ACTUAL: _______________
+
+[ ] 7.10  Add "Obsessed" from Flaws view.
+         EXPECTED: Obsessed appears as a FLAW, not a perk.
+         (Regression: was adding as perk in earlier builds.)
+         ACTUAL: _______________
+
+[ ] 7.11  Add "Infamy" from Flaws view.
+         EXPECTED: Infamy appears as a FLAW, not a perk.
+         (Regression: was adding as perk in earlier builds.)
+         ACTUAL: _______________
+
+[ ] 7.12  Rapid switching between Perks and Flaws 5+ times, clicking
+         first available item each time.
+         EXPECTED: Perks only from perks view, flaws only from flaws view.
+         No cross-contamination.
+         ACTUAL: _______________
+
+[ ] 7.13  Switching views resets scroll position.
+         EXPECTED: Scroll resets to top when switching Perks <-> Flaws.
+         ACTUAL: _______________
+
+[ ] 7.14  Cost/refund display — add 3+ perks and 3+ flaws.
+         EXPECTED: Running total of costs and refunds accurate.
+         ACTUAL: _______________
+
+[ ] 7.15  Quality tier upgrade for multi-tier perks.
+         EXPECTED: Perks with O/G/A tiers can be upgraded. Display reflects
+         current tier.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 8: CYBERTECH TAB (Tab 5)
+================================================================================
+
+[ ] 8.01  Toggle installed implant active.
+         EXPECTED: Implant marked active. FX modifiers applied to rolls.
+         ACTUAL: _______________
+
+[ ] 8.02  Toggle installed implant inactive.
+         EXPECTED: Implant marked inactive. FX modifiers removed.
+         ACTUAL: _______________
+
+[ ] 8.03  Remove implant.
+         EXPECTED: Implant removed from installed list. Tolerance freed.
+         ACTUAL: _______________
+
+[ ] 8.04  Expand catalog entry.
+         EXPECTED: Entry expands to show description, effects, quality
+         tiers.
+         ACTUAL: _______________
+
+[ ] 8.05  Add implant at Ordinary quality tier.
+         EXPECTED: Implant installed at Ordinary. Tolerance updated.
+         ACTUAL: _______________
+
+[ ] 8.06  Add implant at Good quality tier.
+         EXPECTED: Implant installed at Good. Tolerance updated.
+         ACTUAL: _______________
+
+[ ] 8.07  Add implant at Amazing quality tier.
+         EXPECTED: Implant installed at Amazing. Tolerance updated.
+         ACTUAL: _______________
+
+[ ] 8.08  Tolerance display shows current/max tolerance.
+         EXPECTED: Numbers are correct. Updates when implants added/removed.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 9: ROLL LOG (Tab 6)
+================================================================================
+
+[ ] 9.01  Perform several rolls. Switch to Roll Log tab.
+         EXPECTED: All recent rolls appear in the log with timestamps,
+         skill names, and results.
+         ACTUAL: _______________
+
+[ ] 9.02  Scroll through the roll log.
+         EXPECTED: Smooth scrolling. All entries visible.
+         ACTUAL: _______________
+
+[ ] 9.03  Copy to clipboard button.
+         EXPECTED: Roll log text copied to system clipboard. Paste into
+         text editor to verify.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 10: INFO TAB (Tab 7)
+================================================================================
+
+[ ] 10.01 Character info displays correctly.
+         EXPECTED: Name, species, profession, level, stats, derived values
+         all shown.
+         ACTUAL: _______________
+
+[ ] 10.02 Scroll works on Info tab.
+         EXPECTED: Content scrolls if longer than viewport.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 11: GRID TAB (Tab 8)
+================================================================================
+
+[ ] 11.01 Programs sub-tab — displays installed programs.
+         EXPECTED: Programs sub-tab visible. Installed programs listed.
+         ACTUAL: _______________
+
+[ ] 11.02 Programs sub-tab — install a program from catalog.
+         EXPECTED: Program added to installed list. Slot count updates.
+         ACTUAL: _______________
+
+[ ] 11.03 Programs sub-tab — remove an installed program.
+         EXPECTED: Program removed. Slot count updates.
+         ACTUAL: _______________
+
+[ ] 11.04 Computer sub-tab — select a computer.
+         EXPECTED: Computer selected. Processor/specs displayed.
+         ACTUAL: _______________
+
+[ ] 11.05 Computer sub-tab — select a processor.
+         EXPECTED: Processor selected. Slot capacity updated.
+         ACTUAL: _______________
+
+[ ] 11.06 Builder sub-tab — create custom program.
+         EXPECTED: get_string dialog appears. Enter name/type/slots/desc.
+         Custom program added to installed list. No black screen.
+         ACTUAL: _______________
+
+[ ] 11.07 Builder sub-tab — cancel the create dialog.
+         EXPECTED: Nothing happens. No crash. No black screen.
+         ACTUAL: _______________
+
+[ ] 11.08 Slot capacity check — try to exceed available slots.
+         EXPECTED: Prevented or warned. Capacity not exceeded silently.
+         ACTUAL: _______________
+
+[ ] 11.09 PL filter on programs catalog.
+         EXPECTED: Programs filtered by selected PL. Exact match.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 12: AURA/LORE TAB (Tab 9)
+================================================================================
+
+[ ] 12.01 Temperament pills displayed (25 options).
+         EXPECTED: All temperament options visible as clickable pills.
+         ACTUAL: _______________
+
+[ ] 12.02 Click a temperament pill to select it.
+         EXPECTED: Pill highlights. Selection registered.
+         ACTUAL: _______________
+
+[ ] 12.03 Select 2-3 temperaments (max cap).
+         EXPECTED: Can select up to 2-3. Further clicks either deselect
+         one or are blocked.
+         ACTUAL: _______________
+
+[ ] 12.04 Motivation pills displayed (16 options).
+         EXPECTED: All motivation options visible as clickable pills.
+         ACTUAL: _______________
+
+[ ] 12.05 Click a motivation pill to select it.
+         EXPECTED: Pill highlights. Selection registered.
+         ACTUAL: _______________
+
+[ ] 12.06 Select 1-2 motivations (max cap).
+         EXPECTED: Can select up to 1-2. Further clicks handled gracefully.
+         ACTUAL: _______________
+
+[ ] 12.07 Edit buttons for freeform fields (personality, lifepath, etc.).
+         EXPECTED: Clicking edit opens text input. Changes saved.
+         ACTUAL: _______________
+
+[ ] 12.08 Load Sergeant Voss template. Visit Aura/Lore tab.
+         EXPECTED: All fields read-only for Voss. No edit buttons. No
+         crashes on pill display.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 13: GM MODE
+================================================================================
+
+--- Party Tab (GM Tab 0) ---
+
+[ ] 13.01 Party tab displays party members.
+         EXPECTED: All party characters listed with key stats.
+         ACTUAL: _______________
+
+[ ] 13.02 Select a party member.
+         EXPECTED: Character highlighted. Can enter edit mode.
+         ACTUAL: _______________
+
+[ ] 13.03 Edit a party member (enters player sheet in edit mode).
+         EXPECTED: Full character sheet accessible. "Back to GM" button
+         visible.
+         ACTUAL: _______________
+
+[ ] 13.04 Move party member to NPCs.
+         EXPECTED: Character removed from party, appears in NPCs list.
+         ACTUAL: _______________
+
+--- NPCs Tab (GM Tab 1) ---
+
+[ ] 13.05 NPCs tab displays NPC list.
+         EXPECTED: NPCs listed, organized by faction/team.
+         ACTUAL: _______________
+
+[ ] 13.06 Add a new NPC.
+         EXPECTED: NPC added to list. Editable.
+         ACTUAL: _______________
+
+[ ] 13.07 Assign faction to NPC.
+         EXPECTED: Faction label assigned. NPC grouped correctly.
+         ACTUAL: _______________
+
+[ ] 13.08 Quick NPC generation from GMG templates.
+         EXPECTED: NPC generated using template data. Stats populated.
+         ACTUAL: _______________
+
+[ ] 13.09 Move NPC to party.
+         EXPECTED: NPC removed from NPCs list, appears in party.
+         ACTUAL: _______________
+
+[ ] 13.10 Import NPC from file.
+         EXPECTED: File dialog opens. Valid JSON NPC loads into NPCs list.
+         ACTUAL: _______________
+
+--- Encounter Tab (GM Tab 2) ---
+
+[ ] 13.11 Encounter tab displays initiative bar (4 phases).
+         EXPECTED: Phase bar visible with phase labels.
+         ACTUAL: _______________
+
+[ ] 13.12 Roll All Init button.
+         EXPECTED: Initiative rolled for ALL characters (party + NPCs in
+         encounter). Results logged to roll log. Phase assignments shown.
+         ACTUAL: _______________
+
+[ ] 13.13 Verify Roll All Init results appear in Roll Log (Tab 6).
+         EXPECTED: Each character's init roll is a separate log entry.
+         ACTUAL: _______________
+
+[ ] 13.14 New Round button.
+         EXPECTED: Round counter increments. Phase resets. Ready for new
+         initiative rolls.
+         ACTUAL: _______________
+
+[ ] 13.15 Clear Init button.
+         EXPECTED: All initiative data cleared. Phase bar empty.
+         ACTUAL: _______________
+
+[ ] 13.16 Per-character display: AC, phase, actions, resistance mods,
+         durability.
+         EXPECTED: All combat-relevant stats shown per character in the
+         encounter view.
+         ACTUAL: _______________
+
+--- Campaign Tab (GM Tab 3) ---
+
+[ ] 13.17 Campaign tab shows master roster of character file paths.
+         EXPECTED: All known characters listed with file paths.
+         ACTUAL: _______________
+
+[ ] 13.18 Scan characters directory.
+         EXPECTED: Finds all .json files in characters/ folder. Roster
+         updates.
+         ACTUAL: _______________
+
+[ ] 13.19 Import character into campaign.
+         EXPECTED: File dialog. Character added to roster.
+         ACTUAL: _______________
+
+[ ] 13.20 Export campaign.
+         EXPECTED: Campaign data exported to file. Round-trip viable.
+         ACTUAL: _______________
+
+--- Resources Tab (GM Tab 4) ---
+
+[ ] 13.21 Resources tab displays GM customization guide.
+         EXPECTED: Scrollable guide text about editing JSON data files.
+         ACTUAL: _______________
+
+[ ] 13.22 Scroll through resources content.
+         EXPECTED: Full guide scrollable without issues.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 14: SIDEBAR / DICE ROLLER
+================================================================================
+
+[ ] 14.01 Situation die adjuster — "<" button (bonus).
+         EXPECTED: Situation die steps down (-1, -2, -3...). Display
+         updates.
+         ACTUAL: _______________
+
+[ ] 14.02 Situation die adjuster — ">" button (penalty).
+         EXPECTED: Situation die steps up (+1, +2, +3...). Display updates.
+         ACTUAL: _______________
+
+[ ] 14.03 Situation die adjuster — Reset button.
+         EXPECTED: Situation die returns to 0 (neutral). Display updates.
+         ACTUAL: _______________
+
+[ ] 14.04 ROLL button with a skill selected.
+         EXPECTED: Staged roll workflow: roll request built, modifiers
+         applied, dice rolled, result displayed.
+         ACTUAL: _______________
+
+[ ] 14.05 ROLL button with no skill selected.
+         EXPECTED: Graceful handling — either prompts to select or does
+         nothing. No crash.
+         ACTUAL: _______________
+
+[ ] 14.06 Selected skill display in sidebar.
+         EXPECTED: Currently selected skill name and score shown.
+         ACTUAL: _______________
+
+[ ] 14.07 Staged roll display with modifiers.
+         EXPECTED: Before rolling, preview shows base score + all active
+         modifiers (FX, wounds, situation die).
+         ACTUAL: _______________
+
+[ ] 14.08 Roll result display.
+         EXPECTED: After rolling, result shows d20 roll, situation die,
+         final result, and degree of success (F/O/G/A).
+         ACTUAL: _______________
+
+[ ] 14.09 Situation die persists after a skill roll.
+         EXPECTED: After rolling a skill, the situation die stays at the
+         player's chosen setting (not reset to 0).
+         ACTUAL: _______________
+
+================================================================================
+SECTION 15: DATA INTEGRITY
+================================================================================
+
+[ ] 15.01 Save character. Close app. Reopen. Load character.
+         EXPECTED: ALL data intact — stats, skills, ranks, equipment,
+         perks, flaws, cybertech, lore, portrait.
+         ACTUAL: _______________
+
+[ ] 15.02 Tab switch clears staged_roll.
+         EXPECTED: Switching tabs resets any pending staged roll. No stale
+         roll data carries over.
+         ACTUAL: _______________
+
+[ ] 15.03 Tab switch resets situation die.
+         EXPECTED: Switching tabs resets situation die to neutral (0).
+         ACTUAL: _______________
+
+[ ] 15.04 Roll log file written to characters/ folder.
+         EXPECTED: After rolls, check characters/ folder for log file.
+         File exists and contains roll data.
+         ACTUAL: _______________
+
+[ ] 15.05 Campaign save/load round-trip.
+         EXPECTED: Save campaign. Close. Reopen. Load campaign. All
+         party/NPC data intact.
+         ACTUAL: _______________
+
+[ ] 15.06 Character name with special characters (spaces, apostrophes,
+         hyphens, accented letters).
+         EXPECTED: File saves and loads correctly. Path not corrupted.
+         No crash on save or load.
+         ACTUAL: _______________
+
+[ ] 15.07 All rolls logged — perform rolls from Combat, Psionics, sidebar,
+         GM encounter. Check Roll Log tab.
+         EXPECTED: Every roll from every source appears in the log.
+         ACTUAL: _______________
+
+[ ] 15.08 Save format version — saved file uses v4 compact format.
+         EXPECTED: Open saved .json in text editor. Skills as arrays,
+         weapons as 7-element arrays, abilities as uppercase keys.
+         ACTUAL: _______________
+
+[ ] 15.09 Import v2/v3 legacy character file.
+         EXPECTED: Older format imports successfully. Data migrated to
+         current format. No data loss.
+         ACTUAL: _______________
+
+================================================================================
+SECTION 16: REGRESSION (Post-Refactor Specific)
+================================================================================
+
+[ ] 16.01 No "function undefined" crashes during normal use.
+         EXPECTED: Play through all tabs, roll dice, switch modes, open
+         browsers. Zero crashes. Zero undefined function errors.
+         ACTUAL: _______________
+
+[ ] 16.02 Psionics tab shows disciplines (bug fix verified).
+         EXPECTED: Psionic disciplines and skills display correctly.
+         Not blank. Not empty array.
+         (Was broken in pre-refactor builds.)
+         ACTUAL: _______________
+
+[ ] 16.03 FX entries with missing "active" field don't crash.
+         EXPECTED: Load a character whose FX entries lack the "active"
+         key. App handles gracefully — defaults to true/false. No crash.
+         ACTUAL: _______________
+
+[ ] 16.04 Portrait presets load correctly for all species/profession combos.
+         EXPECTED: Correct portrait displayed. No missing sprite errors.
+         Test at least one character per species.
+         ACTUAL: _______________
+
+[ ] 16.05 Voss template loads from JSON (not hardcoded).
+         EXPECTED: Sergeant Voss data comes from npc_templates.json or
+         equivalent JSON file. Verify by checking output log or
+         modifying the JSON and confirming the change appears.
+         ACTUAL: _______________
+
+[ ] 16.06 All 10 player tabs render without errors.
+         Tab 0 (Character):  [ ] OK  [ ] ERROR: _______________
+         Tab 1 (Equipment):  [ ] OK  [ ] ERROR: _______________
+         Tab 2 (Combat):     [ ] OK  [ ] ERROR: _______________
+         Tab 3 (Psionics):   [ ] OK  [ ] ERROR: _______________
+         Tab 4 (Perks/Flaws):[ ] OK  [ ] ERROR: _______________
+         Tab 5 (Cybertech):  [ ] OK  [ ] ERROR: _______________
+         Tab 6 (Roll Log):   [ ] OK  [ ] ERROR: _______________
+         Tab 7 (Info):       [ ] OK  [ ] ERROR: _______________
+         Tab 8 (Grid):       [ ] OK  [ ] ERROR: _______________
+         Tab 9 (Aura/Lore):  [ ] OK  [ ] ERROR: _______________
+
+[ ] 16.07 All 5 GM tabs render without errors.
+         GM Tab 0 (Party):     [ ] OK  [ ] ERROR: _______________
+         GM Tab 1 (NPCs):      [ ] OK  [ ] ERROR: _______________
+         GM Tab 2 (Encounter):  [ ] OK  [ ] ERROR: _______________
+         GM Tab 3 (Campaign):   [ ] OK  [ ] ERROR: _______________
+         GM Tab 4 (Resources):  [ ] OK  [ ] ERROR: _______________
+
+[ ] 16.08 Switching between GM mode and player mode repeatedly (10+ times).
+         EXPECTED: No state leaks. No crashes. Tabs render correctly
+         each time.
+         ACTUAL: _______________
+
+[ ] 16.09 Edit a character from GM party tab, make changes, return to GM.
+         EXPECTED: Changes persist. No data lost on mode switch.
+         ACTUAL: _______________
+
+[ ] 16.10 Generate a new character, immediately save, immediately reload.
+         EXPECTED: Fresh character survives round-trip with all chargen
+         data intact.
+         ACTUAL: _______________
+
+================================================================================
+FULL TEST SUMMARY
+================================================================================
+
+Section 1  — Welcome Screen:          ___ / 11 passed
+Section 2  — Character Generation:     ___ / 18 passed
+Section 3  — Character Tab:            ___ / 24 passed
+Section 4  — Equipment Tab:            ___ / 13 passed
+Section 5  — Combat Tab:               ___ / 32 passed
+Section 6  — Psionics Tab:             ___ /  6 passed
+Section 7  — Perks & Flaws:            ___ / 15 passed
+Section 8  — Cybertech Tab:            ___ /  8 passed
+Section 9  — Roll Log:                 ___ /  3 passed
+Section 10 — Info Tab:                 ___ /  2 passed
+Section 11 — Grid Tab:                 ___ /  9 passed
+Section 12 — Aura/Lore Tab:            ___ /  8 passed
+Section 13 — GM Mode:                  ___ / 22 passed
+Section 14 — Sidebar / Dice Roller:    ___ /  9 passed
+Section 15 — Data Integrity:           ___ /  9 passed
+Section 16 — Regression:               ___ / 10 passed
+                                       ___________
+TOTAL:                                 ___ / 199 passed
+
+================================================================================
+SIGN-OFF
+================================================================================
+
+All tests passed: [ ] YES  [ ] NO (list failures below)
+
+Failures:
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+Blocking issues (MUST fix before ship):
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+Non-blocking issues (can patch in v0.57):
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+Tested by: _______________  Date: _______________
+Approved by: _______________  Date: _______________
+================================================================================

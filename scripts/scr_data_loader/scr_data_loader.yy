@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_data_loader",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_data_loader",
+  "parent":{
+    "name":"diceymcdicefacevibed22",
+    "path":"diceymcdicefacevibed22.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

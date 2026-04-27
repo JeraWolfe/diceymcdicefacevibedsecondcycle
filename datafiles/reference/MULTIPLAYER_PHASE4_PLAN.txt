@@ -1,0 +1,404 @@
+================================================================================
+  DICEYMCDICEFACES — MULTIPLAYER PHASE 4 PLAN
+  v0.58.0-plan | Phase 0 Document | For Review Before Implementation
+================================================================================
+
+This is the implementation roadmap for Phase 4 of multiplayer:
+debugging visibility, session UX polish, player roster actions,
+session-wide persistent roll log, tab reorder, and host kick.
+
+Phases 1-3 already shipped. The relay server is live on Railway at
+centerbeam.proxy.rlwy.net:23003. The connection state machine works.
+But you can't tell if it's actually connecting — that's what Phase 4 fixes.
+
+NO CODE HAS BEEN WRITTEN YET. This document describes what will be built.
+Review and approve before Phase 4A begins.
+
+
+================================================================================
+CONTEXT — The Problem
+================================================================================
+
+After Phases 1-3:
+- Relay server deployed to Railway (working)
+- Connection state machine in place (idle/connecting/connected/in_session/error)
+- Host/Join popups exist with state-aware UI
+- Sidebar shows player list when connected
+- Party stream shows everyone's rolls when connected
+
+What's missing:
+- Can't tell if you're actually connecting — only "Connecting..." spinner
+  for a brief moment, then either a code or a red error
+- No event log of what happened during handshake
+- No way to confirm relay is reachable before clicking buttons
+- No way to send a character to a SPECIFIC player (only broadcast)
+- No way to kick a stuck/frozen player out of a session
+- Roll log isn't persisted between sessions (in-memory only when connected)
+- Tab order is wrong — Info should be last, Roll Log second-to-last
+
+This phase fixes all of that.
+
+
+================================================================================
+THE FIVE FEATURES
+================================================================================
+
+1. VERBOSE CONNECTION DEBUG PANEL (in-game, not a popup)
+   A persistent panel on the welcome screen showing:
+   - Relay host:port being used
+   - Current state machine state + elapsed time in current state
+   - Session code, role (host/guest), player count
+   - Last error message
+   - Scrollable event log of every networking event:
+     * State transitions (idle -> connecting -> connected -> in_session)
+     * Outgoing messages (CREATE, JOIN_REQ, ROLL_RESULT, CHAT, etc.)
+     * Incoming messages (CREATED, JOIN_OK, PLAYER_LIST, etc.)
+     * Errors with full context
+   - Sidebar gets a smaller version when in-game
+
+2. CLICKABLE PLAYER ROSTER + ACTION MENU
+   The sidebar player list becomes interactive. Click a player name to
+   open an action menu with three options:
+   - Send Character (opens character picker, sends to that player only)
+   - Request Character (asks that player to send you one of theirs)
+   - Kick (host-only — disconnects the target player)
+
+3. SESSION-WIDE PERSISTENT ROLL LOG
+   The party stream is currently in-memory only. New file:
+   global.save_path + "session_logs/" + session_code + "_rolllog.json"
+   - Saved every ~2 seconds when dirty
+   - When a new player joins, host pushes them the existing log so they
+     see prior rolls
+   - File survives disconnect — testers can review what happened
+
+4. TAB REORDER
+   Current order:
+     0:Character 1:Equip 2:Combat 3:Psi 4:Perks 5:Cyber 6:RollLog 7:Info 8:Grid 9:Aura
+   New order:
+     0:Character 1:Equip 2:Combat 3:Psi 4:Perks 5:Cyber 6:Grid 7:Aura 8:RollLog 9:Info
+
+5. HOST KICK CAPABILITY
+   New message types KICK and KICKED. Host can remove a stuck player
+   from the session for debugging (e.g. if their connection froze and
+   they can't rejoin because the relay still thinks they're connected).
+   Relay server enforces host-only on KICK.
+
+
+================================================================================
+ARCHITECTURE — The Event Log Primitive
+================================================================================
+
+The KEY new addition is a single helper function and a single array:
+
+  net_event_log = [];   // array of {ts, type, text} structs, capped at 100
+
+  function net_log(_type, _text) {
+      array_insert(obj_game.net_event_log, 0, {
+          ts: current_time,
+          type: _type,    // "state", "send", "recv", "error", "info"
+          text: _text
+      });
+      if (array_length(obj_game.net_event_log) > 100) {
+          array_pop(obj_game.net_event_log);
+      }
+  }
+
+Every networking site adds ONE call:
+  - net_init(): net_log("info", "net_init " + host + ":" + port)
+  - State transitions: net_log("state", new_state)
+  - net_send(): net_log("send", msg_type)
+  - net_recv_from_buffer(): net_log("recv", parsed_msg.type)
+  - On errors: net_log("error", message)
+  - Heartbeats: compressed (only every Nth, optional toggle)
+
+The debug panel renders this array newest-first with timestamps relative
+to game start (or session start, configurable).
+
+
+================================================================================
+DEBUG PANEL LAYOUT (welcome screen)
+================================================================================
+
+Bottom-left of welcome screen, below the buttons:
+
++----------------------------------------------------------+
+| MULTIPLAYER STATUS                                       |
+| Relay:   centerbeam.proxy.rlwy.net:23003                 |
+| State:   in_session   (4.2s in current state)            |
+| Session: ABCD12        Role: HOST                        |
+| Players: 3                                               |
+| Last error: (none)                                       |
+|                                                          |
+| EVENT LOG (newest first):                                |
+|  [12.3s]  <- PLAYER_LIST  (3 players)                    |
+|  [11.8s]  <- JOIN_OK from Bob                            |
+|  [11.5s]  -> CREATE  name=Alice                          |
+|  [11.4s]  state: connected                               |
+|  [11.4s]  <- network_type_non_blocking_connect(success)  |
+|  [10.0s]  state: connecting                              |
+|  [10.0s]  net_init centerbeam.proxy.rlwy.net:23003       |
+|  [10.0s]  state: idle                                    |
++----------------------------------------------------------+
+
+If the debug panel shows the events all the way through "-> CREATE" and
+then nothing, we know the relay isn't responding. If it stops at
+"state: connecting" and never gets "non_blocking_connect", we know TCP
+itself is failing. That's diagnostic gold.
+
+
+================================================================================
+PLAYER ROSTER ACTION MENU
+================================================================================
+
+Click a player name in sidebar -> small floating menu appears next to cursor:
+
++----------------------+
+| ACTIONS: Bob         |
++----------------------+
+| Send Character...    |
+| Request Character    |
+| Kick                 |  (host only)
++----------------------+
+
+"Send Character..." opens a sub-popup listing your party characters.
+Click one -> sends it targeted to Bob only (not broadcast).
+
+"Request Character" sends a CHAR_REQUEST with to=Bob field. Bob's game
+shows a "Alice wants a character" prompt, picks one, sends back.
+
+"Kick" -> confirmation popup -> sends KICK message to relay -> relay
+disconnects Bob and sends him a KICKED message before closing the
+socket.
+
+The action menu dismisses on click-outside or Escape.
+
+
+================================================================================
+SESSION-WIDE PERSISTENT ROLL LOG
+================================================================================
+
+File path:
+  global.save_path + "session_logs/" + sanitize(session_code) + "_rolllog.json"
+
+When connected to a session:
+- Every roll/chat that lands in rolllog_entries also marks the session log
+  dirty
+- Step event throttled flush: every 120 frames (~2 sec), if dirty, write
+  the array to disk
+- New message type SESSION_LOG: when a new player joins (JOIN_OK arrives
+  on the host), host fires SESSION_LOG targeted to the new joiner with
+  the current rolllog_entries serialized
+- Joiner receives SESSION_LOG, replaces their rolllog_entries with the
+  payload so they see prior rolls
+
+On disconnect, the file stays. Testers can pull it up later to review
+what happened. Path is unique per session_code so multiple sessions
+don't collide.
+
+
+================================================================================
+TAB REORDER — 8 Hardcoded Refs to Update
+================================================================================
+
+Tab name array (Draw_64.gml line ~440):
+  Current: [Character, Equipment, Combat, Psionics, Perks/Flaws,
+            Cybertech, Roll Log, Info, Grid, Aura]
+  New:     [Character, Equipment, Combat, Psionics, Perks/Flaws,
+            Cybertech, Grid, Aura, Roll Log, Info]
+
+Hardcoded references that need updating:
+  Step_0.gml line 404: if (current_tab == 6) rolllog_dirty = true;
+  Step_0.gml line 411: if (_wheel != 0 && current_tab == 6) rolllog_scroll
+  Step_0.gml line 418: if (... && current_tab == 6 && ... ) chat input
+  Step_0.gml line 567: if (_t == 6) rolllog_dirty = true;
+  Step_0.gml line 590: if (current_tab == 6) handle_tab_rolllog();
+  Draw_64.gml line 529: if (current_tab == 6) draw_tab_rolllog();
+  Draw_64.gml line 530: if (current_tab == 7) draw_tab_info();
+  Draw_64.gml line 531: if (current_tab == 8) draw_tab_grid();
+  Draw_64.gml line 532: if (current_tab == 9) draw_tab_aura();
+
+After reorder:
+  RollLog -> tab 8
+  Info -> tab 9
+  Grid -> tab 6
+  Aura -> tab 7
+
+Comment in Create_0.gml line 48 also updated.
+
+
+================================================================================
+RELAY SERVER CHANGES (relay_server/server.js)
+================================================================================
+
+The relay needs to support targeted routing and KICK. Current relay
+only broadcasts. New behavior:
+
+1. Optional "to" field on incoming messages
+   - If present, look up that player by name in the session
+   - Use sendTo(target_socket, msg) instead of broadcast()
+   - If target not found, drop message silently (or send error back)
+
+2. KICK message type (host-only)
+   - Verify sender is the session host (track host clientId per session)
+   - Find target by name in payload.target_name
+   - Send KICKED message to target with reason
+   - Force-close target's socket
+   - Broadcast updated PLAYER_LIST to remaining clients
+
+3. SESSION_LOG message type
+   - Just gets routed via the "to" field — no server-side state change
+   - Host generates the SESSION_LOG message after seeing JOIN_OK go out
+
+This requires a redeploy. Push to GitHub -> Railway auto-deploys.
+Should take ~30 seconds total.
+
+
+================================================================================
+PHASING
+================================================================================
+
+Phase 0 — Plan dump (no code) <- YOU ARE HERE
+  Write MULTIPLAYER_PHASE4_PLAN.txt to game dir
+  Register in .yyp
+  Commit + STOP for review
+
+Phase 4A — Verbose debug visibility (foundation)
+  Add net_event_log array + net_log() helper
+  Add net_log() calls at every state transition, send, recv, error
+  Add net_get_state_elapsed() for "X.Xs in current state"
+  Expose relay host/port as instance vars (not just macros)
+  Build the debug panel UI in welcome screen
+  Add mini-debug section to in-game sidebar
+  Test by clicking Host -- verify event log fills up
+
+Phase 4B — Tab reorder
+  Update _tab_names array
+  Update 4 hardcoded refs in Step_0.gml
+  Update 4 hardcoded refs in Draw_64.gml
+  Update Create_0.gml comment
+  Verify nothing else hardcodes tab indices via grep
+
+Phase 4C — Clickable player roster + action menu
+  Register btn rects for player names
+  Add net_roster_action_menu_open / target instance vars
+  Click handler in Step_0
+  Draw the floating action menu
+  Send Character popup with character picker
+  Request Character flow
+  Kick confirmation flow
+
+Phase 4D — Targeted relay routing + KICK
+  Update net_send to accept optional _to_player arg
+  Add NET_MSG_KICK and NET_MSG_KICKED macros
+  Add net_kick_player, net_send_character_to,
+      net_request_character_from
+  Update relay server: routing, KICK handler, host-auth helper
+  KICKED handler in Other_68
+  Push relay -> Railway redeploy
+
+Phase 4E — Session-wide persistent roll log
+  net_session_log_path() helper
+  save_session_rolllog() and load_session_rolllog(code)
+  Hook into log_roll/log_remote_roll/log_remote_chat to mark dirty
+  Throttled flush in Step (every 120 frames)
+  NET_MSG_SESSION_LOG message type
+  Host pushes SESSION_LOG on JOIN_OK
+  Joiner replaces local rolllog_entries on receive
+
+Phase 4F — QA + changelog
+  Full end-to-end test (IDE + .exe on one machine, or two PCs)
+  Verify debug panel during success and failure paths
+  Verify tab reorder
+  Verify all roster actions
+  Verify session log persistence
+  Update changelog v0.58.0
+  Write verification_checklist_v0.58.txt
+
+
+================================================================================
+FILES TO MODIFY / CREATE
+================================================================================
+
+NEW:
+  datafiles/reference/MULTIPLAYER_PHASE4_PLAN.txt (this file)
+  datafiles/reference/verification_checklist_v0.58.txt (Phase 4F)
+  global.save_path + session_logs/ (directory created at runtime)
+
+EDITED:
+  diceymcdicefacevibed.yyp                       Register new plan file
+  scripts/scr_network/scr_network.gml            Event log, targeted send, kick,
+                                                 session log, host helpers
+  objects/obj_game/Create_0.gml                  Init new state vars
+  objects/obj_game/Draw_64.gml                   Debug panel, sidebar mini,
+                                                 clickable roster, action menu,
+                                                 tab dispatch reorder
+  objects/obj_game/Step_0.gml                    Tab reorder hardcoded refs,
+                                                 action menu handler, session
+                                                 log throttled flush
+  objects/obj_game/Other_68.gml                  Log received messages,
+                                                 KICKED handler, SESSION_LOG
+                                                 receive
+  relay_server/server.js                         "to" field routing, KICK,
+                                                 SESSION_LOG forwarding
+  datafiles/changelog.json                       v0.58.0 entry
+  datafiles/reference/MULTIPLAYER_GUIDE.txt      Document new features
+
+
+================================================================================
+KEY FUNCTIONS TO REUSE (already exist)
+================================================================================
+
+  net_send(msg_type, payload)         scr_network.gml -- extend with optional _to
+  net_full_reset()                    scr_network.gml -- for KICKED cleanup
+  build_statblock_export(stat)        scr_alternity_statblock.gml
+  statblock_import_data(data)         scr_alternity_statblock.gml
+  read_json / write_json              scr_data_loader.gml
+  sanitize_hero_filename              scr_alternity_statblock.gml
+  ui_btn / btn_clicked                scr_alternity_statblock.gml + ui_helpers
+  current_time                        for event log timestamps
+
+
+================================================================================
+VERIFICATION
+================================================================================
+
+Phase 4A — Connection visibility
+  Click Host with relay reachable -> debug panel shows full handshake
+  timeline ending in "in_session"
+  Click Host with bad relay address -> panel shows idle -> connecting ->
+  10s wait -> error with message visible
+
+Phase 4B — Tabs reordered
+  Open game, count tabs in order: Character, Equipment, Combat, Psionics,
+  Perks/Flaws, Cybertech, Grid, Aura, Roll Log, Info
+  Click each one, verify content
+  Mouse-wheel scroll through tabs
+  Roll dice, switch to Roll Log (now tab 8), verify scroll/chat work
+
+Phase 4C — Clickable roster
+  Two instances connected, click a player name -> action menu opens
+  Send Character -> picker -> arrives on other side
+  Request Character -> other side sees prompt
+  Kick (host only) -> other player gets disconnected
+
+Phase 4D — KICK
+  Host kicks player -> player gets KICKED message and returns to welcome
+  Kicked player can rejoin if they want
+
+Phase 4E — Session log
+  Host rolls dice, new player joins -> joiner sees prior rolls
+  Close and reopen game -> session log file exists at expected path
+
+Phase 4F — Final
+  Run all 199 items in verification_checklist_v0.56.txt for regression
+  Write verification_checklist_v0.58.txt
+
+
+================================================================================
+END OF PLAN — Awaiting Review
+================================================================================
+
+If approved, Phase 4A begins next. Each phase commits and stops for
+review before the next phase begins.
+
+The cat is poised. The doegs await slapping.

@@ -1,0 +1,310 @@
+{
+  "skills":[
+    {
+      "ability":"str",
+      "broad":"Athletics",
+      "specialties":[
+        "Climb",
+        "Jump",
+        "Throw"
+      ]
+    },
+    {
+      "ability":"str",
+      "broad":"Heavy Weapons",
+      "specialties":[
+        "Direct fire",
+        "Indirect fire"
+      ]
+    },
+    {
+      "ability":"str",
+      "broad":"Melee Weapons",
+      "specialties":[
+        "Blade",
+        "Powered weapon"
+      ]
+    },
+    {
+      "ability":"str",
+      "broad":"Unarmed Attack",
+      "specialties":[
+        "Brawl",
+        "Power martial arts"
+      ]
+    },
+    {
+      "ability":"dex",
+      "broad":"Acrobatics",
+      "specialties":[
+        "Dodge",
+        "Movie stunts",
+        "Zero-G training"
+      ]
+    },
+    {
+      "ability":"dex",
+      "broad":"Manipulation",
+      "specialties":[
+        "Lockpick",
+        "Pickpocket"
+      ]
+    },
+    {
+      "ability":"dex",
+      "broad":"Modern Ranged Weapons",
+      "specialties":[
+        "Pistol",
+        "Rifle",
+        "SMG"
+      ]
+    },
+    {
+      "ability":"dex",
+      "broad":"Primitive Ranged Weapons",
+      "specialties":[
+        "Bow",
+        "Crossbow"
+      ]
+    },
+    {
+      "ability":"dex",
+      "broad":"Stealth",
+      "specialties":[
+        "Hide",
+        "Sneak",
+        "Shadow"
+      ]
+    },
+    {
+      "ability":"dex",
+      "broad":"Vehicle Operation",
+      "specialties":[
+        "Air vehicle",
+        "Land vehicle",
+        "Space vehicle",
+        "Water vehicle"
+      ]
+    },
+    {
+      "ability":"con",
+      "broad":"Stamina",
+      "specialties":[
+        "Endurance",
+        "Resist pain"
+      ]
+    },
+    {
+      "ability":"con",
+      "broad":"Biokinesis",
+      "specialties":[
+        "Bioshift",
+        "Body armor",
+        "Harm",
+        "Heal"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Business",
+      "specialties":[
+        "Corporate",
+        "Small business"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Demolitions",
+      "specialties":[
+        "Set explosives",
+        "Disarm explosives"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Knowledge",
+      "specialties":[
+        "Computer operation",
+        "Deduce",
+        "First aid",
+        "Language"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Law",
+      "specialties":[
+        "Streetwise"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Life Science",
+      "specialties":[
+        "Biology",
+        "Botany",
+        "Genetics",
+        "Xenobiology",
+        "Zoology"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Medical Science",
+      "specialties":[
+        "Medical knowledge",
+        "Surgery",
+        "Xenomedicine"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Navigation",
+      "specialties":[
+        "Drivespace astrogation",
+        "Surface navigation",
+        "System astrogation"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Physical Science",
+      "specialties":[
+        "Astronomy",
+        "Chemistry",
+        "Physics",
+        "Planetology"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"System Operation",
+      "specialties":[
+        "Communications",
+        "Defense",
+        "Engineering",
+        "Sensors",
+        "Weapons"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Tactics",
+      "specialties":[
+        "Infantry",
+        "Vehicle"
+      ]
+    },
+    {
+      "ability":"int",
+      "broad":"Technical Science",
+      "specialties":[
+        "Invention",
+        "Juryrig",
+        "Repair"
+      ]
+    },
+    {
+      "ability":"wil",
+      "broad":"Awareness",
+      "specialties":[
+        "Intuition",
+        "Perception"
+      ]
+    },
+    {
+      "ability":"wil",
+      "broad":"Investigate",
+      "specialties":[
+        "Search",
+        "Track"
+      ]
+    },
+    {
+      "ability":"wil",
+      "broad":"Resolve",
+      "specialties":[
+        "Mental resolve",
+        "Physical resolve"
+      ]
+    },
+    {
+      "ability":"wil",
+      "broad":"ESP",
+      "specialties":[
+        "Clairaudience",
+        "Clairvoyance",
+        "Empathy",
+        "Precognition",
+        "Psychometry"
+      ]
+    },
+    {
+      "ability":"wil",
+      "broad":"Telekinesis",
+      "specialties":[
+        "Kinetic shield",
+        "Levitate",
+        "Telekinetic strike"
+      ]
+    },
+    {
+      "ability":"wil",
+      "broad":"Telepathy",
+      "specialties":[
+        "Contact",
+        "Illusion",
+        "Mind blast",
+        "Mind reading",
+        "Mind shield",
+        "Suggest"
+      ]
+    },
+    {
+      "ability":"per",
+      "broad":"Culture",
+      "specialties":[
+        "Diplomacy",
+        "Etiquette",
+        "First encounter"
+      ]
+    },
+    {
+      "ability":"per",
+      "broad":"Deception",
+      "specialties":[
+        "Bluff",
+        "Gamble"
+      ]
+    },
+    {
+      "ability":"per",
+      "broad":"Entertainment",
+      "specialties":[
+        "Act",
+        "Dance",
+        "Music",
+        "Sing"
+      ]
+    },
+    {
+      "ability":"per",
+      "broad":"Interaction",
+      "specialties":[
+        "Bargain",
+        "Charm",
+        "Intimidate",
+        "Seduce"
+      ]
+    },
+    {
+      "ability":"per",
+      "broad":"Leadership",
+      "specialties":[
+        "Command",
+        "Inspire"
+      ]
+    }
+  ],
+  "_description":"Complete skill tree - broad skills and their specialties, grouped by ability"
+}

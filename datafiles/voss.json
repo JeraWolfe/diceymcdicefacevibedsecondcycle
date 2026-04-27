@@ -1,0 +1,80 @@
+{
+  "_format": "alternity_statblock",
+  "_version": 4,
+  "name": "Sergeant Voss",
+  "species": "Human",
+  "profession": "Combat Spec",
+  "career": "Infantry Soldier",
+  "STR": 12,
+  "DEX": 11,
+  "CON": 10,
+  "INT": 9,
+  "WIL": 10,
+  "PER": 8,
+  "stun_damage": 0,
+  "wound_damage": 0,
+  "mortal_damage": 0,
+  "skills": [
+    ["Athletics", "STR", -1],
+    ["Climb", "Athletics", 1],
+    ["Vehicle Operation", "DEX", -1],
+    ["Land vehicle", "Vehicle Operation", 1],
+    ["Modern Ranged Weapons", "DEX", -1],
+    ["Rifle", "Modern Ranged Weapons", 2],
+    ["Melee Weapons", "DEX", -1],
+    ["Blade", "Melee Weapons", 1],
+    ["Stamina", "CON", -1],
+    ["Endurance", "Stamina", 1],
+    ["Knowledge", "INT", -1],
+    ["First aid", "Knowledge", 1],
+    ["Awareness", "WIL", -1],
+    ["Perception", "Awareness", 1],
+    ["Interaction", "PER", -1],
+    ["Intimidate", "Interaction", 1],
+    ["Resolve", "WIL", -1],
+    ["Mental resolve", "Resolve", 1],
+    ["Physical resolve", "Resolve", 1],
+    ["Tactics", "INT", -1],
+    ["Infantry tactics", "Tactics", 1],
+    ["Telepathy", "WIL", -1],
+    ["Contact", "Telepathy", 1],
+    ["Mind shield", "Telepathy", 0]
+  ],
+  "weapons": [
+    ["11mm charge rifle", "rifle", "d6+1w", "d6+3w", "d6+1m", "80/160/400", "HI"],
+    ["9mm charge pistol", "pistol", "d4+1w", "d6+1w", "d4m", "8/16/60", "HI"],
+    ["Combat knife", "blade", "d4+1w", "d4+2w", "d4+3w", "Personal", "LI"],
+    ["Unarmed", "brawl", "d4+1s", "d4+2s", "d4+3s", "Personal", "LI"]
+  ],
+  "armor": ["Battle jacket", "d6-1", "d4+1", "d4-1"],
+  "gear": ["comm gear", "flashlight", "field rations", "trauma pack I", "survival gear", "lucky coin"],
+  "background": "Navy veteran, former 4th Marines. Decorated at Mantebron Station. Latent telepath. Security contractor aboard the Nebula Bounty.",
+  "fx": [
+    { "name": "Observant", "type": "perk", "quality": "", "active": true },
+    { "name": "Tough as Nails", "type": "perk", "quality": "", "active": true },
+    { "name": "Old Injury", "type": "flaw", "quality": "", "active": true },
+    { "name": "Optic Screen", "type": "cybertech", "quality": "G", "active": true },
+    { "name": "Nanocomputer", "type": "cybertech", "quality": "O", "active": true },
+    { "name": "Cyberoptics", "type": "cybertech", "quality": "O", "active": true }
+  ],
+  "deck": {
+    "computer": "Data Slate",
+    "processor": "M",
+    "programs": [
+      { "name": "Datascan", "quality": "M" },
+      { "name": "Encode", "quality": "M" },
+      { "name": "Alarm", "quality": "M" }
+    ]
+  },
+  "lore": {
+    "height": "188 cm",
+    "weight": "91 kg",
+    "hair": "Black, cropped close",
+    "gender": "Male",
+    "moral_attitude": "Good",
+    "temperament": ["Disciplined", "Serious", "Loyal"],
+    "motivations": ["Protection", "Survival"],
+    "personality": "Quiet. Watchful. Dry humor when relaxed, which is rare. Doesn't waste words. Respects competence over rank. Keeps the lucky coin because his sergeant gave it to him at Tannhauser Gate and told him to bring it back. He never went back. Fidgets with the coin when thinking. The crew has learned that when the coin stops moving, so should they.",
+    "lifepath": "Born on Kurg, a mid-rim industrial colony. Parents were refinery workers. Nothing romantic about it — chemical skies, shift whistles, company scrip.\n\nEnlisted at seventeen. The Stellar Nations Navy took him because his scores were adequate and his lungs were clean, which was more than Kurg usually produced.\n\nTANNHAUSER GATE\nFirst deployment: Tannhauser Gate, the relay station at the edge of Verge space. Six months of watch duty in the deep black. Nothing happened for five of them. On the sixth, a weren raider flotilla hit the gate's outer ring. Voss was a private then — ran ammunition to the gun emplacements while the corridors depressurized around him. His sergeant, a woman named Kael, gave him a coin and told him to bring it back when this was over. She died sealing a hull breach with her body. The coin stayed in his pocket. He rotated out. He's never gone back. Sometimes he thinks about it — the gate still out there, still turning in the dark between stars.\n\nMANTEBRON STATION\nSecond tour: the SNS Resolute, 4th Marines. The Second Lighthouse War. Mantebron Station was a refueling depot that both sides wanted and neither could afford to lose. A weren boarding party cut through the hull at section seven. Voss was alone in corridor 7-C when they came through. Eleven minutes. Three weren. The combat knife broke on the third one's hide — weren bone is denser than the blade's alloy was rated for. The charge rifle held. He put the third weren down at two meters with the last three rounds in the magazine. They gave him a commendation. He kept the broken knife.\n\nTENDRIL\nThird deployment. The engagement at Tendril was supposed to be a patrol action. It wasn't. A piece of hull shrapnel went through his left shoulder and lodged near his spine. Navy surgeons pulled it out and installed an optic screen and nanocomputer during recovery. He can see targeting data overlaid on his field of vision now. Says it makes the universe look like a game. Doesn't like that.\n\nBut Tendril did something else. The shrapnel — or the surgery, or the trauma, or whatever — cracked something open. He started hearing surface thoughts in crowded rooms. The Navy psych eval flagged latent telepathic potential. They offered Mindwalker training. He declined. The ability didn't decline with him. He can reach out now — Contact, they call it. Touch a mind. And he learned to shield his own, because in a universe full of Fraal telepaths and weren berserkers, an open mind is a liability.\n\nNEBULA BOUNTY\nMustered out at rank E-7. Signed on with the Nebula Bounty as security. Captain Mara Osei pays on time and doesn't ask questions. The crew is small — pilot, mechanic, Voss, and whatever cargo needs moving. The cargo is usually legal. Usually.\n\nThe shoulder still aches in low pressure. The telepathy grows stronger. He doesn't talk about it. The lucky coin is in his pocket. It always is. He still hasn't brought it back to Tannhauser Gate."
+  }
+}

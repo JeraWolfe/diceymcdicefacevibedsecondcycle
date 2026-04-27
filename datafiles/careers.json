@@ -1,0 +1,1619 @@
+{
+  "Tech Op":[
+    {
+      "gear":[
+        "comm gear",
+        "medical kit",
+        "surgical kit",
+        "data slate"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Medical Science",
+          "Medical knowledge",
+          1.0
+        ],
+        [
+          "Medical Science",
+          "Surgery",
+          1.0
+        ],
+        [
+          "Knowledge",
+          "First aid",
+          1.0
+        ],
+        [
+          "Life Science",
+          "Biology",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Medical Science",
+        "Knowledge",
+        "Life Science",
+        "Awareness",
+        "Stamina",
+        "Interaction"
+      ],
+      "name":"Field Medic",
+      "weapons":[
+        [
+          "Laser pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "20\/40\/200",
+          "En"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "toolkit",
+        "data slate",
+        "portable welder"
+      ],
+      "armor":[
+        "Battle vest",
+        "d6-3",
+        "d6-2",
+        "d4-2"
+      ],
+      "specs":[
+        [
+          "Technical Science",
+          "Repair",
+          1.0
+        ],
+        [
+          "Technical Science",
+          "Juryrig",
+          1.0
+        ],
+        [
+          "System Operation",
+          "Engineering",
+          1.0
+        ],
+        [
+          "Knowledge",
+          "Computer operation",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Technical Science",
+        "System Operation",
+        "Knowledge",
+        "Vehicle Operation",
+        "Awareness",
+        "Manipulation"
+      ],
+      "name":"Engineer",
+      "weapons":[
+        [
+          "Laser pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "20\/40\/200",
+          "En"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "portable computer",
+        "data slate",
+        "code breaker"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Knowledge",
+          "Computer operation",
+          2.0
+        ],
+        [
+          "System Operation",
+          "Communications",
+          1.0
+        ],
+        [
+          "Technical Science",
+          "Invention",
+          1.0
+        ],
+        [
+          "Deception",
+          "Bluff",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Knowledge",
+        "System Operation",
+        "Technical Science",
+        "Manipulation",
+        "Awareness",
+        "Deception"
+      ],
+      "name":"Hacker",
+      "weapons":[
+        [
+          "Laser pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "20\/40\/200",
+          "En"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "navigation kit",
+        "data slate",
+        "flight helmet"
+      ],
+      "armor":[
+        "Flight suit",
+        "d4-2",
+        "d4-2",
+        "d4-2"
+      ],
+      "specs":[
+        [
+          "Vehicle Operation",
+          "Space vehicle",
+          2.0
+        ],
+        [
+          "Vehicle Operation",
+          "Air vehicle",
+          1.0
+        ],
+        [
+          "Navigation",
+          "System astrogation",
+          1.0
+        ],
+        [
+          "System Operation",
+          "Weapons",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Vehicle Operation",
+        "Navigation",
+        "System Operation",
+        "Knowledge",
+        "Awareness",
+        "Stamina"
+      ],
+      "name":"Pilot",
+      "weapons":[
+        [
+          "Laser pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "20\/40\/200",
+          "En"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "data slate",
+        "portable lab",
+        "research tools",
+        "recorder"
+      ],
+      "armor":[
+        "None",
+        "0",
+        "0",
+        "0"
+      ],
+      "specs":[
+        [
+          "Physical Science",
+          "Physics",
+          1.0
+        ],
+        [
+          "Life Science",
+          "Biology",
+          1.0
+        ],
+        [
+          "Knowledge",
+          "Computer operation",
+          1.0
+        ],
+        [
+          "Knowledge",
+          "Deduce",
+          1.0
+        ],
+        [
+          "Technical Science",
+          "Invention",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Physical Science",
+        "Life Science",
+        "Knowledge",
+        "Technical Science",
+        "Awareness",
+        "Resolve"
+      ],
+      "name":"Scientist",
+      "weapons":[
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "toolkit",
+        "data slate",
+        "diagnostic scanner"
+      ],
+      "armor":[
+        "Battle vest",
+        "d6-3",
+        "d6-2",
+        "d4-2"
+      ],
+      "specs":[
+        [
+          "Technical Science",
+          "Repair",
+          2.0
+        ],
+        [
+          "System Operation",
+          "Sensors",
+          1.0
+        ],
+        [
+          "Knowledge",
+          "Computer operation",
+          1.0
+        ],
+        [
+          "Vehicle Operation",
+          "Land vehicle",
+          1.0
+        ],
+        [
+          "Manipulation",
+          "Lockpick",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Technical Science",
+        "System Operation",
+        "Knowledge",
+        "Vehicle Operation",
+        "Manipulation",
+        "Stamina"
+      ],
+      "name":"Technician",
+      "weapons":[
+        [
+          "Laser pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "20\/40\/200",
+          "En"
+        ]
+      ]
+    }
+  ],
+  "Mindwalker":[
+    {
+      "gear":[
+        "comm gear",
+        "meditation focus"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Telekinesis",
+          "Telekinetic strike",
+          2.0
+        ],
+        [
+          "Telepathy",
+          "Mind blast",
+          1.0
+        ],
+        [
+          "Resolve",
+          "Mental resolve",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Telekinesis",
+        "Telepathy",
+        "Resolve",
+        "Awareness",
+        "Stamina",
+        "Modern Ranged Weapons"
+      ],
+      "name":"Battle Psion",
+      "weapons":[
+        [
+          "Stutter pistol",
+          "pistol",
+          "d6+2s",
+          "d8+2s",
+          "d8+4s",
+          "6\/12\/30",
+          "LI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "medical kit",
+        "meditation focus",
+        "healing crystals"
+      ],
+      "armor":[
+        "None",
+        "0",
+        "0",
+        "0"
+      ],
+      "specs":[
+        [
+          "Biokinesis",
+          "Heal",
+          2.0
+        ],
+        [
+          "Telepathy",
+          "Contact",
+          1.0
+        ],
+        [
+          "ESP",
+          "Empathy",
+          1.0
+        ],
+        [
+          "Resolve",
+          "Mental resolve",
+          1.0
+        ],
+        [
+          "Knowledge",
+          "First aid",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Biokinesis",
+        "Telepathy",
+        "ESP",
+        "Resolve",
+        "Knowledge",
+        "Awareness"
+      ],
+      "name":"Healer",
+      "weapons":[
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "data slate",
+        "meditation focus",
+        "divination tools"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "ESP",
+          "Clairvoyance",
+          1.0
+        ],
+        [
+          "ESP",
+          "Precognition",
+          2.0
+        ],
+        [
+          "Telepathy",
+          "Contact",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Intuition",
+          1.0
+        ],
+        [
+          "Resolve",
+          "Mental resolve",
+          1.0
+        ]
+      ],
+      "broads":[
+        "ESP",
+        "Telepathy",
+        "Awareness",
+        "Resolve",
+        "Knowledge",
+        "Investigate"
+      ],
+      "name":"Seer",
+      "weapons":[
+        [
+          "Stutter pistol",
+          "pistol",
+          "d6+2s",
+          "d8+2s",
+          "d8+4s",
+          "6\/12\/30",
+          "LI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "meditation focus",
+        "psi-dampener"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Telepathy",
+          "Contact",
+          1.0
+        ],
+        [
+          "Telepathy",
+          "Mind reading",
+          1.0
+        ],
+        [
+          "Telepathy",
+          "Mind shield",
+          1.0
+        ],
+        [
+          "ESP",
+          "Empathy",
+          1.0
+        ],
+        [
+          "Resolve",
+          "Mental resolve",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Telepathy",
+        "ESP",
+        "Resolve",
+        "Awareness",
+        "Interaction"
+      ],
+      "name":"Telepath",
+      "weapons":[
+        [
+          "Stutter pistol",
+          "pistol",
+          "d6+2s",
+          "d8+2s",
+          "d8+4s",
+          "6\/12\/30",
+          "LI"
+        ]
+      ]
+    }
+  ],
+  "Combat Spec":[
+    {
+      "gear":[
+        "comm gear",
+        "flashlight",
+        "sunglasses"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Unarmed Attack",
+          "Brawl",
+          1.0
+        ],
+        [
+          "Modern Ranged Weapons",
+          "Pistol",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Intimidate",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Athletics",
+        "Unarmed Attack",
+        "Modern Ranged Weapons",
+        "Awareness",
+        "Stamina",
+        "Interaction"
+      ],
+      "name":"Bodyguard",
+      "weapons":[
+        [
+          "9mm charge pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "8\/16\/60",
+          "HI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "navigation kit",
+        "flight helmet"
+      ],
+      "armor":[
+        "Flight suit",
+        "d4-2",
+        "d4-2",
+        "d4-2"
+      ],
+      "specs":[
+        [
+          "Modern Ranged Weapons",
+          "Pistol",
+          1.0
+        ],
+        [
+          "Vehicle Operation",
+          "Air vehicle",
+          2.0
+        ],
+        [
+          "Vehicle Operation",
+          "Space vehicle",
+          1.0
+        ],
+        [
+          "Acrobatics",
+          "Dodge",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Athletics",
+        "Modern Ranged Weapons",
+        "Vehicle Operation",
+        "Awareness",
+        "Stamina",
+        "Acrobatics"
+      ],
+      "name":"Combat Pilot",
+      "weapons":[
+        [
+          "9mm charge pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "8\/16\/60",
+          "HI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "flashlight",
+        "field rations"
+      ],
+      "armor":[
+        "Battle vest",
+        "d6-3",
+        "d6-2",
+        "d4-2"
+      ],
+      "specs":[
+        [
+          "Athletics",
+          "Climb",
+          1.0
+        ],
+        [
+          "Modern Ranged Weapons",
+          "Rifle",
+          2.0
+        ],
+        [
+          "Melee Weapons",
+          "Blade",
+          1.0
+        ],
+        [
+          "Stamina",
+          "Endurance",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Athletics",
+        "Modern Ranged Weapons",
+        "Melee Weapons",
+        "Stamina",
+        "Awareness"
+      ],
+      "name":"Infantry Soldier",
+      "weapons":[
+        [
+          "11mm charge rifle",
+          "rifle",
+          "d6+1w",
+          "d6+3w",
+          "d6+1m",
+          "80\/160\/400",
+          "HI"
+        ],
+        [
+          "Combat knife",
+          "blade",
+          "d4+1w",
+          "d4+2w",
+          "d4+3w",
+          "Personal",
+          "LI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "flashlight",
+        "breaching kit"
+      ],
+      "armor":[
+        "Battle jacket",
+        "d6-1",
+        "d4+1",
+        "d4-1"
+      ],
+      "specs":[
+        [
+          "Athletics",
+          "Climb",
+          1.0
+        ],
+        [
+          "Modern Ranged Weapons",
+          "Rifle",
+          1.0
+        ],
+        [
+          "Unarmed Attack",
+          "Brawl",
+          1.0
+        ],
+        [
+          "Stamina",
+          "Endurance",
+          1.0
+        ],
+        [
+          "Demolitions",
+          "Set explosives",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Athletics",
+        "Modern Ranged Weapons",
+        "Unarmed Attack",
+        "Stamina",
+        "Vehicle Operation",
+        "Demolitions"
+      ],
+      "name":"Marine",
+      "weapons":[
+        [
+          "11mm charge rifle",
+          "rifle",
+          "d6+1w",
+          "d6+3w",
+          "d6+1m",
+          "80\/160\/400",
+          "HI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "survival kit"
+      ],
+      "armor":[
+        "Battle vest",
+        "d6-3",
+        "d6-2",
+        "d4-2"
+      ],
+      "specs":[
+        [
+          "Modern Ranged Weapons",
+          "Rifle",
+          1.0
+        ],
+        [
+          "Modern Ranged Weapons",
+          "Pistol",
+          1.0
+        ],
+        [
+          "Stealth",
+          "Sneak",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Athletics",
+        "Modern Ranged Weapons",
+        "Melee Weapons",
+        "Stamina",
+        "Awareness",
+        "Stealth"
+      ],
+      "name":"Mercenary",
+      "weapons":[
+        [
+          "11mm charge rifle",
+          "rifle",
+          "d6+1w",
+          "d6+3w",
+          "d6+1m",
+          "80\/160\/400",
+          "HI"
+        ],
+        [
+          "9mm charge pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "8\/16\/60",
+          "HI"
+        ]
+      ]
+    }
+  ],
+  "_description":"Career packages by profession. Each career: name, starting broad skills, specialties [broad,spec,rank], weapons [name,ord,good,amz,range,type], armor [name,LI,HI,En], gear [strings]",
+  "Diplomat":[
+    {
+      "gear":[
+        "comm gear",
+        "data slate",
+        "credit scan",
+        "formal attire"
+      ],
+      "armor":[
+        "CF long coat",
+        "d4",
+        "d4",
+        "d6-2"
+      ],
+      "specs":[
+        [
+          "Culture",
+          "Diplomacy",
+          2.0
+        ],
+        [
+          "Culture",
+          "Etiquette",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Charm",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Bargain",
+          1.0
+        ],
+        [
+          "Leadership",
+          "Command",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Knowledge",
+        "Culture",
+        "Interaction",
+        "Leadership",
+        "Awareness"
+      ],
+      "name":"Ambassador",
+      "weapons":[
+        [
+          "9mm charge pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "8\/16\/60",
+          "HI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "3D audio\/video player",
+        "fan mail"
+      ],
+      "armor":[
+        "CF long coat",
+        "d4",
+        "d4",
+        "d6-2"
+      ],
+      "specs":[
+        [
+          "Entertainment",
+          "Act",
+          2.0
+        ],
+        [
+          "Deception",
+          "Bluff",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Charm",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Seduce",
+          1.0
+        ],
+        [
+          "Knowledge",
+          "Deduce",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Entertainment",
+        "Deception",
+        "Interaction",
+        "Knowledge",
+        "Awareness"
+      ],
+      "name":"Celebrity",
+      "weapons":[
+        [
+          "Stutter pistol",
+          "pistol",
+          "d6+2s",
+          "d8+2s",
+          "d8+4s",
+          "6\/12\/30",
+          "LI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "data slate",
+        "fake IDs"
+      ],
+      "armor":[
+        "CF long coat",
+        "d4",
+        "d4",
+        "d6-2"
+      ],
+      "specs":[
+        [
+          "Knowledge",
+          "Deduce",
+          1.0
+        ],
+        [
+          "Deception",
+          "Bluff",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Bargain",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Charm",
+          1.0
+        ],
+        [
+          "Law",
+          "Streetwise",
+          2.0
+        ]
+      ],
+      "broads":[
+        "Knowledge",
+        "Deception",
+        "Interaction",
+        "Law",
+        "Awareness"
+      ],
+      "name":"Contact",
+      "weapons":[
+        [
+          "9mm charge pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "8\/16\/60",
+          "HI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "data slate",
+        "credit scan",
+        "briefcase"
+      ],
+      "armor":[
+        "CF long coat",
+        "d4",
+        "d4",
+        "d6-2"
+      ],
+      "specs":[
+        [
+          "Business",
+          "Corporate",
+          2.0
+        ],
+        [
+          "Knowledge",
+          "Computer operation",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Bargain",
+          1.0
+        ],
+        [
+          "Leadership",
+          "Command",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Business",
+        "Knowledge",
+        "Interaction",
+        "Leadership",
+        "Awareness",
+        "Law"
+      ],
+      "name":"Executive",
+      "weapons":[
+        [
+          "9mm charge pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "8\/16\/60",
+          "HI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "medical kit",
+        "data slate",
+        "holy text"
+      ],
+      "armor":[
+        "None",
+        "0",
+        "0",
+        "0"
+      ],
+      "specs":[
+        [
+          "Knowledge",
+          "First aid",
+          1.0
+        ],
+        [
+          "Culture",
+          "Diplomacy",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Charm",
+          1.0
+        ],
+        [
+          "Leadership",
+          "Inspire",
+          1.0
+        ],
+        [
+          "Resolve",
+          "Mental resolve",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Knowledge",
+        "Culture",
+        "Interaction",
+        "Leadership",
+        "Resolve",
+        "Awareness"
+      ],
+      "name":"Missionary",
+      "weapons":[
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "data slate",
+        "credit scan",
+        "cargo manifest"
+      ],
+      "armor":[
+        "CF long coat",
+        "d4",
+        "d4",
+        "d6-2"
+      ],
+      "specs":[
+        [
+          "Business",
+          "Small business",
+          2.0
+        ],
+        [
+          "Knowledge",
+          "Computer operation",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Bargain",
+          2.0
+        ],
+        [
+          "Interaction",
+          "Charm",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Business",
+        "Knowledge",
+        "Interaction",
+        "Leadership",
+        "Awareness",
+        "Vehicle Operation"
+      ],
+      "name":"Trader",
+      "weapons":[
+        [
+          "9mm charge pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "8\/16\/60",
+          "HI"
+        ]
+      ]
+    }
+  ],
+  "Free Agent":[
+    {
+      "gear":[
+        "comm gear",
+        "binoculars",
+        "restraints",
+        "bounty scanner"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Modern Ranged Weapons",
+          "Pistol",
+          1.0
+        ],
+        [
+          "Stealth",
+          "Shadow",
+          1.0
+        ],
+        [
+          "Investigate",
+          "Track",
+          2.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ],
+        [
+          "Acrobatics",
+          "Dodge",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Modern Ranged Weapons",
+        "Stealth",
+        "Investigate",
+        "Awareness",
+        "Acrobatics",
+        "Interaction"
+      ],
+      "name":"Bounty Hunter",
+      "weapons":[
+        [
+          "Mass pistol",
+          "pistol",
+          "d6w",
+          "d6+2w",
+          "d6m",
+          "2\/6\/12",
+          "En"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "binoculars",
+        "survival kit",
+        "data slate"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Modern Ranged Weapons",
+          "Rifle",
+          1.0
+        ],
+        [
+          "Vehicle Operation",
+          "Land vehicle",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Intuition",
+          1.0
+        ],
+        [
+          "Investigate",
+          "Search",
+          1.0
+        ],
+        [
+          "Knowledge",
+          "First aid",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Modern Ranged Weapons",
+        "Vehicle Operation",
+        "Awareness",
+        "Investigate",
+        "Stamina",
+        "Knowledge"
+      ],
+      "name":"Explorer",
+      "weapons":[
+        [
+          "Render rifle",
+          "rifle",
+          "d6+1s",
+          "d6+1w",
+          "d4+1m",
+          "50\/100\/250",
+          "En"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "cards",
+        "electronic lockpick",
+        "lucky charm"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Deception",
+          "Gamble",
+          2.0
+        ],
+        [
+          "Deception",
+          "Bluff",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Bargain",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Charm",
+          1.0
+        ],
+        [
+          "Manipulation",
+          "Lockpick",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Deception",
+        "Interaction",
+        "Manipulation",
+        "Awareness",
+        "Acrobatics"
+      ],
+      "name":"Gambler",
+      "weapons":[
+        [
+          "Mass pistol",
+          "pistol",
+          "d6w",
+          "d6+2w",
+          "d6m",
+          "2\/6\/12",
+          "En"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "electronic lockpick",
+        "disguise kit",
+        "micro camera"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Stealth",
+          "Hide",
+          1.0
+        ],
+        [
+          "Stealth",
+          "Sneak",
+          1.0
+        ],
+        [
+          "Deception",
+          "Bluff",
+          1.0
+        ],
+        [
+          "Manipulation",
+          "Lockpick",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ],
+        [
+          "Knowledge",
+          "Computer operation",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Stealth",
+        "Deception",
+        "Manipulation",
+        "Awareness",
+        "Modern Ranged Weapons",
+        "Knowledge"
+      ],
+      "name":"Spy",
+      "weapons":[
+        [
+          "Stutter pistol",
+          "pistol",
+          "d6+2s",
+          "d8+2s",
+          "d8+4s",
+          "6\/12\/30",
+          "LI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "cargo scanner",
+        "fake manifest",
+        "toolkit"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Vehicle Operation",
+          "Space vehicle",
+          2.0
+        ],
+        [
+          "Stealth",
+          "Sneak",
+          1.0
+        ],
+        [
+          "Deception",
+          "Bluff",
+          1.0
+        ],
+        [
+          "Interaction",
+          "Bargain",
+          1.0
+        ],
+        [
+          "Modern Ranged Weapons",
+          "Pistol",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Vehicle Operation",
+        "Stealth",
+        "Deception",
+        "Interaction",
+        "Awareness",
+        "Modern Ranged Weapons"
+      ],
+      "name":"Smuggler",
+      "weapons":[
+        [
+          "9mm charge pistol",
+          "pistol",
+          "d4+1w",
+          "d6+1w",
+          "d4m",
+          "8\/16\/60",
+          "HI"
+        ]
+      ]
+    },
+    {
+      "gear":[
+        "comm gear",
+        "electronic lockpick",
+        "toolkit",
+        "glass cutter"
+      ],
+      "armor":[
+        "CF short coat",
+        "d4-1",
+        "d4-1",
+        "d6-3"
+      ],
+      "specs":[
+        [
+          "Manipulation",
+          "Lockpick",
+          2.0
+        ],
+        [
+          "Manipulation",
+          "Pickpocket",
+          1.0
+        ],
+        [
+          "Stealth",
+          "Hide",
+          1.0
+        ],
+        [
+          "Stealth",
+          "Sneak",
+          1.0
+        ],
+        [
+          "Acrobatics",
+          "Dodge",
+          1.0
+        ],
+        [
+          "Awareness",
+          "Perception",
+          1.0
+        ]
+      ],
+      "broads":[
+        "Manipulation",
+        "Stealth",
+        "Acrobatics",
+        "Awareness",
+        "Deception"
+      ],
+      "name":"Thief",
+      "weapons":[
+        [
+          "Stutter pistol",
+          "pistol",
+          "d6+2s",
+          "d8+2s",
+          "d8+4s",
+          "6\/12\/30",
+          "LI"
+        ]
+      ]
+    }
+  ]
+}

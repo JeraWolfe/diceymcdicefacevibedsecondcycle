@@ -1,0 +1,321 @@
+================================================================================
+  FUNCTION REFERENCE: scr_alternity_statblock.gml
+  50 functions | 1,676 lines | Core character data layer
+================================================================================
+
+--------------------------------------------------------------------------------
+  DATA CONVERSION
+--------------------------------------------------------------------------------
+
+   1. get_skill_tree()
+      Line 24 | 6 lines
+      @function get_skill_tree()
+      @description Returns the currently loaded skill tree from the global library
+
+   2. damage_type_to_string(_dt)
+      Line 30 | 5 lines
+      @function damage_type_to_string(dt)
+
+   3. string_to_damage_type(_s)
+      Line 35 | 7 lines
+      @function string_to_damage_type(s)
+
+   4. careers_to_export(_careers)
+      Line 42 | 17 lines
+      @function careers_to_export(career_array)
+      @description Converts career array for JSON (enum damage types → strings)
+
+   5. careers_from_import(_careers)
+      Line 59 | 31 lines
+      @function careers_from_import(career_array)
+      @description Converts imported career array (string damage types → enums)
+
+--------------------------------------------------------------------------------
+  SKILL QUERIES
+--------------------------------------------------------------------------------
+
+   6. hero_has_broad_skill(_stat, _broad_name)
+      Line 90 | 11 lines
+      @function hero_has_broad_skill(statblock, broad_name)
+      @description Returns true if the hero has the given broad skill
+
+   7. hero_has_specialty(_stat, _broad_name, _spec_name)
+      Line 101 | 11 lines
+      @function hero_has_specialty(statblock, broad_name, spec_name)
+      @description Returns true if the hero already has this specialty
+
+   8. get_broad_skill_scores(_stat, _broad_name)
+      Line 112 | 13 lines
+      @function get_broad_skill_scores(statblock, broad_name)
+      @description Returns the broad skill's scores as a struct, or undefined if not found
+
+   9. add_specialty_rank0(_stat, _broad_name, _spec_name)
+      Line 125 | 31 lines
+      @function add_specialty_rank0(statblock, broad_name, spec_name)
+      @description Adds a rank-0 specialty under an existing broad skill (uses broad skill scores)
+      @returns {bool} true if added, false if broad skill not found or specialty already exists
+
+  10. build_browser_list(_stat)
+      Line 156 | 44 lines
+      @function build_browser_list(statblock)
+      @description Builds the flat list of browsable entries for the skill browser.
+      Returns array of structs: { type: "broad"/"specialty"/"add", broad, specialty, ability, owned }
+
+--------------------------------------------------------------------------------
+  STATBLOCK CREATION
+--------------------------------------------------------------------------------
+
+  11. create_statblock(_name, _profession, _career)
+      Line 200 | 53 lines
+      @function create_statblock(name, profession, career)
+      @description Creates a new Alternity character stat block as a struct
+      @param {string} _name         Hero's name
+      @param {real}   _profession   PROFESSION enum value
+      @param {string} _career       Career name (e.g. "Soldier", "Pilot")
+      @returns {struct} Complete Alternity stat block
+
+  12. set_ability(_stat, _ability_name, _score)
+      Line 253 | 19 lines
+      @function set_ability(statblock, ability_name, score)
+      @description Sets an ability score and auto-calculates untrained & resistance modifier
+
+  13. calculate_action_check(_stat)
+      Line 272 | 17 lines
+      @function calculate_action_check(statblock)
+      @description Calculates action check scores from DEX + INT + profession bonus
+
+  14. calculate_durability(_stat)
+      Line 289 | 18 lines
+      @function calculate_durability(statblock)
+      @description Calculates durability from CON and profession
+
+  15. add_skill(_stat, _ability, _broad_name, _specialty_name, _rank, _score_ord, _score_good, _score_amz)
+      Line 307 | 15 lines
+      @function add_skill(statblock, ability, broad_name, specialty_name, rank, score_ord, score_good, score_amz)
+      @description Adds a skill to the stat block
+
+  16. add_weapon(_stat, _name, _skill_kw, _dmg_ord, _dmg_good, _dmg_amz, _range_str, _damage_type)
+      Line 322 | 15 lines
+      @function add_weapon(statblock, name, skill_keyword, dmg_ord, dmg_good, dmg_amz, range_str, damage_type)
+      @description Adds a weapon to the stat block. skill_keyword maps to keyword_tree.weapon_skills.
+
+  17. set_armor(_stat, _name, _li, _hi, _en)
+      Line 337 | 8 lines
+      @function set_armor(statblock, name, li, hi, en)
+      @description Sets armor on the stat block
+
+  18. format_mod(_val)
+      Line 345 | 4 lines
+      @function format_mod(val) → string with +/- prefix
+
+--------------------------------------------------------------------------------
+  SAMPLE CHARACTER
+--------------------------------------------------------------------------------
+
+  19. create_sample_soldier()
+      Line 349 | 105 lines
+      @function create_sample_soldier()
+      @description Creates a sample Combat Spec / Soldier stat block matching the Fastplay template
+
+--------------------------------------------------------------------------------
+  IMPORT / EXPORT
+--------------------------------------------------------------------------------
+
+  20. statblock_export(_stat)
+      Line 454 | 65 lines
+      @function statblock_export(statblock)
+      @description Exports a character stat block to a JSON file via save dialog.
+      @returns {bool} true if saved successfully
+
+  21. statblock_import()
+      Line 519 | 17 lines
+      @function statblock_import()
+      @description Imports a character stat block from a JSON file via open dialog.
+      @returns {struct|undefined} The loaded stat block, or undefined if cancelled/failed
+
+  22. statblock_import_data(_data)
+      Line 536 | 151 lines
+      @function statblock_import_data(data)
+      @description Builds a statblock from parsed JSON data. Returns struct or undefined.
+
+--------------------------------------------------------------------------------
+  DURABILITY & DISPLAY
+--------------------------------------------------------------------------------
+
+  23. draw_durability_circles(_x, _y, _label, _current, _max_val, _bar_color, _text_color)
+      Line 687 | 40 lines
+      @function draw_durability_circles(x, y, label, current, max_val, bar_color, text_color)
+      @description Draws clickable durability circles. Left=damaged (filled), Right=healthy (empty).
+      Returns new current value, or -1 if no click.
+
+--------------------------------------------------------------------------------
+  FX & UPDATE
+--------------------------------------------------------------------------------
+
+  24. get_fx_data(_name)
+      Line 727 | 8 lines
+      @function get_fx_data(name)
+      @description Looks up full FX definition from global.fx_database by name. Returns struct or undefined.
+
+  25. update_hero(_stat)
+      Line 735 | 40 lines
+      @function update_hero(statblock)
+      @description Master update - recalculates ALL derived values from base data
+
+--------------------------------------------------------------------------------
+  PENALTIES & SCORES
+--------------------------------------------------------------------------------
+
+  26. get_wound_penalty(_stat)
+      Line 775 | 18 lines
+      @function get_wound_penalty(statblock)
+      @description Returns situation die step penalty from wounds/mortal damage
+      Mortal: +1 step per mortal damage taken
+      Wound: +1 step at half, +2 at full
+
+  27. get_skill_use_penalty(_stat, _idx)
+      Line 793 | 9 lines
+      @function get_skill_use_penalty(statblock, skill_index)
+      @description Returns situation die step penalty for using this skill
+      0 = specialty (trained), +1 = broad only, +2 = untrained
+
+  28. get_untrained_score(_stat, _ability)
+      Line 802 | 6 lines
+      @function get_untrained_score(statblock, ability_name)
+      @description Returns the untrained skill score for an ability (ability/2)
+
+--------------------------------------------------------------------------------
+  VOSS TEMPLATE & ROLL LOG
+--------------------------------------------------------------------------------
+
+  29. save_voss_template()
+      Line 808 | 42 lines
+      @function save_voss_template()
+      @description Saves the default Sergeant Voss character to voss.json
+
+  30. append_roll_log_file(_stat, _roll)
+      Line 850 | 38 lines
+      @function append_roll_log_file(hero, roll_result)
+      @description Appends a roll entry to the character's persistent log file
+
+  31. load_roll_log_tail(_stat, _count)
+      Line 888 | 30 lines
+      @function load_roll_log_tail(hero, count)
+      @description Loads the last N lines from the character's roll log file
+
+  32. get_roll_log_path(_stat)
+      Line 918 | 13 lines
+      @function get_roll_log_path(hero)
+
+--------------------------------------------------------------------------------
+  DAMAGE & COMBAT
+--------------------------------------------------------------------------------
+
+  33. parse_and_roll_damage(_dmg)
+      Line 931 | 58 lines
+      @function parse_and_roll_damage(dmg_string)
+      @description Parses "d6+1w" or "d8+2s" or "d4m" and rolls it.
+      Returns { roll, modifier, total, die_sides, type_char, type_name, text }
+
+  34. get_difficulty_descriptor(_step)
+      Line 989 | 19 lines
+      @function get_difficulty_descriptor(situation_step)
+      @description Returns PHB difficulty label based on the situation die step.
+      Per Alternity PHB Table P16: Situation Die Modifiers
+
+  35. get_range_penalty(_range_cat)
+      Line 1008 | 8 lines
+      @function get_range_penalty(range_category)
+
+  36. find_best_skill_for_weapon(_stat, _wep)
+      Line 1016 | 48 lines
+      @function find_best_skill_for_weapon(statblock, weapon)
+      @description Finds the hero's best applicable skill for a weapon.
+      Uses weapon.skill_keyword → keyword_tree.weapon_skills for resolution.
+
+--------------------------------------------------------------------------------
+  PORTRAIT SYSTEM
+--------------------------------------------------------------------------------
+
+  37. get_portrait_filename(_stat)
+      Line 1064 | 19 lines
+      @function get_portrait_filename(statblock)
+      @description Returns the expected default portrait filename for this character
+
+  38. try_load_sprite(_path)
+      Line 1083 | 10 lines
+      @function try_load_sprite(path)
+      @description Attempts to load a sprite from a path. Returns sprite ID or -1.
+
+  39. load_portrait_for_hero(_stat)
+      Line 1093 | 32 lines
+      @function load_portrait_for_hero(statblock)
+      @description Loads the appropriate portrait sprite. Returns sprite ID or -1.
+
+  40. load_custom_portrait_dialog(_stat)
+      Line 1125 | 32 lines
+      @function load_custom_portrait_dialog(statblock)
+      @description Opens file dialog, copies image to portraits/ dir, saves relative path
+
+  41. draw_portrait(_x, _y, _w, _h, _border_color)
+      Line 1157 | 39 lines
+      @function draw_portrait(x, y, w, h, border_color)
+      @description Draws the portrait (or placeholder) scaled to fit the given area
+
+  42. scan_portrait_directory()
+      Line 1196 | 32 lines
+      @function scan_portrait_directory()
+      @description Scans portraits/ folder for existing images, returns array of {name, path}
+
+--------------------------------------------------------------------------------
+  PORTRAIT RENDERING
+--------------------------------------------------------------------------------
+
+  43. draw_glow(_x, _y, _r, _col, _layers)
+      Line 1228 | 11 lines
+      @function draw_glow(x, y, radius, color, layers)
+      @description Draws a layered glow effect using concentric transparent circles
+
+  44. draw_particles(_x, _y, _w, _h, _count, _col, _smin, _smax)
+      Line 1239 | 14 lines
+      @function draw_particles(x, y, w, h, count, color, size_min, size_max)
+      @description Scatter particles for atmosphere (fog, sparks, dust)
+
+  45. draw_energy_lines(_cx, _cy, _count, _rmin, _rmax, _col)
+      Line 1253 | 20 lines
+      @function draw_energy_lines(cx, cy, count, min_r, max_r, color)
+      @description Draw crackling energy lines radiating outward
+
+  46. draw_armor_plates(_x, _y, _w, _h, _col, _hi)
+      Line 1273 | 18 lines
+      @function draw_armor_plates(x, y, w, h, color, highlight)
+      @description Draw layered armor plating with edge highlights
+
+  47. draw_weapon_silhouette(_cx, _cy, _type, _col)
+      Line 1291 | 43 lines
+      @function draw_weapon_silhouette(cx, cy, type, color)
+      @description Draw a weapon silhouette from line segments. type: 0=rifle, 1=pistol, 2=blade, 3=fist, 4=psi
+
+  48. generate_all_coded_portraits()
+      Line 1334 | 324 lines
+      @function generate_all_coded_portraits()
+      @description Generates 54 epic sci-fi portrait images using layered draw effects.
+
+--------------------------------------------------------------------------------
+  UI PRIMITIVES
+--------------------------------------------------------------------------------
+
+  49. ui_btn(_key, _x1, _y1, _x2, _y2, _text, _base_color, _hover_color)
+      Line 1658 | 16 lines
+      @function ui_btn(key, x1, y1, x2, y2, text, base_color, hover_color)
+      @description THE meta button function. Registers click rect + draws the button in one call.
+      Returns true if hovering (for inline hover effects).
+
+  50. mouse_in(_x1, _y1, _x2, _y2)
+      Line 1674 | 3 lines
+      @function mouse_in(x1, y1, x2, y2)
+      @description Returns true if mouse GUI position is inside the rectangle
+
+================================================================================
+  TOTAL: 50 functions
+================================================================================

@@ -1,0 +1,424 @@
+================================================================================
+CODEBASE REFERENCE — POST-REFACTOR
+DiceyMcDiceFaces: Charma for Alternity
+Generated: 2026-04-05
+================================================================================
+
+1. PROJECT OVERVIEW
+================================================================================
+
+  Name:        DiceyMcDiceFaces — Charma for Alternity
+  Engine:      GameMaker 2024.14.4.222
+  Genre:       Character manager / virtual tabletop aid
+  System:      Alternity Science Fiction RPG (TSR, 1998)
+  Resolution:  Scales to display (fullscreen / windowed 80% / half monitor)
+  Input:       Mouse only (no keyboard input during gameplay)
+  Source:      ~8,100 lines across 11 GML files
+  Data:        23 JSON datafiles (12 game data + 8 reference + 3 user-writable)
+  Project:     diceymcdicefacevibed.yyp
+
+2. FILE STRUCTURE
+================================================================================
+
+  objects/obj_game/
+    Create_0.gml          Initialization: all globals, UI state, GM state, layout
+    Step_0.gml            Input processing: mouse clicks, scroll, tab dispatch
+    Draw_64.gml           Full UI rendering: welcome, sheet, right panel, overlays
+
+  scripts/
+    scr_ui_helpers/
+      scr_ui_helpers.gml  Core UI: btn_clicked, meta_roll, apply_fx_modifiers,
+                          dropdown system, roll request builders, draw helpers
+    scr_draw_tabs/
+      scr_draw_tabs.gml   Tab renderers: 10 player tabs + 5 GM tabs + GM helpers
+    scr_tab_handlers/
+      scr_tab_handlers.gml Tab input: 10 player tab handlers + 4 GM tab handlers
+    scr_alternity_statblock/
+      scr_alternity_statblock.gml Character data model: create/update/export/import,
+                          portrait system, party/NPC management, damage parser
+    scr_chargen/
+      scr_chargen.gml     Character generation: species, professions, careers, NPC gen
+    scr_data_loader/
+      scr_data_loader.gml JSON pipeline: init_all_data, read/write JSON, campaign
+                          persistence, recent characters, changelog
+    scr_dice/
+      scr_dice.gml        Dice engine: alternity_check, action check, situation die
+    scr_skill_costs/
+      scr_skill_costs.gml Skill economy: PHB two-tier costs, FX management,
+                          perks/flaws/cybertech helpers
+
+  datafiles/              (shipped with game)
+    config.json           UI colors, dice steps, layout, misc settings
+    professions.json      Profession mechanics (requirements, bonuses, skills)
+    skills.json           Skill tree (broad skills + specialties)
+    species.json          Playable species (mods, starting skills, traits)
+    careers.json          Career packages by profession (skills + equipment)
+    names.json            Random name generation lists
+    fx_database.json      Unified FX entries (perks, flaws, cybertech)
+    keyword_tree.json     Master keyword-to-ability-to-category mapping
+    equipment.json        Weapons, armor, gear databases
+    programs.json         Grid/cyberdeck programs + computers + processors
+    npc_templates.json    GMG Chapter 6 NPC templates for quick generation
+    changelog.json        Development changelog (newest first)
+    tables/
+      skill_rank_benefits.json  PHB rank benefit tables
+      combat_tables.json        Combat reference tables
+      gm_tables.json            GM reference tables
+    reference/            Documentation and reference files
+
+  User-writable files (save directory):
+    recent_characters.json  Recent character list
+    campaign.json           Campaign state (roster, party/NPC refs, factions)
+    characters/*.json       Individual character saves
+
+3. BUILD & RUN
+================================================================================
+
+  1. Open diceymcdicefacevibed.yyp in GameMaker 2024
+  2. Press F5 to run
+  3. No external dependencies
+  4. On first launch, JSON config files load from datafiles/ directory
+  5. Characters save to working_directory + "characters/"
+  6. Campaign and recent data save to %AppData%/Local/diceymcdicefacevibed/
+  7. Delete any JSON file to force regeneration from defaults
+
+4. ARCHITECTURE
+================================================================================
+
+  Single-object architecture: obj_game
+  Three events handle everything:
+
+  CREATE_0 (initialization)
+    - Calls init_all_data() to load all JSON data into globals
+    - Initializes portrait system
+    - Creates blank hero statblock
+    - Sets up UI state (tabs, scroll, animation, GM mode)
+    - Configures window mode and GUI size from config
+    - Builds chargen dropdown system
+    - Loads saved campaign
+    - Applies colorblind mode
+
+  STEP_0 (input processing)
+    - Reads mouse click + scroll wheel
+    - Global exit handler (saves hero + ends game)
+    - Roll animation timer
+    - State machine: welcome → chargen → skill browser → main screen
+    - Main screen routes to: GM tools (gm_state="gm") or player sheet
+    - Right panel buttons always active (new char, menu, portrait, file ops,
+      situation die, roll, quick rolls)
+    - Tab handlers dispatched by current_tab (0-9)
+    - GM tab handlers dispatched by gm_tab (0-4)
+
+  DRAW_64 (rendering)
+    - Gradient background with wave swoop
+    - Welcome screen OR character sheet + right panel
+    - Left panel: tabs (vertical or horizontal) + content area
+    - Tab content dispatched to draw_tab_* functions
+    - Right panel: portrait, dice roller, roll history, file ops
+    - Overlays: skill browser, chargen popup, accessibility settings, tooltips
+    - Button rects registered via btn struct each frame
+
+  Script hierarchy:
+    scr_ui_helpers     Core UI (btn_clicked, meta_roll, dropdowns, draw helpers)
+    scr_data_loader    JSON pipeline (init, read/write, campaign persistence)
+    scr_alternity_statblock  Character data (create, update, export/import, portraits)
+    scr_draw_tabs      Tab renderers (10 player + 5 GM + helper functions)
+    scr_tab_handlers   Tab input (10 player + 4 GM handlers)
+    scr_skill_costs    Skill economy (costs, FX management, rank manipulation)
+    scr_chargen        Character generation (species, careers, NPC templates)
+    scr_dice           Dice engine (core checks, situation die)
+
+5. CODE STYLE CONVENTIONS
+================================================================================
+
+  - All local variables prefixed with underscore: _variableName
+  - Verbose descriptive camelCase for variable names
+  - Single-letter vars only for loop counters: _i, _j, _k
+  - Static-length content first, variable-length content last in scrollable views
+  - REMOVED comments mark deleted dead code (e.g., "// shuffle_array() REMOVED")
+  - Functions named with snake_case (GML convention)
+  - Structs used extensively for data (statblocks, config, FX entries)
+  - Button registration pattern: Draw registers rect, Step checks click
+  - Tab functions return updated _ly position for vertical layout
+
+6. KEY PATTERNS
+================================================================================
+
+  btn_clicked(key)
+  ----------------
+  Draw_64 registers button rects each frame:
+    btn.myButton = [x1, y1, x2, y2]   (via variable_struct_set or ui_btn)
+  Step_0 checks if mouse clicked inside:
+    if (btn_clicked("myButton")) { ... }
+  ui_btn() combines registration + drawing in one call.
+
+  meta_roll(stat, request)
+  ------------------------
+  THE single entry point for all dice checks. Flow:
+    1. Caller builds roll_request via build_*_request()
+    2. prepare_roll() applies auto-mods (training, FX, wounds)
+    3. Sets staged_roll with computed situation step
+    4. Player can adjust die with < > buttons
+    5. execute_staged_roll() rolls dice, applies cant-fail, logs result
+  For instant rolls: meta_roll() = prepare_roll() + execute_staged_roll()
+  For quick rolls: quick_roll_skill() adds auto-mods to player's current die.
+
+  update_hero(stat)
+  -----------------
+  MUST be called after ANY character modification. Recalculates:
+    - Ability derived values (untrained, resistance modifier)
+    - Action check (DEX+INT/2 + profession bonus)
+    - Durability (preserves current damage)
+    - Skill scores (all skills recalculated from base abilities)
+    - Portrait (loads appropriate image)
+
+  skill_index_map
+  ---------------
+  Maps visible filtered rows to hero.skills[] indices. Rebuilt each frame
+  during draw_tab_character(). Used by handle_tab_character() for click/+/-
+  operations on the correct skill when filtered by active_stat_group.
+
+  apply_fx_modifiers(stat, request)
+  ---------------------------------
+  THE unified modifier engine. One loop through all active FX on hero:
+    1. Generates keyword tags for the roll (ability, type, training, skill names)
+    2. Looks up each FX in global.fx_database
+    3. Matches FX keywords against roll tags
+    4. Applies modifier based on quality tier or fixed value
+  Three modes: keyword_tiers (per-quality keywords), quality_scale (same keywords,
+  different modifier per quality), fixed (flat keywords + flat modifier).
+  Adding new modifiers requires ZERO code changes — just add to fx_database.json.
+
+  Dropdown System
+  ---------------
+  Self-contained dropdown structs with draw(), draw_list(), click(), value(),
+  set_options() methods. Used by chargen popup. dropdown_group_click() and
+  dropdown_group_draw_lists() manage groups of dropdowns.
+
+7. DATA MODEL
+================================================================================
+
+  JSON Data Files (12 in datafiles/)
+  -----------------------------------
+  config.json        Colors, dice steps, layout, colorblind profiles
+  professions.json   5 professions: Combat Spec, Diplomat, Free Agent, Tech Op,
+                     Mindwalker. Each has requirements, bonuses, signature skills.
+  skills.json        Skill tree: ~40 broad skills, each with specialties
+  species.json       6 species: Human, Fraal, Weren, Sesheyan, T'sa, Mechalus
+  careers.json       Career packages indexed by profession (skills + equipment)
+  names.json         First and last name lists for random generation
+  fx_database.json   Unified FX: perks, flaws, cybertech with keywords/modifiers
+  keyword_tree.json  Maps skills → abilities → categories for modifier matching
+  equipment.json     Weapons (ranged/melee/heavy), armor, gear — all PL-filtered
+  programs.json      Grid programs, computers, processor qualities
+  npc_templates.json GMG NPC templates (abilities, skills, equipment)
+  changelog.json     Development log entries
+
+  Character Save Format (v4)
+  ---------------------------
+  Compact JSON:
+    _format: "alternity_statblock", _version: 4
+    Skills as arrays: [name, ability/broad, rank/-1]
+    Weapons as 7-element arrays: [name, skill_kw, dmg_o, dmg_g, dmg_a, range, type]
+    Abilities as uppercase keys: STR, DEX, CON, INT, WIL, PER
+    Durability as damage taken: stun_damage, wound_damage, mortal_damage
+    FX array: [{name, type, quality, active}]
+    Deck: {computer, processor, programs[{name, quality}]}
+    Lore: {height, weight, hair, gender, moral_attitude, temperament[],
+           motivations[], personality, lifepath}
+  Import handles v2 (nested objects), v3 (lowercase), v4 (compact arrays).
+
+  Campaign Persistence
+  --------------------
+  campaign.json stores:
+    - factions: array of faction/team names
+    - roster: array of {name, path} for all known character files
+    - party: array of {name, path} for active party members
+    - npcs: array of {name, path, faction} for NPCs
+  Characters save individually to working_directory + "characters/*.json"
+  recent_characters.json tracks last character and recent list (cap 10).
+
+8. GM MODE
+================================================================================
+
+  Toggle: gm_mode (bool). Activated from welcome screen.
+  States: gm_state = "gm" (GM tools) or "edit" (editing a character)
+  When gm_state="gm", replaces the entire left panel with GM tabs.
+  "Edit" enters the normal character sheet for the selected character.
+  "Back to GM" button returns to GM tools.
+
+  GM Tabs (gm_tab 0-4):
+    0 = Party     Party roster with HP, senses, resolve, resistance mods,
+                  enhanced senses, psionics. Edit/Move/Remove buttons.
+    1 = NPCs      NPCs organized by faction/team. Quick NPC generation from
+                  GMG templates. Import, add faction, edit/move/remove.
+    2 = Encounter Initiative bar (4 phases: Amazing/Good/Ordinary/Marginal).
+                  Per-character AC, phase, actions, resistance mods, durability.
+                  Roll All Init, New Round, Clear Init buttons.
+    3 = Campaign  Master roster of all character files. Scan directory, import,
+                  export all. Load characters to party or NPCs.
+    4 = Resources Scrollable GM customization guide — how to edit equipment,
+                  skills, FX, templates, species JSON files.
+
+9. PLAYER TABS (0-9)
+================================================================================
+
+  Tab 0: Character
+    Stat group buttons (6 abilities with +/-). Durability circles (stun/wound/
+    mortal) with reset buttons. Action check display. Filtered skill list by
+    active ability group. Skill +/- for rank adjustment. Active perks/flaws
+    toggles. Untrained check (collapsible). Skill browser button.
+
+  Tab 1: Equipment
+    Three sub-tabs: Weapons, Armor, Gear. Verbose/compact toggle. Add panel
+    with PL filter (Progress Level 0-8). Category grouping for weapons
+    (ranged/melee/heavy). Custom weapon/gear creation. Inspect highlight system.
+
+  Tab 2: Combat
+    Quick roll buttons (Senses, Mental Res, Physical Res, Initiative).
+    Action phase tracker (4 phases with placement). Wound/cant-fail/range toggles.
+    Weapon attack table with skill matching, training, situation die, damage codes.
+    Post-success damage prompt. Unarmed combat (punch/kick). Defensive skills
+    (Dodge, Power martial arts). Feat checks (all 6 abilities).
+
+  Tab 3: Psionics
+    Psionic disciplines (Telepathy, Telekinesis, ESP, Biokinesis). Broad and
+    specialty skills with descriptions. Roll buttons. Wound/cant-fail toggles.
+
+  Tab 4: Perks & Flaws
+    Perks/Flaws sub-tabs. Your installed perks/flaws with cost display.
+    Available list from fx_database with scroll. Quality tier upgrades (O/G/A).
+    Click to add/toggle.
+
+  Tab 5: Cybertech
+    Cyber tolerance display (CON + species + perk bonuses). Installed cyberware
+    with active/inactive toggles. Available cyberware by category
+    (neural/body/sensory/weapon/utility). Expandable details with quality tiers.
+    Auto-prerequisite installation.
+
+  Tab 6: Roll Log
+    Persistent roll log from file. Last 100 entries, newest first. Color-coded
+    by degree (Amazing/Good/Ordinary/Failure). Copy-to-clipboard buttons.
+    Scroll up/down.
+
+  Tab 7: Info
+    Scrollable help content. In player mode: how-to-use guide for all tabs.
+    In GM mode: GM resources and JSON customization guide.
+
+  Tab 8: Grid / Cyberdeck
+    Programs sub-tab: installed programs with slots display. Add from database
+    filtered by type (operator/hacking/utility) and PL.
+    Computer sub-tab: select cyberdeck hardware with processor quality.
+    Builder sub-tab: create custom homebrew programs.
+
+  Tab 9: Aura / Lore
+    Character identity (species, profession, gender, height, weight, hair).
+    PHB Step 8 attributes: moral attitude, temperament (pill buttons, pick 2-3),
+    motivations (pill buttons, pick 1-2), personality (freeform), lifepath
+    (freeform backstory). Sergeant Voss is read-only template.
+
+10. CRITICAL FUNCTIONS TABLE
+================================================================================
+
+  Function                      File                    Description
+  ─────────────────────────────────────────────────────────────────────────────
+  init_all_data                 scr_data_loader         Master init: loads all JSON into globals
+  read_json                     scr_data_loader         Reads JSON file, returns parsed struct/array
+  write_json                    scr_data_loader         Writes struct/array to disk as JSON
+  load_or_create                scr_data_loader         Load JSON or create from default
+  parse_hex_color               scr_data_loader         Converts "#rrggbb" to GML color
+  ability_name_to_index         scr_data_loader         Maps "STR" → 0, "DEX" → 1, etc.
+  add_recent_character          scr_data_loader         Tracks character in recent list (cap 10)
+  save_hero_and_track           scr_data_loader         Saves hero to characters/ and tracks
+  load_character_from_path      scr_data_loader         Loads character from file path
+  save_campaign                 scr_data_loader         Saves campaign.json
+  load_campaign                 scr_data_loader         Loads campaign.json
+  scan_characters_directory     scr_data_loader         Rebuilds roster from characters/ folder
+  roster_add_ref                scr_data_loader         Adds path ref to roster (dedupes)
+  ─────────────────────────────────────────────────────────────────────────────
+  create_statblock              scr_alternity_statblock Creates blank Alternity character
+  set_ability                   scr_alternity_statblock Sets ability score + derived values
+  calculate_action_check        scr_alternity_statblock Calculates AC from DEX+INT+bonus
+  calculate_durability          scr_alternity_statblock Calculates durability from CON+prof
+  add_skill                     scr_alternity_statblock Adds a skill entry to statblock
+  add_weapon                    scr_alternity_statblock Adds a weapon entry to statblock
+  set_armor                     scr_alternity_statblock Sets armor on statblock
+  update_hero                   scr_alternity_statblock Master update: recalcs all derived values
+  build_statblock_export        scr_alternity_statblock Builds v4 export struct
+  statblock_export              scr_alternity_statblock Exports character via save dialog
+  statblock_import              scr_alternity_statblock Imports character via open dialog
+  statblock_import_data         scr_alternity_statblock Builds statblock from parsed JSON
+  get_wound_penalty             scr_alternity_statblock Returns wound step penalty
+  find_best_skill_for_weapon    scr_alternity_statblock Finds best applicable weapon skill
+  parse_and_roll_damage         scr_alternity_statblock Parses "d6+1w" and rolls damage
+  get_difficulty_descriptor     scr_alternity_statblock Returns PHB difficulty label
+  sanitize_hero_filename        scr_alternity_statblock Safe filename from hero name
+  load_portrait_for_hero        scr_alternity_statblock Loads appropriate portrait sprite
+  draw_portrait                 scr_alternity_statblock Draws portrait or placeholder
+  add_to_party                  scr_alternity_statblock Adds character to party (dedupes)
+  add_to_npcs                   scr_alternity_statblock Adds character to NPC list
+  move_npc_to_party             scr_alternity_statblock Moves NPC to party
+  export_campaign_full          scr_alternity_statblock Saves all chars + campaign.json
+  get_broad_skill_scores        scr_alternity_statblock Returns broad skill score struct
+  add_specialty_rank0           scr_alternity_statblock Adds rank-0 specialty under broad
+  build_browser_list            scr_alternity_statblock Builds skill browser entry list
+  ─────────────────────────────────────────────────────────────────────────────
+  btn_clicked                   scr_ui_helpers          Checks if named button was clicked
+  ui_btn                        scr_ui_helpers          Registers + draws a button
+  mouse_in                      scr_ui_helpers          Returns true if mouse in rectangle
+  log_roll                      scr_ui_helpers          Unified roll logging
+  log_info                      scr_ui_helpers          Logs an info message (no dice)
+  apply_cant_fail               scr_ui_helpers          Failures become marginal if enabled
+  apply_color_profile           scr_ui_helpers          Applies colorblind palette
+  meta_roll                     scr_ui_helpers          Combined prepare+execute roll
+  prepare_roll                  scr_ui_helpers          Phase 1: compute mods, stage roll
+  execute_staged_roll           scr_ui_helpers          Phase 2: roll dice, log result
+  quick_roll_skill              scr_ui_helpers          Quick roll from player's current die
+  apply_fx_modifiers            scr_ui_helpers          Unified modifier engine (all FX)
+  build_skill_request           scr_ui_helpers          Builds skill check request
+  build_feat_request            scr_ui_helpers          Builds feat check request
+  build_attack_request          scr_ui_helpers          Builds weapon attack request
+  build_initiative_request      scr_ui_helpers          Builds initiative request
+  resolve_roll                  scr_ui_helpers          Resolves keyword string to request
+  keyword_roll                  scr_ui_helpers          One-liner: resolve + roll
+  get_roll_keywords             scr_ui_helpers          Generates keyword tags for a roll
+  roll_has_tag                  scr_ui_helpers          Checks if tag in tags array
+  dropdown                      scr_ui_helpers          Creates dropdown struct
+  dropdown_group_click          scr_ui_helpers          Handles click in dropdown group
+  dropdown_group_draw_lists     scr_ui_helpers          Draws open dropdown lists
+  build_weapon_export_array     scr_ui_helpers          Builds v4 weapon export arrays
+  do_hit_damage_roll            scr_ui_helpers          Rolls damage for last successful hit
+  ─────────────────────────────────────────────────────────────────────────────
+  alternity_check               scr_dice                THE core dice check (d20 + situation)
+  alternity_action_check        scr_dice                Action check (failures → marginal)
+  get_step                      scr_dice                Returns step config from dice.steps
+  situation_step_name           scr_dice                Returns display name for step
+  roll_die                      scr_dice                Rolls 1..sides
+  roll_situation                scr_dice                Rolls situation die (multi-die support)
+  ─────────────────────────────────────────────────────────────────────────────
+  generate_random_character     scr_chargen             Full character generation
+  generate_random_name          scr_chargen             Random first+last name
+  generate_quick_npc            scr_chargen             NPC from GMG template
+  apply_career_to_statblock     scr_chargen             Applies career skills + equipment
+  find_skill                    scr_chargen             Finds skill index in statblock
+  get_specialties_for_broad     scr_chargen             Returns specialty list from skill tree
+  get_careers_for_profession    scr_chargen             Returns career array for profession
+  ─────────────────────────────────────────────────────────────────────────────
+  get_profession_skill_list     scr_skill_costs         Returns profession's signature skills
+  is_profession_skill_hero      scr_skill_costs         Checks both primary + secondary prof
+  get_total_skill_cost_hero     scr_skill_costs         Total skill points spent
+  get_adjusted_skill_points     scr_skill_costs         Starting pts - perks + flaws
+  increase_skill_rank           scr_skill_costs         Increases specialty rank (1-3)
+  decrease_skill_rank           scr_skill_costs         Decreases rank or removes skill
+  add_broad_skill_to_hero       scr_skill_costs         Adds broad skill from tree
+  recalc_skill_scores           scr_skill_costs         Recalculates all skill scores
+  find_fx                       scr_skill_costs         Generic FX lookup in hero.fx
+  has_fx                        scr_skill_costs         Returns true if hero has FX
+  add_perk_to_hero              scr_skill_costs         Adds/upgrades perk on hero
+  add_cybertech_to_hero         scr_skill_costs         Adds cyberware (auto-prereqs)
+  get_cyber_tolerance           scr_skill_costs         Max cyber tolerance (CON+bonuses)
+  ─────────────────────────────────────────────────────────────────────────────
+
+================================================================================
+END OF CODEBASE REFERENCE
+================================================================================

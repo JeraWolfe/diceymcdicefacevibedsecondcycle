@@ -1,0 +1,132 @@
+============================================================
+DICEYMCDICEFACES — CODEBASE REVIEW (PRE)
+Generated: 2026-04-07T06:36:24.657Z
+============================================================
+
+=== BUILD VERSION ===
+Latest: v0.60.5 — Natural-Language Health Logging + Self-Healing Devlog Cache
+Date: 2026-04-06
+Total changelog entries: 135
+
+=== SCRIPT FILES ===
+  scripts/scr_alternity_statblock/scr_alternity_statblock.gml    1566 lines    66 fns  64062 bytes
+  scripts/scr_chargen/scr_chargen.gml                             311 lines    15 fns  11974 bytes
+  scripts/scr_data_loader/scr_data_loader.gml                     495 lines    21 fns  20621 bytes
+  scripts/scr_dice/scr_dice.gml                                   216 lines     9 fns  8334 bytes
+  scripts/scr_draw_tabs/scr_draw_tabs.gml                        2101 lines    17 fns  96865 bytes
+  scripts/scr_network/scr_network.gml                             541 lines    29 fns  22414 bytes
+  scripts/scr_skill_costs/scr_skill_costs.gml                     361 lines    27 fns  13495 bytes
+  scripts/scr_tab_handlers/scr_tab_handlers.gml                   865 lines    20 fns  39114 bytes
+  scripts/scr_ui_helpers/scr_ui_helpers.gml                      1183 lines    40 fns  61400 bytes
+  TOTAL                                                          7639 lines   244 fns
+
+=== OBJECT EVENTS ===
+  objects/obj_game/Create_0.gml                                   318 lines
+  objects/obj_game/Step_0.gml                                     803 lines
+  objects/obj_game/Draw_64.gml                                   1076 lines
+  objects/obj_game/Other_68.gml                                    79 lines
+  TOTAL                                                          2276 lines
+
+=== DATAFILES ===
+  datafiles/careers.json                             29070 bytes, 1619 lines, object, 5 entries
+    keys: Tech Op, Mindwalker, Combat Spec, Diplomat, Free Agent
+  datafiles/changelog.json                           340658 bytes, 3868 lines, object, 135 entries
+    keys: entries
+  datafiles/config.json                              3730 bytes, 170 lines, object, 7 entries
+    keys: roll_animation_frames, max_log_entries, colors, color_profiles, accessibility, dice, layout
+  datafiles/equipment.json                           16212 bytes, 722 lines, object, 3 entries
+    keys: weapons, armor, gear
+  datafiles/fx_database.json                         29483 bytes, 1152 lines, object, 1 entries
+    keys: fx
+  datafiles/keyword_tree.json                        19197 bytes, 1031 lines, object, 4 entries
+    keys: weapon_skills, broads, skills, abilities
+  datafiles/names.json                               987 bytes, 69 lines, object, 2 entries
+    keys: first_names, last_names
+  datafiles/npc_templates.json                       8069 bytes, 223 lines, object, 1 entries
+    keys: templates
+  datafiles/professions.json                         3586 bytes, 156 lines, object, 1 entries
+    keys: professions
+  datafiles/programs.json                            11428 bytes, 416 lines, object, 3 entries
+    keys: programs, computers, processor_quality
+  datafiles/skills.json                              5775 bytes, 310 lines, object, 1 entries
+    keys: skills
+  datafiles/species.json                             2573 bytes, 125 lines, object, 1 entries
+    keys: species
+  datafiles/voss.json                                6133 bytes, 80 lines, object, 20 entries
+    keys: name, species, profession, career, STR, DEX, CON, INT, WIL, PER, stun_damage, wound_damage, mortal_damage, skills, weapons, armor, gear, background, fx, deck
+  datafiles/reference/Master-Sidebar.json            373127 bytes, 3438 lines, object, 489 entries
+    keys: entries
+  datafiles/tables/combat_tables.json                4940 bytes, 189 lines, object, 8 entries
+    keys: armor_operation, situation_die_modifiers, movement_rates, range_modifiers, autofire_modes, actions_per_round, damage_summary, impact_damage
+  datafiles/tables/gm_tables.json                    7850 bytes, 329 lines, object, 11 entries
+    keys: psionic_energy, resistance_modifiers, cykosis, npc_attitudes, survival_modifiers, starting_skill_points, complex_skill_checks, thrown_accuracy, travel_rates, strength_damage_bonus, cyber_tolerance
+  datafiles/tables/skill_rank_benefits.json          16315 bytes, 597 lines, object, 20 entries
+    keys: Melee Weapons, Knowledge, Unarmed Attack, Telepathy, Heavy Weapons, Medical Science, Telekinesis, Acrobatics, Technical Science, ESP, Awareness, Modern Ranged Weapons, Resolve, Biokinesis, Stealth, Interaction, Vehicle Operation, Leadership, Athletics, Stamina
+
+=== STATE MACHINES (modal/popup state vars on obj_game) ===
+  L12  portrait_dropdown_open = false
+  L41  changelog_open = true  // start visible on first welcome screen visit
+  L51  accessibility_open = false  // populated after hero loads
+  L190  gm_add_faction_open = false  // faction name input mode
+  L234  text_modal_open = false
+  L263  net_host_popup_open = false
+  L264  net_join_popup_open = false
+  L279  browser_open = false
+  L284  chargen_open = false
+
+=== TAB SYSTEM ===
+  Player tabs (current_tab 0-9):
+    0: Character
+    1: Equipment
+    2: Combat
+    3: Psionics
+    4: Perks/Flaws
+    5: Cybertech
+    6: Roll Log
+    7: Info
+    8: Grid
+    9: Aura/Lore
+  GM tabs (gm_tab 0-5):
+    0: Party
+    1: NPCs
+    2: Encounter
+    3: Campaign
+    4: Sessionlog
+    5: Resources
+
+=== MULTIPLAYER ===
+  Relay: centerbeam.proxy.rlwy.net:23003
+  Protocol version: 1
+  Server: relay_server/server.js (Node.js TCP)
+  Message types: 19
+
+    - CREATE
+    - CREATED
+    - JOIN_REQ
+    - JOIN_OK
+    - JOIN_FAIL
+    - PLAYER_LIST
+    - ROLL_RESULT
+    - CHARACTER_SYNC
+    - CHAR_REQUEST
+    - CHAT
+    - GM_STATUS
+    - HEARTBEAT
+    - MAP_TOKEN_MOVE
+    - MAP_TOKEN_ADD
+    - MAP_TOKEN_REMOVE
+    - MAP_STATE_REQUEST
+    - MAP_STATE_FULL
+    - CHAR_TOKEN_LINK
+    - ROLL_AT_TOKEN
+
+=== PERSISTENCE ===
+  Working directory: %LOCALAPPDATA%/diceymcdicefacevibed/
+  Files written to working_directory:
+    - characters/<sanitized_name>.json
+    - characters/<sanitized_name>_rolllog.log
+    - recent_characters.json
+    - campaign.json
+    - session_log.json
+    - changelog.json (cache, can be stale)
+  Bundled datafiles: embedded via .yyp IncludedFiles, accessible via relative paths

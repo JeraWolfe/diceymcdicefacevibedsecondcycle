@@ -1,0 +1,297 @@
+================================================================================
+  DICEYMCDICEFACEVIBED — COMPLETE FUNCTIONALITY MAP
+  v0.55.1 | 218 Functions | 6,080 Lines of Actual Code
+================================================================================
+
+COUNTING METHOD: Actual code only. No comments (// lines), no empty lines,
+no whitespace-only lines. JSON data not counted. Only GML executable lines:
+function defs, variable assignments, if/for/while, function calls, returns.
+
+================================================================================
+CURRENT CODE BY FILE
+================================================================================
+
+FILE                          TOTAL  COMMENTS  EMPTY  ACTUAL CODE
+-----------------------------------------------------------------------
+Create_0.gml                    242       46     38       158
+Draw_64.gml                     789      109     87       593
+Step_0.gml                      439       54     31       354
+scr_alternity_statblock.gml   2,032      340    233     1,459
+scr_chargen.gml                 335       56     43       236
+scr_data_loader.gml             404      115     53       236
+scr_dice.gml                     60       13     11        36
+scr_draw_tabs.gml             2,198      228    280     1,690
+scr_skill_costs.gml             373       67     43       263
+scr_tab_handlers.gml            831      128     70       633
+scr_ui_helpers.gml              713      203     88       422
+-----------------------------------------------------------------------
+TOTALS                        8,416    1,359    977     6,080
+
+
+================================================================================
+CODE BY CATEGORY (with overlap noted)
+================================================================================
+
+CATEGORY A: GRAPHICAL (UI/Drawing/Rendering)
+---------------------------------------------
+What counts: draw_set_colour, draw_text, draw_rectangle, draw_circle,
+draw_sprite, ui_btn(), draw_set_halign/valign/alpha, layout coordinate
+math, portrait generation, durability circle rendering.
+
+  Draw_64.gml (full file minus identity line)    ~560 lines
+  scr_draw_tabs.gml (all draw_tab_* functions)  ~1,590 lines
+  scr_alternity_statblock.gml (portrait gen,
+    draw_durability, draw_portrait, ui_btn,
+    draw_glow/particles/armor/weapon/circuit)     ~340 lines
+  scr_ui_helpers.gml (dropdown.draw, checkbox)     ~65 lines
+  Create_0.gml (color init, window setup)          ~18 lines
+  ────────────────────────────────────────────
+  SUBTOTAL GRAPHICAL:                           ~2,573 lines (42.3%)
+
+
+CATEGORY B: DATA MANIPULATION (Core Game Logic)
+-------------------------------------------------
+What counts: character stat calculations, dice rolling, skill cost math,
+FX/perk/flaw/cybertech modifier application, JSON read/write, save/load,
+character generation, campaign persistence, roll logging, damage parsing,
+statblock create/import/export.
+
+  scr_alternity_statblock.gml (create_statblock,
+    set_ability, calculate_*, update_hero,
+    statblock_import/export, parse_damage,
+    skill management, party/NPC management,
+    roll log file I/O, save_all_data_dialog)     ~1,020 lines
+  scr_skill_costs.gml (full file)                  ~263 lines
+  scr_chargen.gml (full file)                      ~236 lines
+  scr_data_loader.gml (full file)                  ~236 lines
+  scr_ui_helpers.gml (meta_roll engine,
+    apply_fx_modifiers, build_*_request,
+    log_roll, keyword system)                      ~310 lines
+  scr_dice.gml (full file)                          ~36 lines
+  Create_0.gml (init_all_data call, state init)    ~115 lines
+  Step_0.gml (save_hero calls, chargen gen)         ~60 lines
+  ────────────────────────────────────────────
+  SUBTOTAL DATA:                                ~2,276 lines (37.4%)
+
+
+CATEGORY C: INPUT HANDLING (Buttons/State/Dispatch)
+-----------------------------------------------------
+What counts: btn_clicked() checks, mouse coordinate detection,
+state machine transitions (game_state, current_tab, browser_open),
+dropdown click handling, tab dispatch, scroll handling.
+
+  Step_0.gml (welcome screen, browser, chargen
+    popup, tab dispatch, sidebar buttons,
+    GM mode routing)                               ~294 lines
+  scr_tab_handlers.gml (all handle_tab_* and
+    handle_gm_* functions)                         ~590 lines
+  scr_ui_helpers.gml (btn_clicked, dropdown
+    group click)                                    ~47 lines
+  ────────────────────────────────────────────
+  SUBTOTAL INPUT:                                 ~931 lines (15.3%)
+
+
+CATEGORY D: OVERLAP (Mixed Drawing + Logic)
+----------------------------------------------
+What counts: Functions that do BOTH rendering AND data processing.
+Durability circles that set hero.stun.current while drawing.
+Tab draw functions that compute skill costs inline.
+GM draw helpers that look up and format data.
+
+  scr_alternity_statblock.gml (draw_durability
+    modifies hero state, portrait load does
+    file I/O during draw)                          ~100 lines
+  scr_draw_tabs.gml (skill cost calcs in
+    draw_tab_character, stat computation in
+    draw_tab_combat, modifier display inline)      ~100 lines
+  scr_ui_helpers.gml (build_*_request does
+    both data lookup and modifier annotation)       ~50 lines
+  Create_0.gml (dropdown callbacks that do
+    both state init and data reload)                ~50 lines
+  ────────────────────────────────────────────
+  SUBTOTAL OVERLAP:                               ~300 lines (4.9%)
+
+
+================================================================================
+CATEGORY SUMMARY CHART
+================================================================================
+
+  GRAPHICAL (Drawing/UI)     ████████████████████████████████████████████  42.3%
+  DATA (Core Logic)          ██████████████████████████████████████        37.4%
+  INPUT (Buttons/State)      ███████████████                              15.3%
+  OVERLAP (Mixed)            █████                                         4.9%
+
+  Total actual code: 6,080 lines
+  Functions: 218
+
+  The MOST IMPORTANT number:
+  ┌─────────────────────────────────────────────────────┐
+  │  DATA MANIPULATION (core game logic): 2,276 lines   │
+  │  This is the irreducible engine of the application. │
+  │  Everything else serves this.                        │
+  └─────────────────────────────────────────────────────┘
+
+
+================================================================================
+FUNCTION COUNT BY CATEGORY
+================================================================================
+
+  DATA functions:       107  (statblock: 55, skills: 25, chargen: 17, dice: 8, data_loader: 2)
+  GRAPHICAL functions:   50  (draw_tabs: 20, statblock draw: 16, ui_helpers: 14)
+  INPUT functions:       30  (tab_handlers: 15, ui_helpers control: 15)
+  OVERLAP functions:     31  (statblock mixed: 20, draw+logic: 11)
+  ─────────────────────
+  TOTAL:                218
+
+
+================================================================================
+REFACTOR TARGET: 6,080 → UNDER 4,000 ACTUAL CODE LINES
+================================================================================
+
+REDUCTION NEEDED: ~2,100 lines (34% cut)
+
+STRATEGY BY CATEGORY:
+
+  GRAPHICAL (2,573 → ~1,500):  -1,073 lines
+  ─────────────────────────────────────────
+  The biggest target. 42% of the codebase is drawing pixels.
+  - Consolidate repetitive draw patterns into reusable helpers
+    (draw a labeled row, draw a button row, draw a section header)
+  - Extract common UI patterns: every tab draws headers, column
+    labels, scroll buttons, section dividers the same way
+  - scr_draw_tabs has 10 player tabs + 5 GM tabs, many with
+    near-identical list rendering (skills, equipment, programs,
+    cybertech all draw item rows the same way)
+  - draw_tab_equipment (302 lines) can reuse a generic "item list
+    with expand/add" pattern shared with cybertech and grid
+  - GM draw functions share party/NPC row rendering patterns
+  - Portrait generation (323 lines) is procedural art — keep as-is
+
+  DATA (2,276 → ~1,800):  -476 lines
+  ─────────────────────────────────────
+  Already lean. Targeted cuts:
+  - Delete create_sample_soldier (140 lines) → JSON template
+  - Delete save_voss_template (41 lines) → JSON template
+  - Merge 8 FX one-liner checkers into single has_fx() (-33 lines)
+  - Inline 15+ tiny helpers used 1-2 times (-80 lines)
+  - Delete 5 legacy skill cost wrappers (-25 lines)
+  - Consolidate statblock_import_data v2/v3 paths (-50 lines)
+  - Tighten statblock_export format (-30 lines)
+
+  INPUT (931 → ~700):  -231 lines
+  ───────────────────────────────────
+  - Consolidate handle_tab_equipment weapon/armor/gear loops
+    into a single parameterized handler
+  - Merge handle_gm_party + handle_gm_npcs shared patterns
+  - Inline tiny handlers (handle_tab_info: 7 lines)
+
+  OVERLAP (300 → ~200):  -100 lines
+  ────────────────────────────────────
+  - Move durability state changes out of draw functions
+  - Separate data lookup from display annotation
+
+
+================================================================================
+BEFORE/AFTER PROJECTION
+================================================================================
+
+                        CURRENT    TARGET    SAVINGS
+                        ───────    ──────    ───────
+  Graphical              2,573     1,500     -1,073
+  Data Manipulation      2,276     1,800       -476
+  Input Handling           931       700       -231
+  Overlap                  300       200       -100
+  ─────────────────────────────────────────────────
+  TOTAL                  6,080     4,200     -1,880
+
+  AGGRESSIVE TARGET (with UI pattern library):
+                        CURRENT    TARGET    SAVINGS
+                        ───────    ──────    ───────
+  Graphical              2,573     1,200     -1,373
+  Data Manipulation      2,276     1,700       -576
+  Input Handling           931       600       -331
+  Overlap                  300       100       -200
+  ─────────────────────────────────────────────────
+  TOTAL                  6,080     3,600     -2,480
+
+  The aggressive target requires a UI helper library (draw_row,
+  draw_list_section, draw_item_row) that replaces 60% of the
+  repetitive draw code across all 15 tabs.
+
+
+================================================================================
+218 FUNCTIONS — ELIMINATION/MERGE TARGETS
+================================================================================
+
+ELIMINATE (move to data or inline):
+  create_sample_soldier    ~140 lines  → JSON template
+  save_voss_template        ~41 lines  → JSON template
+  get_category_tag_hero      ~6 lines  → inline display
+  get_skill_category         ~4 lines  → redundant
+  get_broad_cost_per_rank    ~4 lines  → redundant
+  get_spec_cost_per_rank     ~4 lines  → redundant
+  get_category_short_hero    ~7 lines  → wrapper chain
+  get_default_recent         ~6 lines  → inline 1 callsite
+  get_default_changelog      ~7 lines  → inline 1 callsite
+  get_skill_tree             ~5 lines  → use global.skill_tree directly
+  ──────────────────────────────────
+  TOTAL ELIMINATED:        ~224 lines, 10 functions
+
+MERGE (consolidate into fewer functions):
+  8 FX checkers → single has_fx()                   ~38 → 5 lines
+  _apply_auto_mods → into quick_roll_skill           ~13 → 0 lines
+  _build_best_awareness_request → inline             ~14 → 0 lines
+  _gm_get_skill_score → inline (2 calls)             ~13 → 0 lines
+  _enc_draw_char_row → into draw_gm_encounter        ~34 → 0 lines
+  get_wound_pen_if_enabled → inline                  ~25 → 0 lines
+  format_mod → inline (1 call)                        ~4 → 0 lines
+  get_skill_use_penalty → inline                      ~9 → 0 lines
+  get_untrained_score → inline                        ~6 → 0 lines
+  add_weapon_from_db → inline                         ~5 → 0 lines
+  set_armor_from_db → inline                          ~4 → 0 lines
+  hex_char_val + hex2_to_int → into parse_hex_color  ~15 → 0 lines
+  get_timestamp_string → inline                      ~11 → 0 lines
+  try_load_sprite → inline                           ~10 → 0 lines
+  toggle_inspect → inline                            ~11 → 0 lines
+  mouse_in → inline (point_in_rectangle)              ~6 → 0 lines
+  situation_die_sides → inline                        ~3 → 0 lines
+  situation_step_is_bonus → inline                    ~3 → 0 lines
+  situation_step_name → inline                        ~3 → 0 lines
+  damage_type_to_string → inline                      ~4 → 0 lines
+  ──────────────────────────────────
+  TOTAL MERGED:            ~246 → 5 lines, ~20 functions removed
+
+
+================================================================================
+THE PLAN — PHASE ORDER
+================================================================================
+
+Phase 0: Git branch (revertable)
+  git checkout -b refactor/under-4000
+  All work on branch. Master untouched.
+
+Phase 1: Dead code elimination (~224 lines)
+  Delete hardcoded templates, legacy wrappers, single-use getters
+
+Phase 2: Function consolidation (~241 lines)
+  Merge FX checkers, inline 20+ tiny helpers
+
+Phase 3: UI pattern library (~800-1,200 lines from graphical)
+  Build 5-6 reusable draw helpers:
+    draw_section_header(x, y, w, title)
+    draw_item_row(x, y, w, name, value, color)
+    draw_list_with_scroll(x, y, w, items, scroll, max_visible)
+    draw_expandable_item(x, y, w, item, expanded_idx, gi)
+    draw_stat_bar(x, y, w, label, current, max, color)
+  Rewrite all 15 tab draw functions to use these helpers
+
+Phase 4: Handler consolidation (~231 lines)
+  Parameterize equipment handlers, merge GM shared patterns
+
+Phase 5: Data extraction (~181 lines)
+  Move Voss template and sample soldier to JSON
+
+Phase 6: Final cleanup + QA
+  Remove dead comments, verify all functionality, count lines
+
+================================================================================
